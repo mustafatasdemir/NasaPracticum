@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -28,14 +29,11 @@ import edu.cmu.dblp.model.WebPage;
 
 
 public class Main {
+	
+	private static String dblpExample = "data/dblp_example.xml";
 
 	public static void main(String[] args) {
-		readXML("/Users/ironstone/Downloads/dblp_example.xml");
-		//readXML("/Users/jishavm/Documents/workspace/Practicum/dblp_example.xml");
-		//		List<Item> readConfig = StaXParser.readConfig("/Users/ironstone/Desktop/dblp_example.xml");
-		//	    for (Item item : readConfig) {
-		//	      System.out.println(item);
-		//	    }	
+		readXML("data/dblp_example.xml");
 	}
 	
 	public static void printCounter(int count, Calendar start, Calendar end){
@@ -61,13 +59,15 @@ public class Main {
 			
 			ArrayList<String> unidentifiedElements = new ArrayList<String>();
 			int counter = 0;
+			// In case there is a problem while iterating the file, set the flag and debug
 			int flag = 0;
 
 			while (eventReader.hasNext()) {
 				
+				// For Debugging, check which entity has problem via console output
 				if(flag == 0 && counter == 11127){
 					flag = 1;
-					System.out.println("Hey!");
+					System.out.println("Hey! Problem Over Here!");
 				}
 				
 				XMLEvent event = eventReader.nextEvent();
@@ -146,7 +146,6 @@ public class Main {
 									if(!unidentifiedElements.contains("ARTICLE " + articleStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("ARTICLE " + articleStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified ARTICLE element detected! " + articleStartElement.getName().getLocalPart());
 								}
 							}
 							if(articleEvent.isEndElement()){
@@ -236,13 +235,11 @@ public class Main {
 									if(!unidentifiedElements.contains("BOOK " + bookStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("BOOK " + bookStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified BOOK element detected! " + bookStartElement.getName().getLocalPart());
 								}
 							}
 							if(bookEvent.isEndElement()){
 								EndElement bookEndElement = bookEvent.asEndElement();
 								if(bookEndElement.getName().getLocalPart().equals(Publication.BOOK)){
-									System.out.println(book.getPublisherAddress());
 									DBInserts.DBInserts(book);
 									//TODO: Mustafa - Save the instance to DB
 									counter++;
@@ -320,7 +317,6 @@ public class Main {
 									if(!unidentifiedElements.contains("INCOLLECTION " + bookChapterStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("INCOLLECTION " + bookChapterStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified INCOLLECTION element detected! " + bookChapterStartElement.getName().getLocalPart());
 								}
 							}
 							if(bookChapterEvent.isEndElement()){
@@ -401,7 +397,6 @@ public class Main {
 									if(!unidentifiedElements.contains("INPROCEEDINGS " + conferencePaperStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("INPROCEEDINGS " + conferencePaperStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified INPROCEEDINGS element detected! " + conferencePaperStartElement.getName().getLocalPart());
 								}
 							}
 							if(conferencePaperEvent.isEndElement()){
@@ -488,7 +483,6 @@ public class Main {
 									if(!unidentifiedElements.contains("PHDTHESIS " + phdThesisStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("PHDTHESIS " + phdThesisStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified PHDTHESIS element detected! " + phdThesisStartElement.getName().getLocalPart());
 								}
 							}
 							if(phdThesisEvent.isEndElement()){
@@ -568,7 +562,6 @@ public class Main {
 									if(!unidentifiedElements.contains("WWW " + webPageStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("WWW " + webPageStartElement.getName().getLocalPart());
 									}
-									//System.out.println("WARNING!!! Unidentified WWW element detected! " + webPageStartElement.getName().getLocalPart());
 								}
 							}
 							if(webPageEvent.isEndElement()){
@@ -585,15 +578,13 @@ public class Main {
 					}
 				}
 				if (event.isEndElement()) {
-//					counter++;
-//					System.out.println(counter);
-//					if(counter % 10000 == 0){
-//						System.out.println(counter);
-//					}
+					printCounter(counter, startTime, Calendar.getInstance());
 				}
 				
 			}
-			System.out.println(unidentifiedElements.size());
+			System.out.println("WARNING!! There are missing elements in DBLP XML file! These attributes are defined within their corresponding objects. However, they don't exist in xml! Such these are set to null in objects.");
+			System.out.println("Total count of missing elements: " + unidentifiedElements.size());
+			System.out.println("ENTITY - ATTRIBUTE");
 			for (String element : unidentifiedElements) {
 				System.out.println(element);
 			}
