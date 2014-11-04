@@ -1,0 +1,45 @@
+
+@(publicationForm: play.data.Form[WebPagePublication])
+
+@import helper._
+
+@main("Add Publication") {
+
+  @if(session.get("email")){
+    <h2>Add a new web page publication</h2>
+
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="publicationChannel" data-toggle="dropdown">
+        Web Page Publication 
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="publicationChannel">
+        <li role="presentation" class="dropdown-header">Publication Channel</li>
+        <li role="presentation" class="divider"></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.JournalPublications.addPage()">Journal Publication</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.ConferencePublications.addPage()">Conference Publication</a></li>
+        <li role="presentation" class="disabled"><a role="menuitem" tabindex="-1" href="#">Web Page Publication</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.BookPublications.addPage()">Book Publication</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="@routes.BookChapterPublications.addPage()">Book Chapter Publication</a></li>
+      </ul>
+    </div>
+
+    @form(routes.WebPagePublications.add()) {
+      @inputText(publicationForm("paperTitle"),'_label -> "Title")
+      @inputText(publicationForm("paperAuthors"), '_label -> "Authors", 'placeholder-> "Author1, Author2, ...")
+      @inputText(publicationForm("keywords"), '_label -> "Keywords", 'placeholder-> "Keyword1, Keyword2, ...")
+      @inputText(publicationForm("systemTags"), '_label -> "System Tags", 'placeholder-> "Tag1, Tag2, ...")
+      @inputText(publicationForm("crowdTags"), '_label -> "Crowd Tags", 'placeholder-> "Tag1, Tag2, ...")
+      @inputText(publicationForm("year"), '_label -> "Year")
+      @inputText(publicationForm("URL"), '_label -> "URL")
+      @inputText(publicationForm("date"), '_label -> "Date", 'placeholder-> "yyyy-mm-dd")
+
+      <div class="actions">
+        <input type="submit" class="btn primary" value="Add">
+        <a href="@routes.BookChapterPublications.addPage()" class="btn">Cancel</a>
+      </div>
+    }
+  }else{
+    <h2>Please login to add a new publications</h2>
+  }
+}

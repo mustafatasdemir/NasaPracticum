@@ -1,0 +1,44 @@
+
+@(publications: List[ConferencePublication])
+
+@import helper._
+
+@main("Conference Publications") {
+
+  <h1>@publications.size() Conference Publications</h1>
+  <table class="table table-striped table-bordered table-condensed">
+    <tr>
+      <td>Title</td>
+      <td>Authors</td>
+      <td>Keywords</td>
+      <td>Tags</td>
+      <td>Conference</td>
+      @if(session.get("email")){
+      <td>Operation</td>
+      }
+    </tr>
+
+    @for(publication <- publications) {
+      <tr id="@publication.getId()" class="publications">
+        <td class="publicationTitle">@publication.getTitle()</td>
+        <td class="publicationAuthors">@publication.formatStringArray(publication.getAuthors())</td>
+        <td class="publicationKeywords">@publication.formatStringArray(publication.getKeywords())</td>
+        <td class="publicationTags">@publication.formatStringArray(publication.getCrowdTags())</td>
+        <td class="conferenceName">@publication.getConferenceName()</td>
+
+        @if(session.get("email")){
+        <td class="operation">
+          @form(routes.ConferencePublications.updatePage()) {
+            <input name="idHolder" type="hidden" value="@publication.getId()">
+            <input type="submit" class="btn btn-primary" value="Update">
+          }
+          @form(routes.Publications.delete()){
+            <input name="idHolder" type="hidden" value="@publication.getId()">
+            <input type="submit"  class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure you want to delete this item?')">
+          }
+        </td>
+        }
+      </tr>
+    }
+  </table>
+}

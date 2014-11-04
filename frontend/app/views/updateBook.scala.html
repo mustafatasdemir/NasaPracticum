@@ -1,0 +1,34 @@
+
+@(publication: BookPublication, publicationForm: play.data.Form[BookPublication])
+
+@import helper._
+
+@main("Update Publication") {
+
+  @if(session.get("email")){
+    <h2>Update existing book publication</h2>
+
+    @form(routes.BookPublications.update()) {
+      <input name="idHolder" type="hidden" value="@publication.getId()">
+
+      @inputText(publicationForm("paperTitle"), '_label -> "Title")
+      @inputText(publicationForm("paperAuthors"), '_label -> "Authors")
+      @inputText(publicationForm("keywords"), '_label -> "Keywords")
+      @inputText(publicationForm("systemTags"), '_label -> "System Tags")
+      @inputText(publicationForm("crowdTags"), '_label -> "Crowd Tags")
+      @inputText(publicationForm("year"), '_label -> "Year")
+      @inputText(publicationForm("bookName"), '_label -> "Book Name")
+      @inputText(publicationForm("publisherName"), '_label -> "Publisher Name")
+      @inputText(publicationForm("publisherLocation"), '_label -> "Publisher Location")
+      @inputText(publicationForm("time"), '_label -> "Time")
+      @inputText(publicationForm("pages"), '_label -> "Pages")
+
+      <div class="actions">
+        <input type="submit" class="btn primary" value="Update">
+        <a href="@routes.BookPublications.display()" class="btn">Cancel</a>
+      </div>
+    }
+  }else{
+    <h2>Please login to update exiting publications</h2>
+  }
+}

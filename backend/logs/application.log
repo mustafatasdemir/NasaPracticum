@@ -1,0 +1,222 @@
+2014-11-02 14:45:51,422 - [INFO] - from play in pool-4-thread-1 
+Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+
+2014-11-02 14:46:17,407 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2014-11-02 19:32:35,437 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 19:42:05,129 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 19:43:59,419 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 19:48:54,669 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 19:49:43,545 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 20:05:06,641 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 20:58:02,203 - [ERROR] - from play in play-internal-execution-context-4 
+Cannot invoke the action, eventually got an error: com.google.gson.JsonSyntaxException: 2000-12-12
+
+2014-11-02 20:58:02,221 - [ERROR] - from application in play-internal-execution-context-4 
+
+
+! @6k4d482ei - Internal server error, for (POST) [/updateWebPagePublication] ->
+
+play.api.Application$$anon$1: Execution exception[[JsonSyntaxException: 2000-12-12]]
+	at play.api.Application$class.handleError(Application.scala:293) ~[play_2.10.jar:2.2.4]
+	at play.api.DefaultApplication.handleError(Application.scala:399) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at scala.Option.map(Option.scala:145) [scala-library.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:260) [play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.api.libs.iteratee.Execution$$anon$1.execute(Execution.scala:43) [play-iteratees_2.10.jar:2.2.4]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1361) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library.jar:na]
+Caused by: com.google.gson.JsonSyntaxException: 2000-12-12
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:81) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:66) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:41) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:95) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:183) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:805) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:770) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:719) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:691) ~[gson-2.3.jar:na]
+	at controllers.WebPagePublications.update(WebPagePublications.java:78) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at play.core.Router$HandlerInvoker$$anon$7$$anon$2.invocation(Router.scala:183) ~[play_2.10.jar:2.2.4]
+	at play.core.Router$Routes$$anon$1.invocation(Router.scala:377) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:56) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:91) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:90) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:251) ~[scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:249) ~[scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:37) ~[play_2.10.jar:2.2.4]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:42) ~[akka-actor_2.10.jar:2.2.0]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:386) ~[akka-actor_2.10.jar:2.2.0]
+	... 4 common frames omitted
+Caused by: java.text.ParseException: Unparseable date: "2000-12-12"
+	at java.text.DateFormat.parse(DateFormat.java:357) ~[na:1.7.0_71]
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:79) ~[gson-2.3.jar:na]
+	... 28 common frames omitted
+
+2014-11-02 20:58:11,108 - [ERROR] - from play in play-internal-execution-context-4 
+Cannot invoke the action, eventually got an error: com.google.gson.JsonSyntaxException: 2000-12-13
+
+2014-11-02 20:58:11,112 - [ERROR] - from application in play-internal-execution-context-4 
+
+
+! @6k4d48fio - Internal server error, for (POST) [/updateWebPagePublication] ->
+
+play.api.Application$$anon$1: Execution exception[[JsonSyntaxException: 2000-12-13]]
+	at play.api.Application$class.handleError(Application.scala:293) ~[play_2.10.jar:2.2.4]
+	at play.api.DefaultApplication.handleError(Application.scala:399) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at scala.Option.map(Option.scala:145) [scala-library.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:260) [play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.api.libs.iteratee.Execution$$anon$1.execute(Execution.scala:43) [play-iteratees_2.10.jar:2.2.4]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1361) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library.jar:na]
+Caused by: com.google.gson.JsonSyntaxException: 2000-12-13
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:81) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:66) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:41) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:95) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:183) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:805) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:770) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:719) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:691) ~[gson-2.3.jar:na]
+	at controllers.WebPagePublications.update(WebPagePublications.java:78) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at play.core.Router$HandlerInvoker$$anon$7$$anon$2.invocation(Router.scala:183) ~[play_2.10.jar:2.2.4]
+	at play.core.Router$Routes$$anon$1.invocation(Router.scala:377) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:56) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:91) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:90) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:251) ~[scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:249) ~[scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:37) ~[play_2.10.jar:2.2.4]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:42) ~[akka-actor_2.10.jar:2.2.0]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:386) ~[akka-actor_2.10.jar:2.2.0]
+	... 4 common frames omitted
+Caused by: java.text.ParseException: Unparseable date: "2000-12-13"
+	at java.text.DateFormat.parse(DateFormat.java:357) ~[na:1.7.0_71]
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:79) ~[gson-2.3.jar:na]
+	... 28 common frames omitted
+
+2014-11-02 20:58:23,123 - [ERROR] - from play in play-internal-execution-context-4 
+Cannot invoke the action, eventually got an error: com.google.gson.JsonSyntaxException: 2000-12-13
+
+2014-11-02 20:58:23,128 - [ERROR] - from application in play-internal-execution-context-4 
+
+
+! @6k4d497d1 - Internal server error, for (POST) [/updateWebPagePublication] ->
+
+play.api.Application$$anon$1: Execution exception[[JsonSyntaxException: 2000-12-13]]
+	at play.api.Application$class.handleError(Application.scala:293) ~[play_2.10.jar:2.2.4]
+	at play.api.DefaultApplication.handleError(Application.scala:399) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$3.apply(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at scala.Option.map(Option.scala:145) [scala-library.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:264) [play_2.10.jar:2.2.4]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:260) [play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.api.libs.iteratee.Execution$$anon$1.execute(Execution.scala:43) [play-iteratees_2.10.jar:2.2.4]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1361) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library.jar:na]
+Caused by: com.google.gson.JsonSyntaxException: 2000-12-13
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:81) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:66) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.DateTypeAdapter.read(DateTypeAdapter.java:41) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$1.read(ReflectiveTypeAdapterFactory.java:95) ~[gson-2.3.jar:na]
+	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:183) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:805) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:770) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:719) ~[gson-2.3.jar:na]
+	at com.google.gson.Gson.fromJson(Gson.java:691) ~[gson-2.3.jar:na]
+	at controllers.WebPagePublications.update(WebPagePublications.java:78) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$25$$anonfun$apply$25.apply(routes_routing.scala:341) ~[classes/:na]
+	at play.core.Router$HandlerInvoker$$anon$7$$anon$2.invocation(Router.scala:183) ~[play_2.10.jar:2.2.4]
+	at play.core.Router$Routes$$anon$1.invocation(Router.scala:377) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:56) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:91) ~[play_2.10.jar:2.2.4]
+	at play.core.j.JavaAction$$anon$3.apply(JavaAction.scala:90) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at play.core.j.FPromiseHelper$$anonfun$flatMap$1.apply(FPromiseHelper.scala:82) ~[play_2.10.jar:2.2.4]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:251) ~[scala-library.jar:na]
+	at scala.concurrent.Future$$anonfun$flatMap$1.apply(Future.scala:249) ~[scala-library.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:37) ~[play_2.10.jar:2.2.4]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:42) ~[akka-actor_2.10.jar:2.2.0]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:386) ~[akka-actor_2.10.jar:2.2.0]
+	... 4 common frames omitted
+Caused by: java.text.ParseException: Unparseable date: "2000-12-13"
+	at java.text.DateFormat.parse(DateFormat.java:357) ~[na:1.7.0_71]
+	at com.google.gson.internal.bind.DateTypeAdapter.deserializeToDate(DateTypeAdapter.java:79) ~[gson-2.3.jar:na]
+	... 28 common frames omitted
+
+2014-11-02 20:59:29,778 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+
+2014-11-02 21:00:40,238 - [INFO] - from play in play-internal-execution-context-4 
+Application started (Dev)
+

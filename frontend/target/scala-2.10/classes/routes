@@ -1,0 +1,49 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                   controllers.Application.index()
+
+
+# Login and authentication
+GET     /login                              controllers.Application.login()
+POST    /login                              controllers.Application.authenticate()
+GET     /logout                             controllers.Application.logout()
+
+# Publications
+GET     /publications                       controllers.Publications.display()
+POST    /deletePublication                  controllers.Publications.delete()
+
+GET     /journalPublications                controllers.JournalPublications.display()
+GET     /add/journalPublication             controllers.JournalPublications.addPage()
+POST    /addJournalPublication              controllers.JournalPublications.add()
+GET     /update/journalPublication          controllers.JournalPublications.updatePage()
+POST    /updateJournalPublication           controllers.JournalPublications.update()
+
+GET     /conferencePublications             controllers.ConferencePublications.display()
+GET     /add/conferencePublication          controllers.ConferencePublications.addPage()
+POST    /addConferencePublication           controllers.ConferencePublications.add()
+GET     /update/conferencePublication       controllers.ConferencePublications.updatePage()
+POST    /updateConferencePublication        controllers.ConferencePublications.update()
+
+GET     /webPagePublications                controllers.WebPagePublications.display()
+GET     /add/webPagePublication             controllers.WebPagePublications.addPage()
+POST    /addWebPagePublication              controllers.WebPagePublications.add()
+GET     /update/webPagePublication          controllers.WebPagePublications.updatePage()
+POST    /updateWebPagePublication           controllers.WebPagePublications.update()
+
+GET     /bookPublications                   controllers.BookPublications.display()
+GET     /add/bookPublication                controllers.BookPublications.addPage()
+POST    /addBookPublication                 controllers.BookPublications.add()
+GET     /update/bookPublication             controllers.BookPublications.updatePage()
+POST    /updateBookPublication              controllers.BookPublications.update()
+
+GET     /bookChapterPublications            controllers.BookChapterPublications.display()
+GET     /add/bookChapterPublication         controllers.BookChapterPublications.addPage()
+POST    /addBookChapterPublication          controllers.BookChapterPublications.add()
+GET     /update/bookChapterPublication      controllers.BookChapterPublications.updatePage()
+POST    /updateBookChapterPublication       controllers.BookChapterPublications.update()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                       controllers.Assets.at(path="/public", file)

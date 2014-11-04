@@ -1,0 +1,31 @@
+
+@(publication: WebPagePublication, publicationForm: play.data.Form[WebPagePublication])
+
+@import helper._
+
+@main("Update Publication") {
+
+  @if(session.get("email")){
+    <h2>Update existing web page publication</h2>
+
+    @form(routes.WebPagePublications.update()) {
+      <input name="idHolder" type="hidden" value="@publication.getId()">
+
+      @inputText(publicationForm("paperTitle"), '_label -> "Title")
+      @inputText(publicationForm("paperAuthors"), '_label -> "Authors")
+      @inputText(publicationForm("keywords"), '_label -> "Keywords")
+      @inputText(publicationForm("systemTags"), '_label -> "System Tags")
+      @inputText(publicationForm("crowdTags"), '_label -> "Crowd Tags")
+      @inputText(publicationForm("year"), '_label -> "Year")
+      @inputText(publicationForm("URL"), '_label -> "URL")
+      @inputText(publicationForm("date"), '_label -> "Date", 'placeholder-> "yyyy-mm-dd")
+
+      <div class="actions">
+        <input type="submit" class="btn primary" value="Update">
+        <a href="@routes.WebPagePublications.display()" class="btn">Cancel</a>
+      </div>
+    }
+  }else{
+    <h2>Please login to update exiting publications</h2>
+  }
+}
