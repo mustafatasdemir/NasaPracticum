@@ -26,7 +26,7 @@ object index extends BaseScalaTemplate[play.api.templates.HtmlFormat.Appendable,
     def apply():play.api.templates.HtmlFormat.Appendable = {
         _display_ {
 
-Seq[Any](_display_(Seq[Any](/*2.2*/main("Papers")/*2.16*/{_display_(Seq[Any](format.raw/*2.17*/("""
+Seq[Any](_display_(Seq[Any](/*2.2*/main("DblpFrontend")/*2.16*/{_display_(Seq[Any](format.raw/*2.17*/("""
 
   <div class="jumbotron">
     <div class="row">

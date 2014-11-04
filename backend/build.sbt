@@ -1,4 +1,4 @@
-name := "Plane"
+name := "DblpBackend"
 
 version := "1.0-SNAPSHOT"
 

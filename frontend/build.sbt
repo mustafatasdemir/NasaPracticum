@@ -1,4 +1,4 @@
-name := "Papers"
+name := "DblpFrontend"
 
 version := "1.0-SNAPSHOT"
 
