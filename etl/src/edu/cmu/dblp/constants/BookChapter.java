@@ -9,5 +9,6 @@ public class BookChapter {
 	 * */
 	
 	public static final String PAGES = "pages";
+	public static final String BOOKTITLE = "booktitle";
 
 }

@@ -13,5 +13,6 @@ public class JournalArticle{
 	public static String PAGES = "pages";
 	public static String COLUMN = "column";
 	public static String URL = "url";
+	public static String JOURNAL = "journal";
 
 }

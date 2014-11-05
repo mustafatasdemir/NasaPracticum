@@ -1,6 +1,6 @@
 package edu.cmu.dblp.model;
 
-public class Journal {
+public class Journal extends MetaData{
 	
 	private int journalId;
 	private String journalName;

@@ -20,7 +20,10 @@ import edu.cmu.dblp.constants.Publication;
 import edu.cmu.dblp.database.DBInserts;
 import edu.cmu.dblp.model.Book;
 import edu.cmu.dblp.model.BookChapter;
+import edu.cmu.dblp.model.BookChapterData;
+import edu.cmu.dblp.model.Conference;
 import edu.cmu.dblp.model.ConferencePaper;
+import edu.cmu.dblp.model.Journal;
 import edu.cmu.dblp.model.JournalArticle;
 import edu.cmu.dblp.model.PhdThesis;
 import edu.cmu.dblp.model.School;
@@ -77,8 +80,12 @@ public class Main {
 					// If we have an item element, we create a new item
 					if (startElement.getName().getLocalPart() == (Publication.ARTICLE)) {
 						JournalArticle article = new JournalArticle();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+						// Create journal object for journal tag of the article
+						Journal journal = new Journal();
+						// Relevance is 0 by default. This will be cross referenced later and calculated
+						journal.setRelevance(0);
+
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -142,6 +149,11 @@ public class Main {
 									article.setVolume(articleEvent.asCharacters().getData());
 									continue;
 								}
+								else if(articleStartElement.getName().getLocalPart() == (edu.cmu.dblp.constants.JournalArticle.JOURNAL)){
+									articleEvent = eventReader.nextEvent();
+									journal.setJournalName(articleEvent.asCharacters().getData());
+									continue;
+								}
 								else{
 									if(!unidentifiedElements.contains("ARTICLE " + articleStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("ARTICLE " + articleStartElement.getName().getLocalPart());
@@ -151,7 +163,8 @@ public class Main {
 							if(articleEvent.isEndElement()){
 								EndElement articleEndElement = articleEvent.asEndElement();
 								if(articleEndElement.getName().getLocalPart().equals(Publication.ARTICLE)){
-									//TODO: Mustafa - Save the instance to DB
+									// Save the instance to DB
+									DBInserts.DBInserts(article, journal);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -161,8 +174,8 @@ public class Main {
 					}
 					if (startElement.getName().getLocalPart() == (Publication.BOOK)) {
 						Book book = new Book();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -240,8 +253,8 @@ public class Main {
 							if(bookEvent.isEndElement()){
 								EndElement bookEndElement = bookEvent.asEndElement();
 								if(bookEndElement.getName().getLocalPart().equals(Publication.BOOK)){
-									DBInserts.DBInserts(book,null);
-									//TODO: Mustafa - Save the instance to DB
+									// Save the instance to DB
+									DBInserts.DBInserts(book, null);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -251,8 +264,12 @@ public class Main {
 					}
 					if (startElement.getName().getLocalPart() == (Publication.INCOLLECTION)) {
 						BookChapter bookChapter = new BookChapter();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+						// Create BookChapterData object for booktitle tag of the bookchapter
+						BookChapterData bookChapterData = new BookChapterData();
+						// Relevance is 0 by default. This will be cross referenced later and calculated
+						bookChapterData.setRelevance(0);
+						
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -312,7 +329,11 @@ public class Main {
 									bookChapter.setPages(bookChapterEvent.asCharacters().getData());
 									continue;
 								}
-								//TODO: Mustafa - id attribute is not feasible. Attribute set revision required
+								else if(bookChapterStartElement.getName().getLocalPart() == (edu.cmu.dblp.constants.BookChapter.BOOKTITLE)){
+									bookChapterEvent = eventReader.nextEvent();
+									bookChapterData.setBookChapterName(bookChapterEvent.asCharacters().getData());
+									continue;
+								}
 								else{
 									if(!unidentifiedElements.contains("INCOLLECTION " + bookChapterStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("INCOLLECTION " + bookChapterStartElement.getName().getLocalPart());
@@ -322,7 +343,8 @@ public class Main {
 							if(bookChapterEvent.isEndElement()){
 								EndElement bookChapterEndElement = bookChapterEvent.asEndElement();
 								if(bookChapterEndElement.getName().getLocalPart().equals(Publication.INCOLLECTION)){
-									//TODO: Mustafa - Save the instance to DB
+									// Save the instance to DB
+									DBInserts.DBInserts(bookChapter, bookChapterData);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -332,8 +354,11 @@ public class Main {
 					}
 					if (startElement.getName().getLocalPart() == (Publication.INPROCEEDINGS)) {
 						ConferencePaper conferencePaper = new ConferencePaper();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+						// There is no Conference information in Inproceedings. Therefore, it is set to null here.
+						// Conference class is for further use.
+						Conference conference = null;
+
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -392,7 +417,6 @@ public class Main {
 									conferencePaper.setPages(conferencePaperEvent.asCharacters().getData());
 									continue;
 								}
-								//TODO: Mustafa - booktitle attribute is missing. Attribute set revision required
 								else{
 									if(!unidentifiedElements.contains("INPROCEEDINGS " + conferencePaperStartElement.getName().getLocalPart())){
 										unidentifiedElements.add("INPROCEEDINGS " + conferencePaperStartElement.getName().getLocalPart());
@@ -402,7 +426,8 @@ public class Main {
 							if(conferencePaperEvent.isEndElement()){
 								EndElement conferencePaperEndElement = conferencePaperEvent.asEndElement();
 								if(conferencePaperEndElement.getName().getLocalPart().equals(Publication.INPROCEEDINGS)){
-									//TODO: Mustafa - Save the instance to DB
+									// Save the instance to DB
+									DBInserts.DBInserts(conferencePaper, conference);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -412,8 +437,9 @@ public class Main {
 					}
 					if (startElement.getName().getLocalPart() == (Publication.PHDTHESIS)) {
 						PhdThesis phdThesis = new PhdThesis();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+						School school = new School();
+
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -469,14 +495,8 @@ public class Main {
 								}
 								else if(phdThesisStartElement.getName().getLocalPart() == (edu.cmu.dblp.constants.PhdThesis.SCHOOL)){									
 									phdThesisEvent = eventReader.nextEvent();
-									
-									// Save school and return school id for phdthesis object
-									School school = new School();
+									// Assign school name to be used in DAL
 									school.setSchoolName(phdThesisEvent.asCharacters().getData());
-									// Save school here
-									
-									//TODO: Mustafa - Set school id returned by the insertion
-									phdThesis.setSchoolId(0);
 									continue;
 								}
 								else{
@@ -488,7 +508,8 @@ public class Main {
 							if(phdThesisEvent.isEndElement()){
 								EndElement phdThesisEndElement = phdThesisEvent.asEndElement();
 								if(phdThesisEndElement.getName().getLocalPart().equals(Publication.PHDTHESIS)){
-									DBInserts.DBInserts(phdThesis,school);
+									// Save the instance to DB
+									DBInserts.DBInserts(phdThesis, school);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -498,8 +519,8 @@ public class Main {
 					}
 					if (startElement.getName().getLocalPart() == (Publication.WWW)) {
 						WebPage webPage = new WebPage();
-						// We read the attributes from this tag and add the date
-						// attribute to our object
+
+						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
 							Attribute attribute = attributes.next();
@@ -567,8 +588,8 @@ public class Main {
 							if(webPageEvent.isEndElement()){
 								EndElement webPageEndElement = webPageEvent.asEndElement();
 								if(webPageEndElement.getName().getLocalPart().equals(Publication.WWW)){
-									//TODO: Mustafa - Save the instance to DB
-									DBInserts.DBInserts(webPage,null);
+									// Save the instance to DB
+									DBInserts.DBInserts(webPage, null);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;

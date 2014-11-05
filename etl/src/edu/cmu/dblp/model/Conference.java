@@ -1,8 +1,8 @@
 package edu.cmu.dblp.model;
 
-public class Conference {
+public class Conference extends MetaData {
 	
-	private int conferenceId;;
+	private int conferenceId;
 	private String conferenceName;
 	private String conferenceLocation;
 	private double relevance;

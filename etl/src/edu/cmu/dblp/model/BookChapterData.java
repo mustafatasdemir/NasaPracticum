@@ -1,6 +1,6 @@
 package edu.cmu.dblp.model;
 
-public class BookChapterData {
+public class BookChapterData extends MetaData {
 	
 	private int bookChapterDataId;
 	private String bookChapterName;
