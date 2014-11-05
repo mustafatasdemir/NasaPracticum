@@ -3,6 +3,7 @@ package edu.cmu.dblp.database;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import edu.cmu.dblp.model.*;//Importing all the models
 
@@ -10,7 +11,7 @@ public class DBInserts {
 	/*
 	 * This method inserts the data into database tables based on the type of the publication object
 	 */
-
+	private static final Logger logger = Logger.getLogger( DBInserts.class.getName() );
 
 	public static DBConnection dBConnection = new MySQLConnection();
 	public static List < String > explicitColumnNames = new ArrayList < String > ();
@@ -54,7 +55,7 @@ public class DBInserts {
 					authorList = authorInsertQueries.insertItems(authorList);
 					authorId = authorList.get(0).getAuthorId();
 		        } catch (SQLIntegrityConstraintViolationException e) {
-		            System.out.println(e.getMessage());
+		        	logger.info(e.getMessage());
 		            List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
 		            authorId = author.get(0).getAuthorId();
 		            System.out.println(authorId);
@@ -64,7 +65,7 @@ public class DBInserts {
 			//DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
 				//authorList = authorInsertQueries.insertItems(authorList);
 
-				authorId = authorList.get(0).getAuthorId();
+				//authorId = authorList.get(0).getAuthorId();
 				/*-------Insert into author table ends here-----------*/
 			//} else {
 				//authorId = author.get(0).getAuthorId();
