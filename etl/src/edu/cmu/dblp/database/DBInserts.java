@@ -18,7 +18,7 @@ public class DBInserts {
 
 	public DBInserts(){
 		FileHandler fh;  
-		try {  
+		try {
 			fh = new FileHandler("logs/etl.log");
 			logger.addHandler(fh);
 			SimpleFormatter formatter = new SimpleFormatter();  
@@ -240,7 +240,7 @@ public class DBInserts {
 			bookChapterDataList = bcdInsertQueries.insertItems(bookChapterDataList);
 			bookChapterDataId = bookChapterDataList.get(0).getBookChapterData();
 		}catch (SQLIntegrityConstraintViolationException e) {
-			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName=" + BookChapterName).getResults();
+			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName='" + BookChapterName + "'").getResults() ;
 			bookChapterDataId = bookChapterdata.get(0).getBookChapterData();	
 		}
 
