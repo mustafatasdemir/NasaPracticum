@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                                   controllers.Application.index()
+GET     /graphDisplay                       controllers.Application.graphDisplay()
 
 
 # Login and authentication

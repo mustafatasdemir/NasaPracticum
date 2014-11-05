@@ -13,7 +13,9 @@ public class Application extends Controller {
   public static Result index() {
     return ok(index.render());
   }
-
+  public static Result graphDisplay() {
+	    return ok(graphDisplay.render());
+	  }
   public static class Login {
     public String email;
     public String pwd;
