@@ -2,24 +2,11 @@ package edu.cmu.dblp.database;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.cmu.dblp.model.Author;
-import edu.cmu.dblp.model.AuthorPublicationMap;
-import edu.cmu.dblp.model.Book;
-import edu.cmu.dblp.model.BookChapter;
-import edu.cmu.dblp.model.BookChapterData;
-import edu.cmu.dblp.model.Conference;
-import edu.cmu.dblp.model.ConferencePaper;
-import edu.cmu.dblp.model.Journal;
-import edu.cmu.dblp.model.JournalArticle;
-import edu.cmu.dblp.model.PhdThesis;
-import edu.cmu.dblp.model.Publication;
-import edu.cmu.dblp.model.School;
-import edu.cmu.dblp.model.WebPage;
+import edu.cmu.dblp.model.*;//Importing all the models
 
 public class DBInserts {
 	/*
-	 * This method inserts the data into database tables on the basis of the Tag.
+	 * This method inserts the data into database tables based on the type of the publication object
 	 */
 
 
@@ -30,7 +17,7 @@ public class DBInserts {
 
 
 
-	public static void DBInserts(Publication publication) throws Exception {
+	public static void DBInserts(Publication publication, MetaData metadata) throws Exception {
 
 		List < Publication > publicationList = new ArrayList < Publication > ();
 		/*--------------Insert into master table publication starts here ----------------------*/

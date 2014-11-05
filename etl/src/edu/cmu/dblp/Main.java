@@ -240,7 +240,7 @@ public class Main {
 							if(bookEvent.isEndElement()){
 								EndElement bookEndElement = bookEvent.asEndElement();
 								if(bookEndElement.getName().getLocalPart().equals(Publication.BOOK)){
-									DBInserts.DBInserts(book);
+									DBInserts.DBInserts(book,null);
 									//TODO: Mustafa - Save the instance to DB
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
@@ -488,7 +488,7 @@ public class Main {
 							if(phdThesisEvent.isEndElement()){
 								EndElement phdThesisEndElement = phdThesisEvent.asEndElement();
 								if(phdThesisEndElement.getName().getLocalPart().equals(Publication.PHDTHESIS)){
-									DBInserts.DBInserts(phdThesis);
+									DBInserts.DBInserts(phdThesis,school);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -568,7 +568,7 @@ public class Main {
 								EndElement webPageEndElement = webPageEvent.asEndElement();
 								if(webPageEndElement.getName().getLocalPart().equals(Publication.WWW)){
 									//TODO: Mustafa - Save the instance to DB
-									DBInserts.DBInserts(webPage);
+									DBInserts.DBInserts(webPage,null);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;

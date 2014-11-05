@@ -1,6 +1,6 @@
 package edu.cmu.dblp.model;
 
-public class School {
+public class School extends MetaData {
 	
 	private int schoolId;
 	private String schoolName;
