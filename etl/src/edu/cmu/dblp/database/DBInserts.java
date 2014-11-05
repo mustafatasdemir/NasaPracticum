@@ -72,7 +72,7 @@ public class DBInserts {
 			List < Author > authorList = new ArrayList < Author > ();
 
 			authorInsert.setAuthorName(publication.getAuthorNames().get(i));
-			authorInsert.setInstitution("institution");//Jisha: Need the logic to get the institution
+			authorInsert.setInstitution("");//Need to assign actual value if in future we start getting institution from the dataset
 
 			authorList.add(authorInsert);
 
