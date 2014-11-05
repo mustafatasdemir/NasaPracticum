@@ -1,5 +1,7 @@
 *.class
 *.log
 *.cache
+*.classpath
+*.prefs
 bin/
 target/
