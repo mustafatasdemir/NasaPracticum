@@ -2,11 +2,14 @@ package edu.cmu.dblp;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -32,27 +35,54 @@ import edu.cmu.dblp.model.WebPage;
 
 
 public class Main {
-	
-	private static String dblpExample = "/Users/jishavm/Downloads/dblp.xml";
-	
+
+	private static final Logger logger = Logger.getLogger( Main.class.getName() );
+
+	private static String dblpExample = "data/dblp_example.xml";
+
 
 	public static void main(String[] args) {
-		readXML("/Users/jishavm/Downloads/dblp.xml");
+		FileHandler fh;
+		try {
+			fh = new FileHandler("logs/etl_xml.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+			logger.setUseParentHandlers(false);
+		} catch (SecurityException e) {  
+			e.printStackTrace();  
+		} catch (IOException e) {  
+			e.printStackTrace();  
+		}
+		logger.info("Loading DBLP XML has started!!!!");
+		if(args.length > 0){
+			if(args[0].equals("server")){
+				readXML(args[1]);
+			}
+			else if(args[0].equals("local")){
+				readXML(dblpExample);
+			}
+		}
+		else{
+			readXML(dblpExample);
+		}
 	}
-	
+
 	public static void printCounter(int count, Calendar start, Calendar end){
 		int level = 10000;
 		if(count % level == 0){
 			System.out.println("Inserted Entries so far: " + String.valueOf(count));
+			logger.info("Inserted Entries so far: " + String.valueOf(count));
 			long timeMilis = end.getTimeInMillis() -  start.getTimeInMillis();
 			System.out.println("Insertions per second: " + String.valueOf(level / ((timeMilis) / 1000)));
+			logger.info("Insertions per second: " + String.valueOf(level / ((timeMilis) / 1000)));
 			System.out.println("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
+			logger.info("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void readXML(String configFile) {
-		System.out.println(configFile);
 		Calendar startTime = Calendar.getInstance();
 		try {
 			// First, create a new XMLInputFactory
@@ -61,20 +91,20 @@ public class Main {
 			InputStream in = new FileInputStream(configFile);
 			XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
 			// read the XML document
-			
+
 			ArrayList<String> unidentifiedElements = new ArrayList<String>();
 			int counter = 0;
 			// In case there is a problem while iterating the file, set the flag and debug
 			int flag = 0;
 
 			while (eventReader.hasNext()) {
-				
+
 				// For Debugging, check which entity has problem via console output
 				if(flag == 0 && counter == 11127){
 					flag = 1;
 					System.out.println("Hey! Problem Over Here!");
 				}
-				
+
 				XMLEvent event = eventReader.nextEvent();
 
 				if (event.isStartElement()) {
@@ -128,7 +158,7 @@ public class Main {
 												article.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += articleEvent.asCharacters().getData();
@@ -218,7 +248,7 @@ public class Main {
 												book.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += bookEvent.asCharacters().getData();
@@ -270,7 +300,7 @@ public class Main {
 						BookChapterData bookChapterData = new BookChapterData();
 						// Relevance is 0 by default. This will be cross referenced later and calculated
 						bookChapterData.setRelevance(0);
-						
+
 						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
 						while (attributes.hasNext()) {
@@ -312,12 +342,12 @@ public class Main {
 												bookChapter.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += bookChapterEvent.asCharacters().getData();
 										}
-										
+
 									}
 									continue;
 								}
@@ -358,7 +388,7 @@ public class Main {
 						ConferencePaper conferencePaper = new ConferencePaper();
 						// There is no Conference information in Inproceedings. Therefore, it is set to null here.
 						// Conference class is for further use.
-						Conference conference = null;
+						Conference conference = new Conference();
 
 						// Read the attributes of the element
 						Iterator<Attribute> attributes = startElement.getAttributes();
@@ -401,7 +431,7 @@ public class Main {
 												conferencePaper.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += conferencePaperEvent.asCharacters().getData();
@@ -482,7 +512,7 @@ public class Main {
 												phdThesis.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += phdThesisEvent.asCharacters().getData();
@@ -563,7 +593,7 @@ public class Main {
 												webPage.setPublicationTitle(title);
 												break;
 											}
-											
+
 										}
 										else{
 											title += webPageEvent.asCharacters().getData();
@@ -603,7 +633,7 @@ public class Main {
 				if (event.isEndElement()) {
 					printCounter(counter, startTime, Calendar.getInstance());
 				}
-				
+
 			}
 			System.out.println("WARNING!! There are missing elements in DBLP XML file! These attributes are defined within their corresponding objects. However, they don't exist in xml! Such these are set to null in objects.");
 			System.out.println("Total count of missing elements: " + unidentifiedElements.size());

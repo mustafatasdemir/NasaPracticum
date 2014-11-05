@@ -3,4 +3,3 @@
 *.cache
 bin/
 target/
-logs/

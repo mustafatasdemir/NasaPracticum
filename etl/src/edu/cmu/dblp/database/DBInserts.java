@@ -246,7 +246,7 @@ public class DBInserts {
 			bookChapterDataList = bcdInsertQueries.insertItems(bookChapterDataList);
 			bookChapterDataId = bookChapterDataList.get(0).getBookChapterDataId();
 		}catch (SQLIntegrityConstraintViolationException e) {
-			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName='" + BookChapterName + "'").getResults() ;
+			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName='" + BookChapterName.replace("'", "\\'") + "'").getResults() ;
 			bookChapterDataId = bookChapterdata.get(0).getBookChapterDataId();	
 		}
 
@@ -305,7 +305,7 @@ public class DBInserts {
 				conferenceId = conferenceList.get(0).getConferenceId();
 			}
 			catch (SQLIntegrityConstraintViolationException e) {
-				List < Conference > conferenceListInfo = new DBSelectQueries < Conference > (Conference.class, dBConnection, explicitColumnNames, "ConferenceName=" + conferenceName).getResults();
+				List < Conference > conferenceListInfo = new DBSelectQueries < Conference > (Conference.class, dBConnection, explicitColumnNames, "ConferenceName='" + conferenceName.replace("'", "\\'") + "'").getResults();
 				conferenceId = conferenceListInfo.get(0).getConferenceId();
 			}
 
@@ -366,7 +366,7 @@ public class DBInserts {
 				journalId = journalList.get(0).getJournalId();
 			}
 			catch (SQLIntegrityConstraintViolationException e) {
-				List < Journal > journalInfo = new DBSelectQueries < Journal > (Journal.class, dBConnection, explicitColumnNames, "journalName=" + journalName).getResults();
+				List < Journal > journalInfo = new DBSelectQueries < Journal > (Journal.class, dBConnection, explicitColumnNames, "journalName='" + journalName.replace("'", "\\'") + "'").getResults();
 				journalId = journalInfo.get(0).getJournalId();
 			}
 
@@ -436,7 +436,7 @@ public class DBInserts {
 			
 		}
 		catch (SQLIntegrityConstraintViolationException e) {
-			List < School > schoolInfo = new DBSelectQueries < School > (School.class, dBConnection, explicitColumnNames, "schoolName=" + schoolName).getResults();
+			List < School > schoolInfo = new DBSelectQueries < School > (School.class, dBConnection, explicitColumnNames, "schoolName='" + schoolName.replace("'", "\\'") + "'").getResults();
 			schoolId = schoolInfo.get(0).getSchoolId();
 			
 		}			
