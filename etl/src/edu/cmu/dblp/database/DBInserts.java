@@ -1,7 +1,9 @@
 package edu.cmu.dblp.database;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+
 import edu.cmu.dblp.model.*;//Importing all the models
 
 public class DBInserts {
@@ -34,26 +36,39 @@ public class DBInserts {
 
 
 		for (int i = 0; i < publication.getAuthorNames().size(); i++) {
-			List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
+			//List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
 			int authorId = 0;
-			if (author.isEmpty()) {
+			
+			//if (author.isEmpty()) {
 				/*-------Insert into author table starts here -----------*/
 				Author authorInsert = new Author();
 				List < Author > authorList = new ArrayList < Author > ();
 
 				authorInsert.setAuthorName(publication.getAuthorNames().get(i));
-				authorInsert.setInstitution("institution");//Jisha: Need the logic to get teh institution
+				authorInsert.setInstitution("institution");//Jisha: Need the logic to get the institution
 
 				authorList.add(authorInsert);
 				
-				DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
-				authorList = authorInsertQueries.insertItems(authorList);
+				try {
+					DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
+					authorList = authorInsertQueries.insertItems(authorList);
+					authorId = authorList.get(0).getAuthorId();
+		        } catch (SQLIntegrityConstraintViolationException e) {
+		            System.out.println(e.getMessage());
+		            List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
+		            authorId = author.get(0).getAuthorId();
+		            System.out.println(authorId);
+		        }
+
+				
+			//DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
+				//authorList = authorInsertQueries.insertItems(authorList);
 
 				authorId = authorList.get(0).getAuthorId();
 				/*-------Insert into author table ends here-----------*/
-			} else {
-				authorId = author.get(0).getAuthorId();
-			}
+			//} else {
+				//authorId = author.get(0).getAuthorId();
+			//}
 
 			/*-----Insert into map table starts here--------*/
 
