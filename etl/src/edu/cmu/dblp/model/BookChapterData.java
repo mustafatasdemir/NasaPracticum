@@ -6,7 +6,7 @@ public class BookChapterData extends MetaData {
 	private String bookChapterName;
 	private double relevance;
 
-	public int getBookChapterData() {
+	public int getBookChapterDataId() {//Changed the name of the getter to getBookChapterDataId from getBookChapterData
 		return bookChapterDataId;
 	}
 
@@ -34,13 +34,13 @@ public class BookChapterData extends MetaData {
 		super();
 	}
 	
-	@Override
+	/*@Override
 	public boolean equals(Object o) {
 		if(o instanceof BookChapterData) {
 			if(this.getBookChapterName().equals(((BookChapterData) o).getBookChapterName()))
 				return true;
 		}
 		return false;
-	}
+	}*/
 
 }

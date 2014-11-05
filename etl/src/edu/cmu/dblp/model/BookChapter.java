@@ -2,6 +2,12 @@ package edu.cmu.dblp.model;
 
 // Corresponds to incollection entity in DBLP
 public class BookChapter extends Publication{
+	
+	/* `bookChapterId` int(11) NOT NULL AUTO_INCREMENT,
+  `bookChapterDataId` int(11) DEFAULT NULL,
+  `publicationId` int(11) DEFAULT NULL,
+  `pages` varchar(50) DEFAULT NULL,
+  */
 
 	private int bookChapterId;
 	private int bookChapterDataId;

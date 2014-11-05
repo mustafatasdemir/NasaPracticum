@@ -33,10 +33,11 @@ import edu.cmu.dblp.model.WebPage;
 
 public class Main {
 	
-	private static String dblpExample = "data/dblp_example.xml";
+	private static String dblpExample = "/Users/jishavm/Downloads/dblp.xml";
+	
 
 	public static void main(String[] args) {
-		readXML("data/dblp_example.xml");
+		readXML("/Users/jishavm/Downloads/dblp.xml");
 	}
 	
 	public static void printCounter(int count, Calendar start, Calendar end){
@@ -51,6 +52,7 @@ public class Main {
 
 	@SuppressWarnings("unchecked")
 	public static void readXML(String configFile) {
+		System.out.println(configFile);
 		Calendar startTime = Calendar.getInstance();
 		try {
 			// First, create a new XMLInputFactory

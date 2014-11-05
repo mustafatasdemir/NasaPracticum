@@ -128,11 +128,17 @@ public class DBInserts {
 				((Book) publication).getSeries());
 		} 
 		else if (publication instanceof BookChapter) {
-			insertBookChapter(
-				((BookChapterData) metadata).getBookChapterName() ,
-				((BookChapterData) metadata).getRelevance(),
-				((BookChapter) publication).getPages(),
-				publicationId);
+			try{
+
+				insertBookChapter(
+					((BookChapterData) metadata).getBookChapterName() ,
+					((BookChapterData) metadata).getRelevance(),
+					((BookChapter) publication).getPages(),
+					publicationId);
+			}
+			catch(Exception e){
+				System.out.println(e);
+			}
 		} 
 		else if (publication instanceof ConferencePaper) {
 			insertConferencePaper( 
@@ -238,10 +244,10 @@ public class DBInserts {
 		try{
 			DBInsertQueries < BookChapterData > bcdInsertQueries = new DBInsertQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames);
 			bookChapterDataList = bcdInsertQueries.insertItems(bookChapterDataList);
-			bookChapterDataId = bookChapterDataList.get(0).getBookChapterData();
+			bookChapterDataId = bookChapterDataList.get(0).getBookChapterDataId();
 		}catch (SQLIntegrityConstraintViolationException e) {
 			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName='" + BookChapterName + "'").getResults() ;
-			bookChapterDataId = bookChapterdata.get(0).getBookChapterData();	
+			bookChapterDataId = bookChapterdata.get(0).getBookChapterDataId();	
 		}
 
 		
