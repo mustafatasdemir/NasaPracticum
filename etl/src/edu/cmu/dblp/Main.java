@@ -164,7 +164,7 @@ public class Main {
 								EndElement articleEndElement = articleEvent.asEndElement();
 								if(articleEndElement.getName().getLocalPart().equals(Publication.ARTICLE)){
 									// Save the instance to DB
-									DBInserts.DBInserts(article, journal);
+									DBInserts.getInstance().DBInserts(article, journal);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -254,7 +254,7 @@ public class Main {
 								EndElement bookEndElement = bookEvent.asEndElement();
 								if(bookEndElement.getName().getLocalPart().equals(Publication.BOOK)){
 									// Save the instance to DB
-									DBInserts.DBInserts(book, null);
+									DBInserts.getInstance().DBInserts(book, null);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -344,7 +344,7 @@ public class Main {
 								EndElement bookChapterEndElement = bookChapterEvent.asEndElement();
 								if(bookChapterEndElement.getName().getLocalPart().equals(Publication.INCOLLECTION)){
 									// Save the instance to DB
-									DBInserts.DBInserts(bookChapter, bookChapterData);
+									DBInserts.getInstance().DBInserts(bookChapter, bookChapterData);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -427,7 +427,7 @@ public class Main {
 								EndElement conferencePaperEndElement = conferencePaperEvent.asEndElement();
 								if(conferencePaperEndElement.getName().getLocalPart().equals(Publication.INPROCEEDINGS)){
 									// Save the instance to DB
-									DBInserts.DBInserts(conferencePaper, conference);
+									DBInserts.getInstance().DBInserts(conferencePaper, conference);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -509,7 +509,7 @@ public class Main {
 								EndElement phdThesisEndElement = phdThesisEvent.asEndElement();
 								if(phdThesisEndElement.getName().getLocalPart().equals(Publication.PHDTHESIS)){
 									// Save the instance to DB
-									DBInserts.DBInserts(phdThesis, school);
+									DBInserts.getInstance().DBInserts(phdThesis, school);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;
@@ -589,7 +589,7 @@ public class Main {
 								EndElement webPageEndElement = webPageEvent.asEndElement();
 								if(webPageEndElement.getName().getLocalPart().equals(Publication.WWW)){
 									// Save the instance to DB
-									DBInserts.DBInserts(webPage, null);
+									DBInserts.getInstance().DBInserts(webPage, null);
 									counter++;
 									printCounter(counter, startTime, Calendar.getInstance());
 									break;

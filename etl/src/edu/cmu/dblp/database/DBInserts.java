@@ -1,9 +1,12 @@
 package edu.cmu.dblp.database;
 
+import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import edu.cmu.dblp.model.*;//Importing all the models
 
@@ -13,6 +16,29 @@ public class DBInserts {
 	 */
 	private static final Logger logger = Logger.getLogger( DBInserts.class.getName() );
 
+	public DBInserts(){
+		FileHandler fh;  
+		try {  
+			fh = new FileHandler("logs/etl.log");
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();  
+			fh.setFormatter(formatter);
+			logger.setUseParentHandlers(false);
+		} catch (SecurityException e) {  
+			e.printStackTrace();  
+		} catch (IOException e) {  
+			e.printStackTrace();  
+		} 
+	}
+
+	private static DBInserts instance = null;
+	public static DBInserts getInstance() {
+		if(instance == null) {
+			instance = new DBInserts();
+		}
+		return instance;
+	}
+
 	public static DBConnection dBConnection = new MySQLConnection();
 	public static List < String > explicitColumnNames = new ArrayList < String > ();
 	//	public static explicitColumnNames = null;
@@ -20,11 +46,11 @@ public class DBInserts {
 
 
 
-	public static void DBInserts(Publication publication, MetaData metadata) throws Exception {
+	public void DBInserts(Publication publication, MetaData metadata) throws Exception {
 
 		List < Publication > publicationList = new ArrayList < Publication > ();
 		/*--------------Insert into master table publication starts here ----------------------*/
-		
+
 		publicationList.add(publication);
 
 		DBInsertQueries < Publication > dBInsertQueries = new DBInsertQueries < Publication > (Publication.class, dBConnection, explicitColumnNames);
@@ -39,36 +65,35 @@ public class DBInserts {
 		for (int i = 0; i < publication.getAuthorNames().size(); i++) {
 			//List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
 			int authorId = 0;
-			
+
 			//if (author.isEmpty()) {
-				/*-------Insert into author table starts here -----------*/
-				Author authorInsert = new Author();
-				List < Author > authorList = new ArrayList < Author > ();
+			/*-------Insert into author table starts here -----------*/
+			Author authorInsert = new Author();
+			List < Author > authorList = new ArrayList < Author > ();
 
-				authorInsert.setAuthorName(publication.getAuthorNames().get(i));
-				authorInsert.setInstitution("institution");//Jisha: Need the logic to get the institution
+			authorInsert.setAuthorName(publication.getAuthorNames().get(i));
+			authorInsert.setInstitution("institution");//Jisha: Need the logic to get the institution
 
-				authorList.add(authorInsert);
-				
-				try {
-					DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
-					authorList = authorInsertQueries.insertItems(authorList);
-					authorId = authorList.get(0).getAuthorId();
-		        } catch (SQLIntegrityConstraintViolationException e) {
-		        	logger.info(e.getMessage());
-		            List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
-		            authorId = author.get(0).getAuthorId();
-		            System.out.println(authorId);
-		        }
+			authorList.add(authorInsert);
 
-				
+			try {
+				DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
+				authorList = authorInsertQueries.insertItems(authorList);
+				authorId = authorList.get(0).getAuthorId();
+			} catch (SQLIntegrityConstraintViolationException e) {
+				logger.info(e.getMessage());
+				List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
+				authorId = author.get(0).getAuthorId();
+			}
+
+
 			//DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
-				//authorList = authorInsertQueries.insertItems(authorList);
+			//authorList = authorInsertQueries.insertItems(authorList);
 
-				//authorId = authorList.get(0).getAuthorId();
-				/*-------Insert into author table ends here-----------*/
+			//authorId = authorList.get(0).getAuthorId();
+			/*-------Insert into author table ends here-----------*/
 			//} else {
-				//authorId = author.get(0).getAuthorId();
+			//authorId = author.get(0).getAuthorId();
 			//}
 
 			/*-----Insert into map table starts here--------*/
@@ -105,21 +130,21 @@ public class DBInserts {
 
 		} 
 		else if (publication instanceof BookChapter) {
-		//	insertBookChapter("BookChapterName",  relevance, ((BookChapter) publication).getPages(), publicationId);
+			//	insertBookChapter("BookChapterName",  relevance, ((BookChapter) publication).getPages(), publicationId);
 
 		} 
-//		else if (publication instanceof ConferencePaper) {
-//			insertConferencePaper(conferenceName, ConferenceLocation, relevance, publicationId,
-//					((ConferencePaper) publication).getPages(),
-//					publication.getUrl());
-//
-//
-//		} 
-//		else if (publication instanceof JournalArticle) {
-//			insertJournalArticle(journalName, relevance, publicationId, pages, voulme, columns, url);
-//
-//
-//		} 
+		//		else if (publication instanceof ConferencePaper) {
+		//			insertConferencePaper(conferenceName, ConferenceLocation, relevance, publicationId,
+		//					((ConferencePaper) publication).getPages(),
+		//					publication.getUrl());
+		//
+		//
+		//		} 
+		//		else if (publication instanceof JournalArticle) {
+		//			insertJournalArticle(journalName, relevance, publicationId, pages, voulme, columns, url);
+		//
+		//
+		//		} 
 		else if (publication instanceof PhdThesis) {
 			insertPhDThesis("schoolName", "location", 1.0, publicationId, ((PhdThesis) publication).getDepartment() , ((PhdThesis) publication).getAdvisorName() );
 
@@ -129,21 +154,21 @@ public class DBInserts {
 		}
 	}
 
-//	public static void main(String args[]) throws Exception {
-//		//DBInserts("Journal");
-//		Book book = new Book();
-//		book.getAuthorNames().add("Mustafa Tasdemir");
-//		book.setIsbn("asamdmas");
-//		book.setMonth("June");
-//		//book.getTags().add("sanane");
-//		book.setPages("123");
-//		book.setPublisher("Ben");
-//		book.setUrl("saa");
-//		book.setYear("1990");
-//		book.setPublicationChannel("channel");
-//		book.setPublicationTitle("Deneme");
-//		DBInserts(book);
-//	}
+	//	public static void main(String args[]) throws Exception {
+	//		//DBInserts("Journal");
+	//		Book book = new Book();
+	//		book.getAuthorNames().add("Mustafa Tasdemir");
+	//		book.setIsbn("asamdmas");
+	//		book.setMonth("June");
+	//		//book.getTags().add("sanane");
+	//		book.setPages("123");
+	//		book.setPublisher("Ben");
+	//		book.setUrl("saa");
+	//		book.setYear("1990");
+	//		book.setPublicationChannel("channel");
+	//		book.setPublicationTitle("Deneme");
+	//		DBInserts(book);
+	//	}
 
 
 	public static void insertBook(int publicationId, List < String > editors, String pages, String month, String url, String publisher, String isbn, String series) throws Exception {
