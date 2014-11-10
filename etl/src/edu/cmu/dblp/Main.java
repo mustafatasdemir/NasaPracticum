@@ -74,8 +74,8 @@ public class Main {
 			System.out.println("Inserted Entries so far: " + String.valueOf(count));
 			logger.info("Inserted Entries so far: " + String.valueOf(count));
 			long timeMilis = end.getTimeInMillis() -  start.getTimeInMillis();
-			System.out.println("Insertions per second: " + String.valueOf(level / ((timeMilis) / 1000)));
-			logger.info("Insertions per second: " + String.valueOf(level / ((timeMilis) / 1000)));
+			System.out.println("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
+			logger.info("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
 			System.out.println("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
 			logger.info("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
 		}
