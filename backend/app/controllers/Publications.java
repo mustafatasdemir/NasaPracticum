@@ -1,13 +1,9 @@
 package controllers;
 
-import play.*;
 import play.mvc.*;
-
-import views.html.*;
 
 import models.Publication;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 
 import java.util.*;
