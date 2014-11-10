@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,25 +20,17 @@ public class GraphReturnObject {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void CoAuthorGraphData() throws SQLException
+	public void reset()
 	{
-		String QUERY = "select rel.authorId,"
-				+ "(select au.authorName from dblp.Author as au where au.authorId = rel.authorId) as AuthorName,"
-				+ "GROUP_CONCAT((select CONCAT(p.publicationTitle, ' (', p.Year, ')') from dblp.Publication as p where p.publicationId = rel.publicationId) SEPARATOR '~') as PublicationList,"
-				+ "COUNT(rel.publicationId) as PublicationCount "
-				+ "from dblp.AuthorPublicationMap as rel "
-				+ "where rel.publicationId in ("
-				+ "select pub.publicationId from dblp.Publication as pub" /*where pub.publicationTitle like '%Cloud Computing%'*/
-				+ ") group by rel.authorId order by rel.authorId;";
-		
-		String QUERY2 = "select rel.publicationId, GROUP_CONCAT(rel.authorId) as Authors "
-				+ "from dblp.AuthorPublicationMap as rel where rel.publicationId in ("
-				+ "select pub.publicationId from dblp.Publication as pub" /*where pub.publicationTitle like '%Cloud Computing%'*/
-				+ ") group by rel.publicationId";
-		
+		nodes = null;
+		links = null;
+	}
+	
+	public void CoAuthorGraphData(String topic) throws SQLException
+	{
 		Connection connection = DB.getConnection();
-		Statement statement = connection.createStatement();
-		ResultSet resultSet = statement.executeQuery(QUERY);
+		PreparedStatement preparedStatement = util.SQLQueries.getCoAuthorshipNodeInfo((topic.matches("demo") ? "" : topic), connection);
+		ResultSet resultSet = preparedStatement.executeQuery();
 		
 		while(resultSet.next())
 		{
@@ -45,16 +38,17 @@ public class GraphReturnObject {
 			{
 				nodes = new ArrayList<Node>();
 			}
-			Node node = new Node("", "Cloud Computing", resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong("PublicationCount"));
+			Node node = new Node("", topic, resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong("PublicationCount"));
 			nodes.add(node);
 		}
 		
-		statement = connection.createStatement();
-		resultSet = statement.executeQuery(QUERY2);
+		preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo((topic.matches("demo") ? "" : topic), connection);
+		resultSet = preparedStatement.executeQuery();
 		
 		
 		HashMap<String, Long> coAuthorLinks = new HashMap<String, Long>();
-		StringBuilder edge = new StringBuilder();
+		String edge = "";
+		String mirrorEdge = "";
 		while(resultSet.next())
 		{
 			if(links == null)
@@ -62,24 +56,26 @@ public class GraphReturnObject {
 				links = new ArrayList<Link>();
 			}
 			String[] authors = resultSet.getString("Authors").split(",");
-			for(int i = 0; i < authors.length - 2; i++)
+			for(int i = 0; i < authors.length - 1; i++)
 			{
-				for(int j = i + 1; j < authors.length - 1; j++)
+				for(int j = i + 1; j < authors.length; j++)
 				{
-					edge.append(authors[i].trim() + "," + authors[j].trim());
-					if(coAuthorLinks.containsKey(edge.toString()))
+					edge = authors[i].trim() + "," + authors[j].trim();
+					mirrorEdge = authors[j].trim() + "," + authors[i].trim();
+					if(coAuthorLinks.containsKey(edge))
 					{
-						coAuthorLinks.put(edge.toString(), coAuthorLinks.get(edge.toString()).longValue() + 1);
+						coAuthorLinks.put(edge, coAuthorLinks.get(edge).longValue() + 1);
 					}
-					else if (coAuthorLinks.containsKey(edge.reverse().toString()))
+					else if (coAuthorLinks.containsKey(mirrorEdge))
 					{
-						coAuthorLinks.put(edge.reverse().toString(), coAuthorLinks.get(edge.reverse().toString()).longValue() + 1);
+						coAuthorLinks.put(mirrorEdge, coAuthorLinks.get(mirrorEdge).longValue() + 1);
 					}
 					else
 					{
 						coAuthorLinks.put(edge.toString(), 1L);
 					}
-					edge.setLength(0);
+					edge = "";
+					mirrorEdge = "";
 				}
 			}
 		}

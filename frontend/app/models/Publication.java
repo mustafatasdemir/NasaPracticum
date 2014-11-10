@@ -77,8 +77,12 @@ public class Publication {
   }
 
   public String formatStringArray(String[] arr) {
-    String listString = Arrays.asList(arr).toString();
-    return listString.substring(1, listString.length()-1);
+	  if(arr!=null)
+	  {
+		  String listString = Arrays.asList(arr).toString();
+		  return listString.substring(1, listString.length()-1);
+	  }
+	  else return "";    
   }
 
   private static final String GET_PUBLICATION = util.Constants.HOSTNAME + util.Constants.GET_PUBLICATION_ROUTE;

@@ -4,8 +4,6 @@
 
 # Home page
 GET     /                                   controllers.Application.index()
-GET     /graphDisplay                       controllers.Application.graphDisplay()
-
 
 # Login and authentication
 GET     /login                              controllers.Application.login()
@@ -45,6 +43,10 @@ GET     /add/bookChapterPublication         controllers.BookChapterPublications.
 POST    /addBookChapterPublication          controllers.BookChapterPublications.add()
 GET     /update/bookChapterPublication      controllers.BookChapterPublications.updatePage()
 POST    /updateBookChapterPublication       controllers.BookChapterPublications.update()
+
+# Graph Display
+GET     /graphDisplay                       controllers.GraphDisplay.graphDisplay()
+GET     /getCoAuthorGraphData               controllers.GraphDisplay.getCoAuthorGraphData()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                       controllers.Assets.at(path="/public", file)

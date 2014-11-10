@@ -544,11 +544,11 @@ $(function() {
 	  });    
   });
   d3.selectAll("#both a").on("click", function(d) {
-	  
-		  return d3.json("assets/data/authorandpublication.json", function(json) {
+	  json=JSON.parse(data);
+		 // return d3.json("assets/data/authorandpublication.json", function(json) {
 			  
 		      return myNetwork.updateData(json);
-		  });    
+		 // });    
 	  
   });
   $("#song_select").on("change", function(e) {
@@ -563,7 +563,7 @@ $(function() {
     searchTerm = $(this).val();
     return myNetwork.updateSearch(searchTerm);
   });
-  return d3.json("assets/data/auth_cloud_computing.json", function(json) {
+  return d3.json("assets/data/authorandpublication.json", function(json) {
     return myNetwork("#vis", json);
   });
 });

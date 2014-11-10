@@ -1,11 +1,7 @@
 package controllers;
 
-import play.*;
 import play.mvc.*;
 import play.data.*;
-import static play.data.Form.*;
-
-import models.*;
 import views.html.*;
 
 public class Application extends Controller {
@@ -13,9 +9,7 @@ public class Application extends Controller {
   public static Result index() {
     return ok(index.render());
   }
-  public static Result graphDisplay() {
-	    return ok(graphDisplay.render());
-	  }
+  
   public static class Login {
     public String email;
     public String pwd;

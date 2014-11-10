@@ -38,4 +38,7 @@ public class Constants {
   public static final String ALL_WEBPAGE_PUBLICATIONS_ROUTE = "getAllWebPagePublications";
   public static final String ADD_WEBPAGE_PUBLICATION_ROUTE = "addWebPagePublication";
   public static final String UPDATE_WEBPAGE_PUBLICATION_ROUTE = "updateWebPagePublication";
+  
+  //Application
+  public static final String GET_COAUTHOR_GRAPH_DATA = "getCoAuthorGraphData";
 }

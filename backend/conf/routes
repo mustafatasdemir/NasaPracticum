@@ -38,7 +38,7 @@ POST    /updateWebPagePublication               controllers.WebPagePublications.
 
 GET     /getUser/:email                         controllers.Users.getUser(email: String)
 
-GET     /getCoAuthorGraphData                   controllers.GraphReturnObject.getCoAuthorGraphData()
+GET     /getCoAuthorGraphData/:topic            controllers.GraphReturnObject.getCoAuthorGraphData(topic: String)
 
 
 # Map static resources from the /public folder to the /assets URL path
