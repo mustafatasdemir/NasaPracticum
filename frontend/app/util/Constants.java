@@ -2,7 +2,7 @@ package util;
 
 public class Constants {
 
-  public static final String HOSTNAME = "http://localhost:9000/";
+  public static final String HOSTNAME = "http://localhost:9010/";
 
   // Publication
   public static final String GET_PUBLICATION_ROUTE = "getPublication";
