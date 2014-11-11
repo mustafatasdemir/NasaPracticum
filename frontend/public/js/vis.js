@@ -5,13 +5,13 @@ root = typeof exports !== "undefined" && exports !== null ? exports : this;
 RadialPlacement = function() {
   var center, current, increment, place, placement, radialLocation, radius, setKeys, start, values;
   values = d3.map();
-  increment = 20;
-  radius = 200;
+  increment = 2;
+  radius = 1;
   center = {
     "x": 0,
     "y": 0
   };
-  start = -120;
+  start = 2;
   current = start;
   radialLocation = function(center, angle, radius) {
     var x, y;
@@ -96,8 +96,8 @@ RadialPlacement = function() {
 
 Network = function() {
   var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, link, linkedByIndex, linksG, mapNodes, moveToRadialLayout, neighboring, network, node, nodeColors, nodeCounts, nodesG, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
-  width = 1000;
-  height = 700;
+  width = 1600;
+  height = 1600;
   allData = [];
   curLinksData = [];
   curNodesData = [];
@@ -125,11 +125,11 @@ Network = function() {
     var text = d3.select(selection).append("text")
     /*.attr("x", 20)
     .attr("dy", 0)*/
-    .style("text-anchor","end") 
-    .attr("startOffset","100%")
-    .text('Publication list -->')
+   // .style("text-anchor","end") 
+    .attr("startOffset","-300%")
+    .text('Publication list: ')
     .attr("font-family", "sans-serif")
-    .attr("font-size", 4000)
+    .attr("font-size", "40px")
     .attr("fill","blue");
     force.size([width, height]);
     setLayout("force");
@@ -544,6 +544,14 @@ $(function() {
 	  });    
   });
   d3.selectAll("#both a").on("click", function(d) {
+	//  json=JSON.parse(data);
+		  return d3.json("assets/data/authorandpublication.json", function(json) {
+			  
+		      return myNetwork.updateData(json);
+		  });    
+	  
+  });
+  d3.selectAll("#dynamic a").on("click", function(d) {
 	  json=JSON.parse(data);
 		 // return d3.json("assets/data/authorandpublication.json", function(json) {
 			  
@@ -563,8 +571,12 @@ $(function() {
     searchTerm = $(this).val();
     return myNetwork.updateSearch(searchTerm);
   });
-  return d3.json("assets/data/authorandpublication.json", function(json) {
-    return myNetwork("#vis", json);
-  });
+  //return d3.json("assets/data/auth_cloud_computing.json", function(json) {
+    //return myNetwork("#vis", json);
+  //});
+  		//json=JSON.parse(data);
+  return d3.json("assets/data/auth_cloud_computing.json", function(json) {
+	    return myNetwork("#vis", json);
+	  });
 });
 
