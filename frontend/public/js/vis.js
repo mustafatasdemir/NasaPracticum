@@ -562,9 +562,15 @@ $(function() {
   $("#song_select").on("change", function(e) {
     var songFile;
     songFile = $(this).val();
+    if (songFile=="demo") {
+    	 json=JSON.parse(data);
+    	 return myNetwork.updateData(json);
+      }
+    else{
     return d3.json("assets/data/" + songFile, function(json) {
       return myNetwork.updateData(json);
     });
+    }
   });
   $("#search").keyup(function() {
     var searchTerm;
