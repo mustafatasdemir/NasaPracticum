@@ -10,7 +10,7 @@ public class GraphDisplay extends Controller {
 	
 	public static Result graphDisplay() 
 	{
-	  final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA + "/" + "demo");
+	  final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA + "/" + "Cloud Computing");
 	  
 	  return ok(graphDisplay.render(graphData.toString()));
 	}
