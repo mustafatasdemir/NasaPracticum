@@ -184,14 +184,14 @@ Network = function() {
     return node.each(function(d) {
       var element, match;
       element = d3.select(this);
-      match = d.name.toLowerCase().search(searchRegEx);
+      match = d.artist.toLowerCase().search(searchRegEx);
       if (searchTerm.length > 0 && match >= 0) {
         element.style("fill", "#F38630").style("stroke-width", 2.0).style("stroke", "#555");
         return d.searched = true;
       } else {
         d.searched = false;
         return element.style("fill", function(d) {
-          return nodeColors(d.artist);
+          return nodeColors(d.group);
         }).style("stroke-width", 1.0);
       }
     });
