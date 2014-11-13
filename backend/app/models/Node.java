@@ -1,5 +1,6 @@
 package models;
 
+// Model representing the nodes in the graphs being visualized
 public class Node {
 	
 	private String match;

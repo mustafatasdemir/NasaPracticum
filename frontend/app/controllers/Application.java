@@ -1,5 +1,6 @@
 package controllers;
 
+import play.Routes;
 import play.mvc.*;
 import play.data.*;
 import views.html.*;
@@ -42,4 +43,17 @@ public class Application extends Controller {
       return redirect(routes.Application.index());
     }
   }
+  
+  
+  // Method which generates a javascript dynamically which holds the routes which are called through AJAX.
+  // Uses Play's javascriptrouter method. 1st argument is the global variable name which contains the routes 
+  // and can be called from any javascript. 
+  public static Result javascriptRoutes() {
+	    response().setContentType("text/javascript");
+	    return ok(
+	        Routes.javascriptRouter("jsRoutes",
+	            controllers.routes.javascript.GraphDisplay.getCoAuthorGraphData()
+	        )
+	    );
+	}
 }

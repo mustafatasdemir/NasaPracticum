@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 import play.db.*;
 
+
+// The model representation of the graph containing a list of nodes and a list of links.
 public class GraphReturnObject {
 	
 	public List<Node> nodes;
@@ -25,10 +27,11 @@ public class GraphReturnObject {
 		links = null;
 	}
 	
+	// Sets the nodes and links to reflect Co-Authorship of the topic being queried. Topic 'All' returns all data  
 	public void CoAuthorGraphData(String topic) throws SQLException
 	{
 		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getCoAuthorshipNodeInfo((topic.matches("demo") ? "" : topic), connection);
+		PreparedStatement preparedStatement = util.SQLQueries.getCoAuthorshipNodeInfo(connection, (topic.matches("All") ? "" : topic));
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
 		while(resultSet.next())
@@ -41,7 +44,7 @@ public class GraphReturnObject {
 			nodes.add(node);
 		}
 		
-		preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo((topic.matches("demo") ? "" : topic), connection);
+		preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo(connection, (topic.matches("All") ? "" : topic));
 		resultSet = preparedStatement.executeQuery();
 		
 		

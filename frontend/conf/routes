@@ -46,7 +46,10 @@ POST    /updateBookChapterPublication       controllers.BookChapterPublications.
 
 # Graph Display
 GET     /graphDisplay                       controllers.GraphDisplay.graphDisplay()
-GET     /getCoAuthorGraphData               controllers.GraphDisplay.getCoAuthorGraphData()
+GET     /getCoAuthorGraphData/:topic        controllers.GraphDisplay.getCoAuthorGraphData(topic: String)
+
+# Map route to the javascript which contains the routes used by the AJAX calls
+GET     /assets/js/routes                   controllers.Application.javascriptRoutes()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                       controllers.Assets.at(path="/public", file)

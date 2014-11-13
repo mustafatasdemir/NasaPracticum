@@ -560,14 +560,16 @@ $(function() {
 	  
   });
   $("#song_select").on("change", function(e) {
-    var songFile;
-    songFile = $(this).val();
-    if (songFile=="demo") {
-    	 json=JSON.parse(data);
-    	 return myNetwork.updateData(json);
+    var topic;
+    topic = $(this).val();
+    if (topic=="Cloud Computing" || topic=="All") {
+    //Dynamic data load by directly calling the backend which supplies the data in json format itself. Uses Play's javascriptrouter.
+    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic)).ajax({
+    		success : function(data) {
+    			return myNetwork.updateData(data);}});
       }
     else{
-    return d3.json("assets/data/" + songFile, function(json) {
+    return d3.json("assets/data/" + topic, function(json) {
       return myNetwork.updateData(json);
     });
     }

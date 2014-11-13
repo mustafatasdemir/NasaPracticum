@@ -1,5 +1,4 @@
 
-@(graphData: String)
 
 @import helper._
 @import com.google.gson.Gson
@@ -42,12 +41,11 @@
       <div id="song_selection" class="control">
         <h3>Topic</h3>
         <select id="song_select">
-         
           <option value="auth_cloud_computing.json">Big Data</option>
-          
-         <!--  <option value="sledgehammer_2_rounds.json">Machine Learning</option> -->
+          <!--  <option value="sledgehammer_2_rounds.json">Machine Learning</option> -->
           <option value="auth_mach_learng.json">Machine Learning</option>
-          <option value="demo">Cloud Computing</option>
+          <option value="Cloud Computing">Cloud Computing</option>
+          <option value="All">All</option>
           <!-- <option value="jolene.json">Earth Sciences</option>
           <option value="helplessness_blues.json">Operating System</option>
           <option value="she_said.json">Distributed System</option>
@@ -101,8 +99,8 @@
   <script src='@routes.Assets.at("js/libs/coffee-script.js")'></script>
   <script src='@routes.Assets.at("js/libs/d3.v2.js")'></script>
   <script src='@routes.Assets.at("js/Tooltip.js")'></script>
-  <script type="text/javascript">var data = @{Html(new Gson().toJson(graphData))};</script>
   <script src='@routes.Assets.at("js/vis.js")'></script>
+  <script src="@controllers.routes.Application.javascriptRoutes()" type="text/javascript">
   <!--<script type="text/coffeescript" src="coffee/vis.coffee"></script>!-->
 
   <script> // Change UA-XXXXX-X to be your site's ID

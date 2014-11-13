@@ -1,5 +1,6 @@
 package models;
 
+// // Model representing the links in the graphs being visualized
 public class Link {
 	
 	private String source;
