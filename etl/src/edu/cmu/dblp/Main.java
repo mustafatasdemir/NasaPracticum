@@ -38,7 +38,7 @@ public class Main {
 
 	private static final Logger logger = Logger.getLogger( Main.class.getName() );
 
-	private static String dblpExample = "data/dblp_example.xml";
+	private static String dblpExample = "/Users/ironstone/Downloads/dblp/dblp.xml";
 
 
 	public static void main(String[] args) {
@@ -74,8 +74,8 @@ public class Main {
 			System.out.println("Inserted Entries so far: " + String.valueOf(count));
 			logger.info("Inserted Entries so far: " + String.valueOf(count));
 			long timeMilis = end.getTimeInMillis() -  start.getTimeInMillis();
-			System.out.println("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
-			logger.info("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
+//			System.out.println("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
+//			logger.info("Insertions per second: " + String.valueOf(count / ((timeMilis) / 1000)));
 			System.out.println("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
 			logger.info("Elapsed time so far: " + String.valueOf((timeMilis / (1000 * 60))) + " min " + String.valueOf((timeMilis / 1000) % 60) + " sec");
 		}
@@ -635,6 +635,7 @@ public class Main {
 				}
 
 			}
+			DBInserts.finalizeProcess();
 			System.out.println("WARNING!! There are missing elements in DBLP XML file! These attributes are defined within their corresponding objects. However, they don't exist in xml! Such these are set to null in objects.");
 			System.out.println("Total count of missing elements: " + unidentifiedElements.size());
 			System.out.println("ENTITY - ATTRIBUTE");
