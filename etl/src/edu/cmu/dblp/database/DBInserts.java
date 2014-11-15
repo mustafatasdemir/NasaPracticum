@@ -25,6 +25,8 @@ public class DBInserts {
 	private static final Logger logger = Logger.getLogger( DBInserts.class.getName() );
 
 	static HashMap<String, Integer> authors = null;
+	static HashMap<String, School> schools = null;
+	static HashMap<String, Journal> journals = null;
 
 	int publicationCounter = 0;
 	int authorCounter = 0;
@@ -88,6 +90,8 @@ public class DBInserts {
 		}
 
 		authors = new HashMap<String, Integer>();
+		schools = new HashMap<String, School>();
+		journals = new HashMap<String, Journal>();
 	}
 
 	private static DBInserts instance = null;
@@ -197,12 +201,25 @@ public class DBInserts {
 					+ publication.getUrl() + "\n");
 		} 
 		else if (publication instanceof JournalArticle) {
-			journalFile.write(++journalCounter + "@@@"
-					+ ((Journal) metadata).getJournalName() + "@@@"
-					+ ((Journal) metadata).getRelevance() + "\n");
+			Journal journal = new Journal();
+
+			journal.setJournalName(((Journal) metadata).getJournalName());
+			journal.setRelevance(((Journal) metadata).getRelevance());
+
+			if(journals.containsKey(journal.getJournalName())){
+				journal = journals.get(journal.getJournalName());
+			}
+			else{
+				journal.setJournalId(++journalCounter);
+				journals.put(journal.getJournalName(), journal);
+			}
+
+//			journalFile.write(++journalCounter + "@@@"
+//					+ ((Journal) metadata).getJournalName() + "@@@"
+//					+ ((Journal) metadata).getRelevance() + "\n");
 
 			journalArticleFile.write(++journalArticleCounter + "@@@"
-					+ journalCounter + "@@@"
+					+ journal.getJournalId() + "@@@"
 					+ publicationId + "@@@"
 					+ ((JournalArticle) publication).getPages() + "@@@"
 					+ ((JournalArticle) publication).getVolume() + "@@@"
@@ -212,14 +229,27 @@ public class DBInserts {
 
 		} 
 		else if (publication instanceof PhdThesis) {
+			School school = new School();
 
-			schoolFile.write(++schoolCounter + "@@@"
-					+ ((School) metadata).getSchoolName() + "@@@"
-					+ ((School) metadata).getSchoolLocation() + "@@@"
-					+ ((School) metadata).getRelevance() + "\n");
+			school.setSchoolName(((School) metadata).getSchoolName());
+			school.setSchoolLocation(((School) metadata).getSchoolLocation());
+			school.setRelevance(((School) metadata).getRelevance());
+
+			if(schools.containsKey(school.getSchoolName())){
+				school = schools.get(school.getSchoolName());
+			}
+			else{
+				school.setSchoolId(++schoolCounter);
+				schools.put(school.getSchoolName(), school);
+			}
+
+			//			schoolFile.write(++schoolCounter + "@@@"
+			//					+ ((School) metadata).getSchoolName() + "@@@"
+			//					+ ((School) metadata).getSchoolLocation() + "@@@"
+			//					+ ((School) metadata).getRelevance() + "\n");
 
 			phdThesisFile.write(++phdThesisCounter + "@@@"
-					+ schoolCounter + "@@@"
+					+ school.getSchoolId() + "@@@"
 					+ publicationId + "@@@"
 					+ ((PhdThesis) publication).getDepartment() + "@@@"
 					+ ((PhdThesis) publication).getAdvisorName() + "\n");
@@ -245,10 +275,30 @@ public class DBInserts {
 				it.remove(); // avoids a ConcurrentModificationException
 			}
 
+			Iterator itSchool = schools.entrySet().iterator();
+			while (itSchool.hasNext()) {
+				Map.Entry school = (Map.Entry)itSchool.next();
+				schoolFile.write(((School)school.getValue()).getSchoolId() + "@@@"
+						+ ((School)school.getValue()).getSchoolName() + "@@@"
+						+ ((School)school.getValue()).getSchoolLocation() + "@@@"
+						+ ((School)school.getValue()).getRelevance() + "\n");
+				itSchool.remove(); // avoids a ConcurrentModificationException
+			}
+
+
+			Iterator itJournal = journals.entrySet().iterator();
+			while (itJournal.hasNext()) {
+				Map.Entry journal = (Map.Entry)itJournal.next();
+				journalFile.write(((Journal)journal.getValue()).getJournalId() + "@@@"
+						+ ((Journal)journal.getValue()).getJournalName() + "@@@"
+						+ ((Journal)journal.getValue()).getRelevance() + "\n");
+				itJournal.remove(); // avoids a ConcurrentModificationException
+			}
+
 			publicationAuthorFile.close();
 			publicationFile.close();
 			authorFile.close();
-			
+
 			bookFile.close();
 			bookChapterFile.close();
 			bookChapterDataFile.close();
