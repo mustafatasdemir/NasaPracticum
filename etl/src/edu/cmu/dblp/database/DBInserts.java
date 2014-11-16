@@ -1,9 +1,17 @@
 package edu.cmu.dblp.database;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -15,6 +23,40 @@ public class DBInserts {
 	 * This method inserts the data into database tables based on the type of the publication object
 	 */
 	private static final Logger logger = Logger.getLogger( DBInserts.class.getName() );
+
+	static HashMap<String, Integer> authors = null;
+	static HashMap<String, School> schools = null;
+	static HashMap<String, Journal> journals = null;
+
+	int publicationCounter = 0;
+	int authorCounter = 0;
+	int publicationAuthorCounter = 0;
+	int bookCounter = 0;
+	int bookChapterCounter = 0;
+	int bookChapterDataCounter = 0;
+	int conferenceCounter = 0;
+	int conferencePaperCounter = 0;
+	int journalCounter = 0;
+	int journalArticleCounter = 0;
+	int schoolCounter = 0;
+	int phdThesisCounter = 0;
+	int webPageCounter = 0;
+
+	static BufferedWriter publicationFile = null;
+	static BufferedWriter authorFile = null;
+	static BufferedWriter publicationAuthorFile = null;
+
+	static BufferedWriter bookFile = null;
+	static BufferedWriter bookChapterFile = null;
+	static BufferedWriter bookChapterDataFile = null;
+	static BufferedWriter conferenceFile = null;
+	static BufferedWriter conferencePaperFile = null;
+	static BufferedWriter journalFile = null;
+	static BufferedWriter journalArticleFile = null;
+	static BufferedWriter schoolFile = null;
+	static BufferedWriter phdThesisFile = null;
+	static BufferedWriter webPageFile = null;
+
 
 	public DBInserts(){
 		FileHandler fh;  
@@ -28,7 +70,28 @@ public class DBInserts {
 			e.printStackTrace();  
 		} catch (IOException e) {  
 			e.printStackTrace();  
-		} 
+		}
+		try {
+			publicationFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/publication.csv"),"UTF-8"));
+			authorFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/author.csv"),"UTF-8"));
+			publicationAuthorFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/publicationAuthor.csv"),"UTF-8"));
+			bookFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/books.csv"),"UTF-8"));
+			bookChapterFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/bookChapter.csv"),"UTF-8"));
+			bookChapterDataFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/bookChapterData.csv"),"UTF-8"));
+			conferenceFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/conference.csv"),"UTF-8"));
+			conferencePaperFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/conferencePaper.csv"),"UTF-8"));
+			journalFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/journal.csv"),"UTF-8"));
+			journalArticleFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/journalArticle.csv"),"UTF-8"));
+			schoolFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/school.csv"),"UTF-8"));
+			phdThesisFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/phd.csv"),"UTF-8"));
+			webPageFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/webPage.csv"),"UTF-8"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		authors = new HashMap<String, Integer>();
+		schools = new HashMap<String, School>();
+		journals = new HashMap<String, Journal>();
 	}
 
 	private static DBInserts instance = null;
@@ -44,19 +107,19 @@ public class DBInserts {
 	//	public static explicitColumnNames = null;
 
 
+	public static String removeLastChar(String s) {
+		if (s == null || s.length() == 0) {
+			return s;
+		}
+		return s.substring(0, s.length()-1);
+	}
 
 
 	public void DBInserts(Publication publication, MetaData metadata) throws Exception {
 
-		List < Publication > publicationList = new ArrayList < Publication > ();
-		/*--------------Insert into master table publication starts here ----------------------*/
+		String authorsList = "";
 
-		publicationList.add(publication);
-
-		DBInsertQueries < Publication > dBInsertQueries = new DBInsertQueries < Publication > (Publication.class, dBConnection, explicitColumnNames);
-		publicationList = dBInsertQueries.insertItems(publicationList);
-
-		int publicationId = publicationList.get(0).getPublicationId();
+		int publicationId = ++publicationCounter;
 
 		/*-------------Insert into master table publication ends here ----------------------------*/
 
@@ -69,427 +132,188 @@ public class DBInserts {
 			//if (author.isEmpty()) {
 			/*-------Insert into author table starts here -----------*/
 			Author authorInsert = new Author();
-			List < Author > authorList = new ArrayList < Author > ();
 
 			authorInsert.setAuthorName(publication.getAuthorNames().get(i));
 			authorInsert.setInstitution("");//Need to assign actual value if in future we start getting institution from the dataset
 
-			authorList.add(authorInsert);
-
-			try {
-				DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
-				authorList = authorInsertQueries.insertItems(authorList);
-				authorId = authorList.get(0).getAuthorId();
-			} catch (SQLIntegrityConstraintViolationException e) {
-				logger.info(e.getMessage());
-				List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
-				authorId = author.get(0).getAuthorId();
+			if(authors.containsKey(authorInsert.getAuthorName())){
+				authorId = authors.get(authorInsert.getAuthorName());
 			}
-			/*-------Insert into author table ends here-----------*/
-
-			/*
-			//DBInsertQueries < Author > authorInsertQueries = new DBInsertQueries < Author > (Author.class, dBConnection, explicitColumnNames);
-			//authorList = authorInsertQueries.insertItems(authorList);
-
-			//authorId = authorList.get(0).getAuthorId();
-			-------Insert into author table ends here-----------
-			//} else {
-			//authorId = author.get(0).getAuthorId();
-			//}
-
-			Commenting to handle SQLExceptions in case of duplicate authorName*/
-			
-			
-			
-			/*-----Insert into map table starts here--------*/
-
-			AuthorPublicationMap map = new AuthorPublicationMap();
-			List < AuthorPublicationMap > mapList = new ArrayList < AuthorPublicationMap > ();
-			map.setAuthorId(authorId);
-			map.setPublicationId(publicationId);
-			
-			mapList.add(map);
-
-			DBInsertQueries < AuthorPublicationMap > mapInsertQueries = new DBInsertQueries < AuthorPublicationMap > (AuthorPublicationMap.class, dBConnection, explicitColumnNames);
-			mapList = mapInsertQueries.insertItems(mapList);
-
-			/*-----Insert into map table ends here--------*/
-
+			else{
+				authors.put(authorInsert.getAuthorName(), ++authorCounter);
+				publicationAuthorFile.write(++publicationAuthorCounter + "@@@" + publicationId + "@@@" + authorCounter + "\n");
+			}
+			authorsList += authorInsert.getAuthorName() + ",";
 		}
 
+		publicationFile.write(publicationCounter + "@@@" 
+				+ publication.getPublicationChannel() 
+				+ "@@@" + publication.getCitationCount()
+				+ "@@@" + removeLastChar(authorsList)
+				+ "@@@" + publication.getPublicationTitle()
+				+ "@@@" + publication.getYear()
+				+ "@@@" + publication.getUrl()
+				+ "@@@" + publication.getPublisher()
+				+ "@@@" + publication.getNote()
+				+ "@@@" + publication.getKeywords()
+				+ "@@@" + publication.getTags() + "\n");
+
 		if (publication instanceof Book) {
-			List < String > editors = new ArrayList < String > ();
-			insertBook(publicationId, editors,
-				((Book) publication).getPages(),
-				((Book) publication).getMonth(),
-				publication.getUrl(),
-				publication.getPublisher(),
-				((Book) publication).getIsbn(),
-				((Book) publication).getSeries());
+			String editors = "";
+			if(((Book) publication).getEditors() != null){
+				for (String editor : ((Book)publication).getEditors()) {
+					editors += editor + ",";
+				}
+			}
+
+			bookFile.write(++bookCounter + "@@@"
+					+ publicationId + "@@@"
+					+ removeLastChar(editors) + "@@@"
+					+ ((Book) publication).getPages() + "@@@"
+					+ ((Book) publication).getMonth() + "@@@"
+					+ publication.getUrl() + "@@@"
+					+ publication.getPublisher() + "@@@"
+					+ ((Book) publication).getPublisherAddress() + "@@@"
+					+ ((Book) publication).getIsbn() + "@@@"
+					+ ((Book) publication).getSeries() + "\n");
 		} 
 		else if (publication instanceof BookChapter) {
-			try{
+			bookChapterDataFile.write(++bookChapterDataCounter + "@@@"
+					+((BookChapterData) metadata).getBookChapterName() + "@@@"
+					+ ((BookChapterData) metadata).getRelevance() + "\n");
 
-				insertBookChapter(
-					((BookChapterData) metadata).getBookChapterName() ,
-					((BookChapterData) metadata).getRelevance(),
-					((BookChapter) publication).getPages(),
-					publicationId);
-			}
-			catch(Exception e){
-				System.out.println(e);
-			}
+			bookChapterFile.write(++bookChapterCounter + "@@@"
+					+bookChapterDataCounter + "@@@"
+					+publicationId + "@@@"
+					+((BookChapter) publication).getPages() + "\n");
 		} 
 		else if (publication instanceof ConferencePaper) {
-			insertConferencePaper( 
-				((Conference) metadata).getConferenceName() ,
-				((Conference) metadata).getConferenceLocation()  ,
-				((Conference) metadata).getRelevance()  , 
-				publicationId,
-				((ConferencePaper) publication).getPages(),
-				publication.getUrl());
+
+			conferenceFile.write(++conferenceCounter + "@@@"
+					+ ((Conference) metadata).getConferenceName() + "@@@"
+					+ ((Conference) metadata).getConferenceLocation() + "@@@"
+					+ ((Conference) metadata).getRelevance() + "\n");
+
+			conferencePaperFile.write(++conferencePaperCounter + "@@@"
+					+ conferenceCounter + "@@@"
+					+ publicationId + "@@@"
+					+ ((ConferencePaper) publication).getPages() + "@@@"
+					+ publication.getUrl() + "\n");
 		} 
 		else if (publication instanceof JournalArticle) {
-			insertJournalArticle( 
-				((Journal) metadata).getJournalName()  , 
-				((Journal) metadata).getRelevance(),
-				publicationId,
-				((JournalArticle) publication).getPages(),
-				((JournalArticle) publication).getVolume(),
-				((JournalArticle) publication).getColumns(),
-				((JournalArticle) publication).getUrl()
-				);		
+			Journal journal = new Journal();
+
+			journal.setJournalName(((Journal) metadata).getJournalName());
+			journal.setRelevance(((Journal) metadata).getRelevance());
+
+			if(journals.containsKey(journal.getJournalName())){
+				journal = journals.get(journal.getJournalName());
+			}
+			else{
+				journal.setJournalId(++journalCounter);
+				journals.put(journal.getJournalName(), journal);
+			}
+
+//			journalFile.write(++journalCounter + "@@@"
+//					+ ((Journal) metadata).getJournalName() + "@@@"
+//					+ ((Journal) metadata).getRelevance() + "\n");
+
+			journalArticleFile.write(++journalArticleCounter + "@@@"
+					+ journal.getJournalId() + "@@@"
+					+ publicationId + "@@@"
+					+ ((JournalArticle) publication).getPages() + "@@@"
+					+ ((JournalArticle) publication).getVolume() + "@@@"
+					+ ((JournalArticle) publication).getColumns() + "@@@"
+					+ ((JournalArticle) publication).getMonth() + "@@@"
+					+ ((JournalArticle) publication).getUrl() + "\n");
+
 		} 
 		else if (publication instanceof PhdThesis) {
-			insertPhDThesis( 
-				((School) metadata).getSchoolName() ,
-				((School) metadata).getSchoolLocation(), 
-				((School) metadata).getRelevance(),
-				publicationId,
-				((PhdThesis) publication).getDepartment() , 
-				((PhdThesis) publication).getAdvisorName() );
+			School school = new School();
+
+			school.setSchoolName(((School) metadata).getSchoolName());
+			school.setSchoolLocation(((School) metadata).getSchoolLocation());
+			school.setRelevance(((School) metadata).getRelevance());
+
+			if(schools.containsKey(school.getSchoolName())){
+				school = schools.get(school.getSchoolName());
+			}
+			else{
+				school.setSchoolId(++schoolCounter);
+				schools.put(school.getSchoolName(), school);
+			}
+
+			//			schoolFile.write(++schoolCounter + "@@@"
+			//					+ ((School) metadata).getSchoolName() + "@@@"
+			//					+ ((School) metadata).getSchoolLocation() + "@@@"
+			//					+ ((School) metadata).getRelevance() + "\n");
+
+			phdThesisFile.write(++phdThesisCounter + "@@@"
+					+ school.getSchoolId() + "@@@"
+					+ publicationId + "@@@"
+					+ ((PhdThesis) publication).getDepartment() + "@@@"
+					+ ((PhdThesis) publication).getAdvisorName() + "\n");
 
 		} 
 		else if (publication instanceof WebPage) {
-			insertWebpage(
-				publicationId,
-				publication.getUrl(),
-				((WebPage) publication).getAccessDate());
-		}
-	}
 
-	//	public static void main(String args[]) throws Exception {
-	//		//DBInserts("Journal");
-	//		Book book = new Book();
-	//		book.getAuthorNames().add("Mustafa Tasdemir");
-	//		book.setIsbn("asamdmas");
-	//		book.setMonth("June");
-	//		//book.getTags().add("sanane");
-	//		book.setPages("123");
-	//		book.setPublisher("Ben");
-	//		book.setUrl("saa");
-	//		book.setYear("1990");
-	//		book.setPublicationChannel("channel");
-	//		book.setPublicationTitle("Deneme");
-	//		DBInserts(book);
-	//	}
-
-
-	
-	
-	/*
-	 * Method to insert Book into the table Book
-	 */
-	public static void insertBook(int publicationId, List < String > editors, String pages, String month, String url, String publisher, String isbn, String series) throws Exception {
-		Book bookInsert = new Book();
-		List < Book > bookList = new ArrayList < Book > ();
-		bookInsert.setPublicationId(publicationId); //Publication Id that just got created
-
-
-		bookInsert.setEditors(editors);
-		bookInsert.setPages(pages);
-		bookInsert.setMonth(month);
-		bookInsert.setUrl(url);
-		bookInsert.setPublisher(publisher);
-		bookInsert.setIsbn(isbn);
-		bookInsert.setSeries(series);
-		bookList.add(bookInsert);
-
-		DBInsertQueries < Book > bookInsertQueries = new DBInsertQueries < Book > (Book.class, dBConnection, explicitColumnNames);
-		bookList = bookInsertQueries.insertItems(bookList);
-	}
-
-
-	
-	/*
-	 * Method to insert into bookChapter and BookChapterdata tables
-	 */
-	public static void insertBookChapter(String BookChapterName, double relevance, String Pages, int publicationId) throws Exception {
-		//List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName=" + BookChapterName).getResults();
-		int bookChapterDataId = 0;
-
-		//if (bookChapterdata.isEmpty()) { //Checking if bookChapterName already exists in the table bookChapterName
-
-		
-		
-		/*-----------Insert into BookChapterData starts here ------*/
-		BookChapterData bookChapterData = new BookChapterData();
-		List < BookChapterData > bookChapterDataList = new ArrayList < BookChapterData > ();
-
-		bookChapterData.setBookChapterName(BookChapterName);
-		bookChapterData.setRelevance(relevance);
-
-		bookChapterDataList.add(bookChapterData);
-		
-		try{
-			DBInsertQueries < BookChapterData > bcdInsertQueries = new DBInsertQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames);
-			bookChapterDataList = bcdInsertQueries.insertItems(bookChapterDataList);
-			bookChapterDataId = bookChapterDataList.get(0).getBookChapterDataId();
-		}catch (SQLIntegrityConstraintViolationException e) {
-			List < BookChapterData > bookChapterdata = new DBSelectQueries < BookChapterData > (BookChapterData.class, dBConnection, explicitColumnNames, "bookChapterName='" + BookChapterName.replace("'", "\\'") + "'").getResults() ;
-			bookChapterDataId = bookChapterdata.get(0).getBookChapterDataId();	
+			webPageFile.write(++webPageCounter + "@@@"
+					+ publicationId + "@@@"
+					+ publication.getUrl() + "@@@"
+					+ ((WebPage) publication).getAccessDate() + "\n");
 		}
 
-		
-		/*-----------Insert into BookChapterData ends here ------*/
-		
-		
-		
-		
-			//	} else {
-			//		bookChapterDataId = bookChapterdata.get(0).getBookChapterData();
-			//	}
-
-
-		
-		
-		
-		/*-----------Insert into BookChapter starts here ------*/
-		BookChapter bookChapter = new BookChapter();
-		List < BookChapter > bookChapterList = new ArrayList < BookChapter > ();
-		bookChapter.setBookChapterDataId(bookChapterDataId);
-		bookChapter.setPublicationId(publicationId);
-		bookChapter.setPages(Pages);
-		bookChapterList.add(bookChapter);
-
-		DBInsertQueries < BookChapter > bcInsertQueries = new DBInsertQueries < BookChapter > (BookChapter.class, dBConnection, explicitColumnNames);
-		bookChapterList = bcInsertQueries.insertItems(bookChapterList);
-		/*-----------Insert into BookChapter ends here ------*/
 	}
 
 
-
-	/*
-	 * Method to insert into ConferencePaper and Conference tables
-	 */
-	public static void insertConferencePaper(String conferenceName, String conferenceLocation, double relevance, int publicationId, String pages, String url) throws Exception {
-		//List < Conference > conferenceListInfo = new DBSelectQueries < Conference > (Conference.class, dBConnection, explicitColumnNames, "ConferenceName=" + conferenceName).getResults();
-		int conferenceId = 0;
-
-		//if (conferenceListInfo.isEmpty()) { //Checking if conferenceName already exists in the table Conference
-
-		/*-----------Insert into Conference starts here ------*/
-		Conference conference = new Conference();
-		List < Conference > conferenceList = new ArrayList < Conference > ();
-
-		conference.setConferenceLocation(conferenceLocation);
-		conference.setConferenceName(conferenceName);
-			conference.setRelevance(relevance); //Setting the relevance score as 1 temporarily 
-
-			conferenceList.add(conference);
-			
-			try{
-				DBInsertQueries < Conference > conferenceInsertQueries = new DBInsertQueries < Conference > (Conference.class, dBConnection, explicitColumnNames);
-				conferenceList = conferenceInsertQueries.insertItems(conferenceList);
-
-				conferenceId = conferenceList.get(0).getConferenceId();
-			}
-			catch (SQLIntegrityConstraintViolationException e) {
-				List < Conference > conferenceListInfo = new DBSelectQueries < Conference > (Conference.class, dBConnection, explicitColumnNames, "ConferenceName='" + conferenceName.replace("'", "\\'") + "'").getResults();
-				conferenceId = conferenceListInfo.get(0).getConferenceId();
+	public static void finalizeProcess(){
+		try {
+			Iterator it = authors.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry author = (Map.Entry)it.next();
+				authorFile.write(author.getValue() + "@@@" + author.getKey() + "@@@" + "" + "\n");
+				it.remove(); // avoids a ConcurrentModificationException
 			}
 
-			
-			/*-----------Insert into Conference ends here ------*/
-			
-			
-			
-			
-				//} else {
-				//conferenceId = conferenceListInfo.get(0).getConferenceId();
-				//}
-			
-			
-			
-			
-			/*-----------Insert into ConferencePaper starts here ------*/
-			ConferencePaper conferencePaper = new ConferencePaper();
-			List < ConferencePaper > conferencePaperList = new ArrayList < ConferencePaper > ();
-
-			conferencePaper.setPublicationId(publicationId);
-			conferencePaper.setConferenceId(conferenceId);
-			conferencePaper.setPages(pages);
-			conferencePaper.setUrl(url);
-
-
-			conferencePaperList.add(conferencePaper);
-
-			DBInsertQueries < ConferencePaper > cpInsertQueries = new DBInsertQueries < ConferencePaper > (ConferencePaper.class, dBConnection, explicitColumnNames);
-			conferencePaperList = cpInsertQueries.insertItems(conferencePaperList);
-			/*-----------Insert into ConferencePaper ends here ------*/
-		}
-
-	/*
-	 * Method to insert into journalArticle and Journal Tables
-	 */
-	public static void insertJournalArticle(String journalName, double relevance, int publicationId, String pages, String volume, String columns, String url) throws Exception {
-
-		//List < Journal > journalInfo = new DBSelectQueries < Journal > (Journal.class, dBConnection, explicitColumnNames, "journalName=" + journalName).getResults();
-		int journalId = 0;
-
-		//if (journalInfo.isEmpty()) { //Checking if journal already exists in the table Conference
-
-		/*-----------Insert into JOurnal starts here ------*/
-		Journal journal = new Journal();
-		List < Journal > journalList = new ArrayList < Journal > ();
-
-
-		journal.setJournalName(journalName);
-			journal.setRelevance(relevance); //Setting the relevance score as 1 temporarily 
-
-			journalList.add(journal);
-			
-			try{
-				DBInsertQueries < Journal > jInsertQueries = new DBInsertQueries < Journal > (Journal.class, dBConnection, explicitColumnNames);
-				journalList = jInsertQueries.insertItems(journalList);
-
-				journalId = journalList.get(0).getJournalId();
-			}
-			catch (SQLIntegrityConstraintViolationException e) {
-				List < Journal > journalInfo = new DBSelectQueries < Journal > (Journal.class, dBConnection, explicitColumnNames, "journalName='" + journalName.replace("'", "\\'") + "'").getResults();
-				journalId = journalInfo.get(0).getJournalId();
+			Iterator itSchool = schools.entrySet().iterator();
+			while (itSchool.hasNext()) {
+				Map.Entry school = (Map.Entry)itSchool.next();
+				schoolFile.write(((School)school.getValue()).getSchoolId() + "@@@"
+						+ ((School)school.getValue()).getSchoolName() + "@@@"
+						+ ((School)school.getValue()).getSchoolLocation() + "@@@"
+						+ ((School)school.getValue()).getRelevance() + "\n");
+				itSchool.remove(); // avoids a ConcurrentModificationException
 			}
 
-			
-			/*-----------Insert into Conference ends here ------*/
-			
-			
-			
-			
-		//} else {
-		//	journalId = journalInfo.get(0).getJournalId();
-		//}
 
-			
-			
-			
-			
-			/*-----------Insert into JOurnalArticle starts here ------*/
-			JournalArticle journalArticle = new JournalArticle();
-			List < JournalArticle > journalArticleList = new ArrayList < JournalArticle > ();
+			Iterator itJournal = journals.entrySet().iterator();
+			while (itJournal.hasNext()) {
+				Map.Entry journal = (Map.Entry)itJournal.next();
+				journalFile.write(((Journal)journal.getValue()).getJournalId() + "@@@"
+						+ ((Journal)journal.getValue()).getJournalName() + "@@@"
+						+ ((Journal)journal.getValue()).getRelevance() + "\n");
+				itJournal.remove(); // avoids a ConcurrentModificationException
+			}
 
+			publicationAuthorFile.close();
+			publicationFile.close();
+			authorFile.close();
 
-			journalArticle.setJournalId(journalId);
-			journalArticle.setPublicationId(publicationId);
-			journalArticle.setPages(pages);
-			journalArticle.setVolume(volume);
-			journalArticle.setColumns(columns);
-			journalArticle.setUrl(url);
-
-
-
-			journalArticleList.add(journalArticle);
-
-			DBInsertQueries < JournalArticle > jaInsertQueries = new DBInsertQueries < JournalArticle > (JournalArticle.class, dBConnection, explicitColumnNames);
-			journalArticleList = jaInsertQueries.insertItems(journalArticleList);
-			/*-----------Insert into JOurnalArticle ends here ------*/
-
+			bookFile.close();
+			bookChapterFile.close();
+			bookChapterDataFile.close();
+			conferenceFile.close();
+			conferencePaperFile.close();
+			journalFile.close();
+			journalArticleFile.close();
+			schoolFile.close();
+			phdThesisFile.close();
+			webPageFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-	/*
-	 * Method to insert into PhdThesis and School tables
-	 */
-	public static void insertPhDThesis(String schoolName, String location, double relevance, int publicationId, String department, String advisorName) throws Exception {
-
-
-
-		//List < School > schoolInfo = new DBSelectQueries < School > (School.class, dBConnection, explicitColumnNames, "schoolName=" + schoolName).getResults();
-		int schoolId = 0;
-
-		//if (schoolInfo.isEmpty()) { //Checking if school already exists in the table School
-
-		/*-----------Insert into school starts here ------*/
-		School school = new School();
-		List < School > schoolList = new ArrayList < School > ();
-
-		school.setSchoolName(schoolName);
-		school.setSchoolLocation(location);
-		school.setRelevance(relevance);
-
-		schoolList.add(school);
-		
-		try{
-			DBInsertQueries < School > InsertQueries = new DBInsertQueries < School > (School.class, dBConnection, explicitColumnNames);
-			schoolList = InsertQueries.insertItems(schoolList);
-
-			schoolId = schoolList.get(0).getSchoolId();
-			
-		}
-		catch (SQLIntegrityConstraintViolationException e) {
-			List < School > schoolInfo = new DBSelectQueries < School > (School.class, dBConnection, explicitColumnNames, "schoolName='" + schoolName.replace("'", "\\'") + "'").getResults();
-			schoolId = schoolInfo.get(0).getSchoolId();
-			
-		}			
-		/*-----------Insert into school ends here ------*/
-		
-		
-		
-		//} else {
-		//	schoolId = schoolInfo.get(0).getSchoolId();
-		//}
-
-		
-		
-		/*-----------Insert into phDThesis starts here ------*/
-		PhdThesis phdthesis = new PhdThesis();
-		List < PhdThesis > phdthesisList = new ArrayList < PhdThesis > ();
-
-
-		phdthesis.setSchoolId(schoolId);
-		phdthesis.setPublicationId(publicationId);
-		phdthesis.setDepartment(department);
-		phdthesis.setAdvisorName(advisorName);
-
-
-
-
-		phdthesisList.add(phdthesis);
-
-		DBInsertQueries < PhdThesis > InsertQueries = new DBInsertQueries < PhdThesis > (PhdThesis.class, dBConnection, explicitColumnNames);
-		phdthesisList = InsertQueries.insertItems(phdthesisList);
-		/*-----------Insert into phDThesis ends here ------*/
-
 	}
-	
-	/*
-	 * Method to insert records into the webPage table
-	 */
-	public static void insertWebpage(int publicationId, String url, String accessDate) throws Exception {
 
 
-		WebPage webpage = new WebPage();
-		List < WebPage > webpagelist = new ArrayList < WebPage > ();
-
-
-		webpage.setPublicationId(publicationId);
-		webpage.setUrl(url);
-		webpage.setAccessDate(accessDate);
-
-
-		webpagelist.add(webpage);
-
-		DBInsertQueries < WebPage > bookInsertQueries = new DBInsertQueries < WebPage > (WebPage.class, dBConnection, explicitColumnNames);
-		webpagelist = bookInsertQueries.insertItems(webpagelist);
-
-	}
 }
