@@ -47,6 +47,7 @@ POST    /updateBookChapterPublication       controllers.BookChapterPublications.
 # Graph Display
 GET     /graphDisplay                       controllers.GraphDisplay.graphDisplay()
 GET     /getCoAuthorGraphData/:topic        controllers.GraphDisplay.getCoAuthorGraphData(topic: String)
+GET     /getInstituteByTopic/:topic         controllers.GraphDisplay.getInstituteByTopic(topic: String)
 GET     /mapInstituteLocation               controllers.GraphDisplay.mapInstituteLocation()
 
 # Map route to the javascript which contains the routes used by the AJAX calls

@@ -52,7 +52,8 @@ public class Application extends Controller {
 	    response().setContentType("text/javascript");
 	    return ok(
 	        Routes.javascriptRouter("jsRoutes",
-	            controllers.routes.javascript.GraphDisplay.getCoAuthorGraphData()
+	            controllers.routes.javascript.GraphDisplay.getCoAuthorGraphData(),
+	            controllers.routes.javascript.GraphDisplay.getInstituteByTopic()
 	        )
 	    );
 	}
