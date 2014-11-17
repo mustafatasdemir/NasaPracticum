@@ -44,8 +44,8 @@ function codeAddress(name) {
 
     	  // Set the placemark's location.  
     	  var point = ge.createPoint('');
-    	  point.setLatitude(results[0].geometry.location.LatLng.lat());
-    	  point.setLongitude(results[0].geometry.location.LatLng.lng());
+    	  point.setLatitude(results[0].geometry.location.lat());
+    	  point.setLongitude(results[0].geometry.location.lng());
     	  placemark.setGeometry(point);
     	  ge.getFeatures().appendChild(placemark);
       } else {
