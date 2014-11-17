@@ -176,55 +176,12 @@ public class DBLPTrustProcessor {
 		return dblpTrustModel;
 	}
 
-	// private KCoauthorship calculateKCoauthorship(int authorId) {
-	// double coauthorshipCount = 0;
-	// TimeScale timeScale = new TimeScale();
-	// KCoauthorship kCoauthorship = new KCoauthorship();
-	//
-	// List<CoauthorshipEdge> coauthorshipDetailsList = SOLRQueries
-	// .parseCoauthorsFromAuthorId(authorId);
-	// int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-	//
-	// for (CoauthorshipEdge coauthorshipEdge : coauthorshipDetailsList) {
-	// List<Integer> coauthorshipDatesList = coauthorshipEdge
-	// .getCoauthorshipDates();
-	// int numberOfRecentCoauthorships = 0;
-	// int numberOfIntermediateCoauthorships = 0;
-	// int numberOfOldCoauthorships = 0;
-	// for (int coauthorshipYear : coauthorshipDatesList) {
-	// if (coauthorshipYear >= (currentYear - timeScale
-	// .getRecentYears())) {
-	// numberOfRecentCoauthorships++;
-	// }else if(coauthorshipYear >= (currentYear -
-	// timeScale.getIntermediateYears())
-	// && (coauthorshipYear < currentYear - timeScale.getRecentYears())){
-	// numberOfIntermediateCoauthorships++;
-	// }else{
-	// numberOfOldCoauthorships++;
-	// }
-	// }
-	// kCoauthorship.setRecentCoauthorshipNCOX(kCoauthorship.getRecentCoauthorshipNCOX()+numberOfRecentCoauthorships);
-	// kCoauthorship.setIntermediateCoauthorshipNCOX((kCoauthorship.getIntermediateCoauthorshipNCOX()+numberOfIntermediateCoauthorships));
-	// kCoauthorship.setOldCoauthorshipNCOX((kCoauthorship.getOldCoauthorshipNCOX()+numberOfOldCoauthorships));
-	// }
-	// coauthorshipCount =
-	// timeScale.gettRecent()*kCoauthorship.getRecentCoauthorshipNCOX()
-	// +
-	// timeScale.gettIntermediate()*kCoauthorship.getIntermediateCoauthorshipNCOX()
-	// + timeScale.gettOld()*kCoauthorship.getOldCoauthorshipNCOX();
-	// kCoauthorship.setTimeScaledCoauthorship(coauthorshipCount);
-	// return kCoauthorship;
-	// }
-
 	private KCoauthorship calculateKCoauthorship(int authorId) throws SAXException, JAXBException, ParserConfigurationException {
 		double coauthorshipCount = 0;
 
 		TimeScale timeScale = new TimeScale();
 		KCoauthorship kCoauthorship = new KCoauthorship();
 		double socialCoathorshipFactorForaCoauthor = 0;
-
-		//		List<CoauthorshipEdge> coauthorshipDetailsList = SOLRQueries
-		//				.parseCoauthorsFromAuthorId(authorId);
 
 		List<CoauthorshipEdge> coauthorshipDetailsList = getCoAuthorshipEdgeList(authorId);
 
@@ -303,27 +260,7 @@ public class DBLPTrustProcessor {
 			singleEdge.setCoauthorshipDates(intDates);
 
 			result.add(singleEdge);
-		}
-		//		for(Coauthorship c : coauthors) {
-		//			CoauthorshipEdge singleEdge = new CoauthorshipEdge();
-		//			singleEdge.setUserId(authorId);
-		//			singleEdge.setCoauthorId(c.getCoauthorid());
-		//			singleEdge.setMappingId(c.getCoauthorshipid());
-		//			
-		//			List<String> stringDates = c.getDate();
-		//			List<Integer> intDates = new ArrayList<Integer>(); 
-		//			
-		//			if(stringDates != null)
-		//				for(String date: stringDates) {
-		//					if(date != null)
-		//					intDates.add(Integer.parseInt(date));
-		//				}
-		//			
-		//			singleEdge.setCoauthorshipDates(intDates);
-		//			
-		//			result.add(singleEdge);
-		//		}
-		//		
+		}	
 		return result;
 	}
 
@@ -674,12 +611,6 @@ public class DBLPTrustProcessor {
 
 		System.out.println("Value of KPaperPublished: "
 				+ kPaperPublished.getFinalKPaperPublished());
-		// KCoauthorship kCoauthorship =
-		// dblpTrustProcessor.calculateKCoauthorship(51);
-		// System.out.println(kCoauthorship.getRecentCoauthorshipNCOX());
-		// System.out.println(kCoauthorship.getIntermediateCoauthorshipNCOX());
-		// System.out.println(kCoauthorship.getOldCoauthorshipNCOX());
-		// System.out.println(kCoauthorship.getTimeScaledCoauthorship());
 		System.out.println("Value of coauthorships: "
 				+ kCoauthorship.getTimeScaledCoauthorship());
 		System.out.println("Set of coauthorship edges: "
