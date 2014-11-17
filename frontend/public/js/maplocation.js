@@ -30,7 +30,7 @@ $(function() {
 	    var topic = $(this).val();
 	    if(topic!="")
 	    	{
-	    		window.alert(topic);
+	    		//window.alert(topic);
 	    		codeAddress(topic);
 	    	}
 	});
@@ -48,6 +48,19 @@ function codeAddress(name) {
     	  point.setLongitude(results[0].geometry.location.lng());
     	  placemark.setGeometry(point);
     	  ge.getFeatures().appendChild(placemark);
+    	  
+    	  // Get the current view.
+    	  var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+
+    	  // Set new latitude and longitude values.
+    	  lookAt.setLatitude(results[0].geometry.location.lat());
+    	  lookAt.setLongitude(results[0].geometry.location.lng());
+
+    	  // Zoom in
+    	  lookAt.setRange(lookAt.getRange() * 0.025);
+
+    	  // Update the view in Google Earth.
+    	  ge.getView().setAbstractView(lookAt);
       } else {
         alert("Geocode was not successful for the following reason: " + status);
       }
