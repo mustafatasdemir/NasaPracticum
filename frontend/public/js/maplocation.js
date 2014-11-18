@@ -1,5 +1,7 @@
 /**
- * 
+ * File to initialize the google earth api.
+ * Contains the google earth object globally along with the geocoder object
+ * Contains methods to react to user inputs to the text box to query the backend for data 
  */
 var ge;
 var geocoder = new google.maps.Geocoder();
@@ -39,30 +41,37 @@ $(function() {
 function codeAddress(name) {
    geocoder.geocode( { 'address': name}, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
+    	  var lat = results[0].geometry.location.lat();
+    	  var long = results[0].geometry.location.lng();
+    	  
     	  var placemark = ge.createPlacemark('');
     	  placemark.setName(name);
 
     	  // Set the placemark's location.  
     	  var point = ge.createPoint('');
-    	  point.setLatitude(results[0].geometry.location.lat());
-    	  point.setLongitude(results[0].geometry.location.lng());
+    	  point.setLatitude(lat);
+    	  point.setLongitude(long);
     	  placemark.setGeometry(point);
     	  ge.getFeatures().appendChild(placemark);
     	  
-    	  // Get the current view.
-    	  var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
-
-    	  // Set new latitude and longitude values.
-    	  lookAt.setLatitude(results[0].geometry.location.lat());
-    	  lookAt.setLongitude(results[0].geometry.location.lng());
-
-    	  // Zoom in
-    	  lookAt.setRange(lookAt.getRange() * 0.025);
-
-    	  // Update the view in Google Earth.
-    	  ge.getView().setAbstractView(lookAt);
+    	  setDefaultLocation(lat, long);
       } else {
         alert("Geocode was not successful for the following reason: " + status);
       }
     });
   }
+
+function setDefaultLocation(lat, long) {
+	// Get the current view.
+	  var lookAt = ge.getView().copyAsLookAt(ge.ALTITUDE_RELATIVE_TO_GROUND);
+
+	  // Set new latitude and longitude values.
+	  lookAt.setLatitude(lat);
+	  lookAt.setLongitude(long);
+
+	  // Zoom in
+	  lookAt.setRange(lookAt.getRange() * 0.025);
+
+	  // Update the view in Google Earth.
+	  ge.getView().setAbstractView(lookAt);
+}
