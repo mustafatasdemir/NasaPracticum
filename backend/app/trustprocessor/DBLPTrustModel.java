@@ -1,6 +1,6 @@
 package trustprocessor;
 
-import edu.cmu.DBLPProcessor.*;;
+import models.DBLPUser;
 
 public class DBLPTrustModel {
 

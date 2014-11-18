@@ -12,11 +12,11 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
+import models.CoAuthorShip;
+import models.DBLPUser;
+import models.Publication;
 
-import edu.cmu.DBLPProcessor.*;
-import edu.cmu.dataset.DBLPDataSource;
-import edu.cmu.dataset.DatasetInterface;
+import org.xml.sax.SAXException;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,14 +26,17 @@ public class DBLPTrustProcessor {
 
 	public DBLPTrustProcessor() throws SAXException, ParserConfigurationException{
 		trustModelWeights = new TrustModelWeights();
-		DatasetInterface dblpDataset = new DBLPDataSource();
-		dblp = dblpDataset.getDataset("dblp_example.xml");
+//		DatasetInterface dblpDataset = new DBLPDataSource();
+//		dblp = dblpDataset.getDataset("dblp_example.xml");
+		
+		
+		// TODO: Mustafa - Select from DB
 	}
 
 	public DBLPTrustProcessor(String fileName) throws SAXException, ParserConfigurationException {
 		trustModelWeights = new TrustModelWeights();
-		DatasetInterface dblpDataset = new DBLPDataSource();
-		dblp = dblpDataset.getDataset(fileName);
+//		DatasetInterface dblpDataset = new DBLPDataSource();
+//		dblp = dblpDataset.getDataset(fileName);
 	}
 
 	/*
@@ -238,11 +241,11 @@ public class DBLPTrustProcessor {
 	private List<CoauthorshipEdge> getCoAuthorshipEdgeList(int authorId) throws SAXException, JAXBException, ParserConfigurationException {
 		DBLPUser author = getDBLPUserFromID((long) authorId);
 		List<CoauthorshipEdge> result = new ArrayList<CoauthorshipEdge>();
-		List<Coauthorship> coauthors = author.getCoAuthors();
-		ListIterator<Coauthorship> iterator = coauthors.listIterator();
+		List<CoAuthorShip> coauthors = author.getCoAuthors();
+		ListIterator<CoAuthorShip> iterator = coauthors.listIterator();
 
 		while(iterator.hasNext()) {
-			Coauthorship c = iterator.next();
+			CoAuthorShip c = iterator.next();
 			CoauthorshipEdge singleEdge = new CoauthorshipEdge();
 			singleEdge.setUserId(authorId);
 			singleEdge.setCoauthorId(c.getCoauthorid());
@@ -271,13 +274,13 @@ public class DBLPTrustProcessor {
 		int publicationYear;
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		TimeScale timeScale = new TimeScale();
-		List<Publication> publicationList = dblpUser.getPublication();
+		List<Publication> publicationList = dblpUser.getPublicationList();
 		KCitePower kCitePower = new KCitePower();
 
 		for (Publication publication : publicationList) {
 
-			publicationYear = publication.getYear() == null? year :Integer.parseInt(publication.getYear());
-			int numberOfCitations = publication.getCitationcount();
+			publicationYear = publication.getYear();
+			int numberOfCitations = publication.getCitationCount();
 			if (publication.getType().equalsIgnoreCase("article")) {
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
@@ -525,7 +528,7 @@ public class DBLPTrustProcessor {
 
 		for(String key : dblp.keySet()) {
 			DBLPUser user = dblp.get(key);
-			List<Publication> publications = user.getPublication();
+			List<Publication> publications = user.getPublicationList();
 
 			for(Publication p : publications) {
 				if(StringUtils.containsIgnoreCase(p.getTitle(), context)) {
