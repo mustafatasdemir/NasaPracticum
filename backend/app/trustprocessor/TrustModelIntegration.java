@@ -51,6 +51,6 @@ public class TrustModelIntegration {
 
 		}
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
-		ArrayList<DBLPTrustModel> dblpTrustModels = dblpTrustProcessor.expertTrustMatrix(userNames);	
+		//ArrayList<DBLPTrustModel> dblpTrustModels = dblpTrustProcessor.expertTrustMatrix(userNames);	
 	}
 }
