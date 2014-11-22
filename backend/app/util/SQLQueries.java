@@ -48,7 +48,7 @@ public class SQLQueries {
 	public static PreparedStatement getPublicationInfo(Connection connection, String authorName, String topic) throws Exception{
 		String statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
 		+"dblp. AuthorPublicationMap map," 
-		+"(select dblp.JournalArticle.publicationId id,'artcle' type  from dblp.JournalArticle" 
+		+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
 		+"union all"
 		+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
 		+"union all"

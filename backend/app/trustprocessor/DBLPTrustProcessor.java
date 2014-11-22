@@ -494,14 +494,14 @@ public class DBLPTrustProcessor {
 												.getNumOfInProceedingIntermediateNXY() + timeScale
 												.gettOld()
 												* publishingConstants.getNumOfInProceedingOldNYZ())
-												+ publishingConstants.getAlphaMasterThesis()
+												/*+ publishingConstants.getAlphaMasterThesis()
 												* (timeScale.gettRecent()
 														* publishingConstants.getNumOfMasterThesisRecentNOX()
 														+ timeScale.gettIntermediate()
 														* publishingConstants
 														.getNumOfMasterThesisIntermediateNXY() + timeScale
 														.gettOld()
-														* publishingConstants.getNumOfMasterThesisOldNYZ())
+														* publishingConstants.getNumOfMasterThesisOldNYZ())*/
 														+ publishingConstants.getAlphaPhdThesis()
 														* (timeScale.gettRecent()
 																* publishingConstants.getNumOfPhdThesisRecentNOX()
@@ -532,8 +532,8 @@ public class DBLPTrustProcessor {
 																				* kCitePower.getNumberOfCitationsIC()
 																				+ publishingConstants.getAlphaInProceeding()
 																				* kCitePower.getNumberOfCitationsIP()
-																				+ publishingConstants.getAlphaMasterThesis()
-																				* kCitePower.getNumberOfCitationsM()
+																				//+ publishingConstants.getAlphaMasterThesis()
+																				//* kCitePower.getNumberOfCitationsM()
 																				+ publishingConstants.getAlphaPhdThesis()
 																				* kCitePower.getNumberOfCitationsPH()
 																				+ publishingConstants.getAlphaProceeding()
