@@ -46,26 +46,53 @@ public class SQLQueries {
 	 * SQL to get all the publications of the  author in a particular topic.
 	 */
 	public static PreparedStatement getPublicationInfo(Connection connection, String authorName, String topic) throws Exception{
-		String statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
-		+"dblp. AuthorPublicationMap map," 
-		+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
-		+"union all"
-		+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
-		+"union all"
-		+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
-		+"union all"
-		+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
-		+"union all"
-		+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
-		+"union all"
-		+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
-		+") ja"
-		+"where a.authorName=?"
-		+" and a.authorId = map.authorId"
-		+" and map.publicationId = p.publicationId"
-		+"and ja.id = p.publicationId"
-		+"and p.publicationTitle like ?"
-		;
+		 String statement = "";
+		
+		if(topic.isEmpty()){//Calls this query if topic is null
+			 statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
+					+"dblp. AuthorPublicationMap map," 
+					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
+					+"union all"
+					+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
+					+"union all"
+					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
+					+"union all"
+					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
+					+"union all"
+					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
+					+"union all"
+					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
+					+") ja"
+					+"where a.authorName=?"
+					+" and a.authorId = map.authorId"
+					+" and map.publicationId = p.publicationId"
+					+"and ja.id = p.publicationId"
+					+"limit 100"
+					;
+		}
+		else{
+			 statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
+					+"dblp. AuthorPublicationMap map," 
+					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
+					+"union all"
+					+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
+					+"union all"
+					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
+					+"union all"
+					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
+					+"union all"
+					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
+					+"union all"
+					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
+					+") ja"
+					+"where a.authorName=?"
+					+" and a.authorId = map.authorId"
+					+" and map.publicationId = p.publicationId"
+					+"and ja.id = p.publicationId"
+					+"and p.publicationTitle like ?"
+					;
+		}
+		
 		
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		
@@ -77,5 +104,42 @@ public class SQLQueries {
 		return returnStatement;
 	}
 	
+	/*
+	 * SQL to get all user parameters
+	 */
 	
+	
+	
+	public static PreparedStatement getUserInfo(Connection connection, String authorName) throws Exception{
+		String statement ="select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications from "
+			+"dblp.author a,"
+			+"dblp.AuthorPublicationMap m,"
+			+"dblp.Publication p"
+			+"where a.authorName like ?"
+			+"and a.authorId = m.authorId"
+			+"and m.publicationId = p.publicationId"
+			+"group by a.authorId,a.authorName"
+		;
+		
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		
+		//Setting the parameters
+		returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
+		return returnStatement;
+	
+}
+	/*
+	 * getting publication details
+	 */
+	public static PreparedStatement getPublicationObject(Connection connection, int id) throws Exception{
+		String statement ="select * from dblp.Publication where publicationId = ? "
+			;
+		
+
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		
+		//Setting the parameters
+		returnStatement.setLong(1, id);
+		return returnStatement;
+	}
 }
