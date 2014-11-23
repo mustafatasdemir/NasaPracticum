@@ -1,7 +1,13 @@
 package models;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import play.db.DB;
 
 // Corresponds to a wrapper class for all types of publications in DBLP
 public class Publication {
@@ -17,6 +23,26 @@ public class Publication {
 	private String note;
 	private String keywords;
 	private List<String> tags;
+	
+	public Publication(int id) throws Exception{
+		
+		
+		
+		Connection connection = DB.getConnection();
+		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(connection, id );// Query to get all userInformation and set the user object
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		this.publicationId = id;
+		//this.authorNames = resultSet.getString("authorNames");
+		this.citationCount = Integer.parseInt(resultSet.getString("citationCount"));
+		this.keywords = resultSet.getString("keywords");
+		this.note = resultSet.getString("note");
+		this.publicationChannel = resultSet.getString("publicationChannel");
+		this.publisher = resultSet.getString("publisher");
+		this.year = resultSet.getString("year");
+		
+		
+	}
 	
 	public int getPublicationId() {
 		return publicationId;

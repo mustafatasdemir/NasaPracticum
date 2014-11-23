@@ -25,13 +25,13 @@ import org.apache.commons.lang3.StringUtils;
 import play.db.DB;
 
 public class DBLPTrustProcessor {
-	HashMap<String,DBLPUser> dblp;
+	//Commented by Jisha :HashMap<String,DBLPUser> dblp;
 	TrustModelWeights trustModelWeights;
 
 	public DBLPTrustProcessor() throws SAXException, ParserConfigurationException{
 		trustModelWeights = new TrustModelWeights();
 //		DatasetInterface dblpDataset = new DBLPDataSource();
-//		dblp = dblpDataset.getDataset("dblp_example.xml");
+//	dblp = dblpDataset.getDataset("dblp_example.xml");
 		
 		
 		// TODO: Mustafa - Select from DB
@@ -109,17 +109,33 @@ public class DBLPTrustProcessor {
 
 	}
 
-	private DBLPUser getDBLPUserFromName(String name) throws SAXException, ParserConfigurationException {
-		DBLPUser result;
-
-		for(String key : dblp.keySet()) {
-			if(key.equalsIgnoreCase(name)) {
-				result = dblp.get(key);
-				return result;
+	private DBLPUser getDBLPUserFromName(String name) throws Exception {
+		DBLPUser user = new DBLPUser();
+		List<Publication> publicationList = new ArrayList<Publication>();
+		
+		Connection connection = DB.getConnection();
+		PreparedStatement preparedStatement = util.SQLQueries.getUserInfo(connection, name );// Query to get all userInformation and set the user object
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		
+		while(resultSet.next()){
+			
+			Integer.parseInt(resultSet.getString("citationCount"));
+			
+			user.setId(Integer.parseInt(resultSet.getString("authorId")));
+			user.setName(name);
+			String[] publications = resultSet.getString("publications").split(",");
+			for(int i=0;i<publications.length;i++)
+			{
+				publicationList.add( new Publication(Integer.parseInt(publications[i])));
 			}
+			
+			user.setPublicationList(publicationList);
+			
+			
 		}
 
-		return null;
+		return user;
 	}
 
 	public ArrayList<DBLPTrustModel> trustModelForAuthorIds(ArrayList<Long> authorIdList) throws Exception {
@@ -131,7 +147,7 @@ public class DBLPTrustProcessor {
 		ArrayList<DBLPUser> expertDBLPObjects = new ArrayList<DBLPUser>();
 
 		for(Long id: authorIdList) {
-			expertDBLPObjects.add(getDBLPUserFromID(id));
+			//Commented by Jisha expertDBLPObjects.add(getDBLPUserFromID(id));
 		}
 
 		DBLPTrustModel dblpTrustModel = null;
@@ -144,8 +160,8 @@ public class DBLPTrustProcessor {
 
 	}
 
-
-	private DBLPUser getDBLPUserFromID(Long id) throws SAXException, ParserConfigurationException {
+	//Commented by Jisha
+	/*private DBLPUser getDBLPUserFromID(Long id) throws SAXException, ParserConfigurationException {
 		DBLPUser result;
 
 		for(String key : dblp.keySet()) {
@@ -156,7 +172,7 @@ public class DBLPTrustProcessor {
 		}
 
 		return null;
-	}
+	}*/
 	/*
 	 * Method to calculate trust factor for a user
 	 * Need to consider topic also
@@ -174,11 +190,11 @@ public class DBLPTrustProcessor {
 		dblpTrustModel.setDblpKnowledgeFactor(dblpKnowledgeFactor);
 		// //// Social Factor ///////////
 		DBLPSocialFactor dblpSocialFactor = new DBLPSocialFactor();
-		KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser.getId());
+		//KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser.getId());
 
 
-		dblpSocialFactor.setkCoauthorship(kCoauthorship);
-		dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
+		//dblpSocialFactor.setkCoauthorship(kCoauthorship);
+		//dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
 		// //////////////////////////////////
 
 		dblpTrustModel.setTrustValue(dblpSocialFactor.getkCoauthorship()
@@ -189,7 +205,8 @@ public class DBLPTrustProcessor {
 		return dblpTrustModel;
 	}
 
-	private KCoauthorship calculateKCoauthorship(int authorId) throws Exception {
+	/*Commented by Jisha
+	 * private KCoauthorship calculateKCoauthorship(int authorId) throws Exception {
 		double coauthorshipCount = 0;
 
 		TimeScale timeScale = new TimeScale();
@@ -246,9 +263,9 @@ public class DBLPTrustProcessor {
 		kCoauthorship.setTimeScaledCoauthorship(Math.ceil(coauthorshipCount));
 
 		return kCoauthorship;
-	}
+	}*/
 
-	private List<CoauthorshipEdge> getCoAuthorshipEdgeList(int authorId) throws Exception {
+	/*private List<CoauthorshipEdge> getCoAuthorshipEdgeList(int authorId) throws Exception {
 		DBLPUser author = getDBLPUserFromID((long) authorId);
 		List<CoauthorshipEdge> result = new ArrayList<CoauthorshipEdge>();
 		List<CoAuthorShip> coauthors = author.getCoauthors();
@@ -275,7 +292,7 @@ public class DBLPTrustProcessor {
 			result.add(singleEdge);
 		}	
 		return result;
-	}
+	}*/
 
 	
 	/*
