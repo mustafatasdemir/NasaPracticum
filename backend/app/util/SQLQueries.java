@@ -2,6 +2,7 @@ package util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 // Class to contain various sql queries to fetch relevant data to support the graphs at the front end 
@@ -40,4 +41,41 @@ public class SQLQueries {
 		
 		return returnStatement;
 	}
+	
+	/*
+	 * SQL to get all the publications of the  author in a particular topic.
+	 */
+	public static PreparedStatement getPublicationInfo(Connection connection, String authorName, String topic) throws Exception{
+		String statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
+		+"dblp. AuthorPublicationMap map," 
+		+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
+		+"union all"
+		+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
+		+"union all"
+		+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
+		+"union all"
+		+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
+		+"union all"
+		+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
+		+"union all"
+		+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
+		+") ja"
+		+"where a.authorName=?"
+		+" and a.authorId = map.authorId"
+		+" and map.publicationId = p.publicationId"
+		+"and ja.id = p.publicationId"
+		+"and p.publicationTitle like ?"
+		;
+		
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		
+		//Setting the parameters
+		returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
+		returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		
+		
+		return returnStatement;
+	}
+	
+	
 }

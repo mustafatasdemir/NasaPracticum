@@ -1,135 +1,121 @@
 package models;
 
-import models.SpringMongoConfig;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
- 
-import java.util.*;
-
-@Document(collection = "publications")
+// Corresponds to a wrapper class for all types of publications in DBLP
 public class Publication {
+	
+	private int publicationId;
+	private String publicationChannel;
+	private int citationCount;
+	private List<String> authorNames = new ArrayList<String>();
+	private String publicationTitle;
+	private String year;
+	private String url;
+	private String publisher;
+	private String note;
+	private String keywords;
+	private List<String> tags;
+	
+	public int getPublicationId() {
+		return publicationId;
+	}
 
-  public enum Channel {
-    Book, BookChapter, Conference, Journal, WebPage 
-  }
+	public void setPublicationId(int publicationId) {
+		this.publicationId = publicationId;
+	}
 
-  @Id
-  private String paperId;
-  private String paperTitle;
-  private String[] paperAuthors;
-  private String[] keywords;
-  private String[] systemTags;
-  private String[] crowdTags;
-  private Channel publicationChannel;
-  private int year;
+	public String getPublicationChannel() {
+		return publicationChannel;
+	}
 
-  public static ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringMongoConfig.class);
-  public static MongoOperations mongoOps = (MongoOperations) ctx.getBean("mongoTemplate");
+	public void setPublicationChannel(String publicationChannel) {
+		this.publicationChannel = publicationChannel;
+	}
 
-  public Publication(String paperTitle, String[] paperAuthors, String[] keywords, 
-                     String[] systemTags, String[] crowdTags, Channel publicationChannel, int year) {
-    this.paperTitle = paperTitle;
-    this.paperAuthors = paperAuthors;
-    this.keywords = keywords;
-    this.systemTags = systemTags;
-    this.crowdTags = crowdTags;
-    this.publicationChannel = publicationChannel;
-    this.year = year;
-  }
- 
-  public String getId() {
-    return this.paperId;
-  }
+	public int getCitationCount() {
+		return citationCount;
+	}
 
-  public String getTitle() {
-    return this.paperTitle;
-  }
+	public void setCitationCount(int citationCount) {
+		this.citationCount = citationCount;
+	}
 
-  public void setTitle(String title) {
-    this.paperTitle = title;
-  }
+	public List<String> getAuthorNames() {
+		return authorNames;
+	}
 
-  public String[] getAuthors() {
-    return this.paperAuthors;
-  }
+	public void setAuthorNames(List<String> authorNames) {
+		this.authorNames = authorNames;
+	}
 
-  public void setAuthors(String[] authors) {
-    this.paperAuthors = authors;
-  }
+	public String getPublicationTitle() {
+		return publicationTitle;
+	}
 
-  public String[] getKeywords() {
-    return this.keywords;
-  }
+	public void setPublicationTitle(String publicationTitle) {
+		this.publicationTitle = publicationTitle;
+	}
 
-  public void setKeywords(String[] keywords) {
-    this.keywords = keywords;
-  }
+	public String getYear() {
+		return year;
+	}
 
-  public String[] getSystemTags() {
-    return this.systemTags;
-  }
+	public void setYear(String year) {
+		this.year = year;
+	}
 
-  public void setSystemTags(String[] systemTags) {
-    this.systemTags = systemTags;
-  }
+	public String getUrl() {
+		return url;
+	}
 
-  public String[] getCrowdTags() {
-    return this.crowdTags;
-  }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-  public void setCrowdTags(String[] crowdTags) {
-    this.crowdTags = crowdTags;
-  }
+	public String getPublisher() {
+		return publisher;
+	}
 
-  public Channel getChannel() {
-    return this.publicationChannel;
-  }
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
 
-  public int getYear() {
-    return this.year;
-  }
+	public String getNote() {
+		return note;
+	}
 
-  public void setYear(int year) {
-    this.year = year;
-  }
+	public void setNote(String note) {
+		this.note = note;
+	}
 
-  public static Query queryById(String id) {
-    return new Query(Criteria.where("_id").is(id));
-  }
+	public String getKeywords() {
+		return keywords;
+	}
 
-  public static Publication getPublication(String id) {
-    Query query = Publication.queryById(id);
-    Publication publication = mongoOps.findOne(query, Publication.class);
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
 
-    if (publication == null) {
-      return null;
-    }
+	public List<String> getTags() {
+		return tags;
+	}
 
-    return publication;
-  }
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
 
-  public static List<Publication> getAllPublications() {
-    List<Publication> publications =  mongoOps.findAll(Publication.class);
-    return publications;
-  }
-
-  public static Publication deletePublication(String id) {
-    Publication publication = Publication.getPublication(id);
-
-    if (publication == null) {
-      return null;
-    }
-
-    mongoOps.remove(Publication.queryById(id), Publication.class);
-    return publication;
-  }
+	public Publication() {
+		super();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Publication) {
+			if(this.getPublicationTitle().equals(((Publication) o).getPublicationTitle()))
+				return true;
+		}
+		return false;
+	}
 }
-
