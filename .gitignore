@@ -5,3 +5,10 @@
 *.prefs
 bin/
 target/
+backend/conf/trustmodel.properties
+
+etl/csv/author.csv
+
+backend/app/trustprocessor/DBLPTrustProcessor.java
+
+backend/app/trustprocessor/DBLPTrustProcessor.java
