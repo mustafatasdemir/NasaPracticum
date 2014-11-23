@@ -205,7 +205,8 @@ public class DBLPTrustProcessor {
 		return dblpTrustModel;
 	}
 
-	/*private KCoauthorship calculateKCoauthorship(int authorId) throws Exception {
+	/*Commented by Jisha
+	 * private KCoauthorship calculateKCoauthorship(int authorId) throws Exception {
 		double coauthorshipCount = 0;
 
 		TimeScale timeScale = new TimeScale();
