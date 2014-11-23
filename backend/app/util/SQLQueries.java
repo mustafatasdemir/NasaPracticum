@@ -48,60 +48,60 @@ public class SQLQueries {
 	public static PreparedStatement getPublicationInfo(Connection connection, String authorName, String topic) throws Exception{
 		 String statement = "";
 		
-		if(topic.isEmpty()){//Calls this query if topic is null
+		if(topic.isEmpty() || topic == null){//Calls this query if topic is null
 			 statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
 					+"dblp. AuthorPublicationMap map," 
 					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
-					+"union all"
+					+" union all "
 					+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
-					+"union all"
+					+" union all "
 					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
-					+"union all"
+					+" union all "
 					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
-					+"union all"
+					+" union all "
 					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
-					+"union all"
+					+" union all "
 					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
 					+") ja"
-					+"where a.authorName=?"
+					+" where a.authorName= ? "
 					+" and a.authorId = map.authorId"
 					+" and map.publicationId = p.publicationId"
-					+"and ja.id = p.publicationId"
-					+"limit 100"
+					+" and ja.id = p.publicationId"
+					+" limit 100"
 					;
+
+			 	PreparedStatement returnStatement = connection.prepareStatement(statement);
+				returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
+				return returnStatement;
 		}
 		else{
 			 statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
 					+"dblp. AuthorPublicationMap map," 
 					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
-					+"union all"
+					+" union all "
 					+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
-					+"union all"
+					+" union all "
 					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
-					+"union all"
+					+" union all "
 					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
-					+"union all"
+					+" union all "
 					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
-					+"union all"
+					+" union all "
 					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
 					+") ja"
-					+"where a.authorName=?"
+					+" where a.authorName=?"
 					+" and a.authorId = map.authorId"
 					+" and map.publicationId = p.publicationId"
-					+"and ja.id = p.publicationId"
-					+"and p.publicationTitle like ?"
+					+" and ja.id = p.publicationId"
+					+" and p.publicationTitle like ?"
 					;
+
+			 	PreparedStatement returnStatement = connection.prepareStatement(statement);
+				returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
+				returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+				return returnStatement;
 		}
 		
-		
-		PreparedStatement returnStatement = connection.prepareStatement(statement);
-		
-		//Setting the parameters
-		returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
-		returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
-		
-		
-		return returnStatement;
 	}
 	
 	/*
@@ -114,11 +114,11 @@ public class SQLQueries {
 		String statement ="select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications from "
 			+"dblp.author a,"
 			+"dblp.AuthorPublicationMap m,"
-			+"dblp.Publication p"
-			+"where a.authorName like ?"
-			+"and a.authorId = m.authorId"
-			+"and m.publicationId = p.publicationId"
-			+"group by a.authorId,a.authorName"
+			+"dblp.Publication p "
+			+"where a.authorName like ? "
+			+"and a.authorId = m.authorId "
+			+"and m.publicationId = p.publicationId "
+			+"group by a.authorId,a.authorName "
 		;
 		
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
