@@ -757,14 +757,14 @@ $(function() {
 	    topic = $("#topictextbox").val();
 	   // alert(topic);
 	   
-	 temp = topic.split(",");
-	 
-	 var pairs = [];
-	 for (var key in temp)
-	 if (temp.hasOwnProperty(key))
-	 pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(temp[key]));
-	  pairs.join('&');
-	  alert(pairs);
+//	 temp = topic.split(",");
+//	 
+//	 var pairs = [];
+//	 for (var key in temp)
+//	 if (temp.hasOwnProperty(key))
+//	 pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(temp[key]));
+//	  pairs.join('&');
+//	  alert(pairs);
 	  });
   $("#search").keyup(function() {
     var searchTerm;
