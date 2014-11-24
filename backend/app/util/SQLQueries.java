@@ -2,7 +2,6 @@ package util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 // Class to contain various sql queries to fetch relevant data to support the graphs at the front end 
@@ -140,6 +139,20 @@ public class SQLQueries {
 		
 		//Setting the parameters
 		returnStatement.setLong(1, id);
+		return returnStatement;
+	}
+	
+	public static PreparedStatement getSchoolsByTopic(Connection connection, String topic) throws SQLException
+	{
+		String statement = "select sch.schoolId, sch.schoolName, sch.schoolLocation, COUNT(*) as count from dblp.Publication as pub " + 
+						   "inner join dblp.PhdThesis as thesis on pub.publicationId = thesis.publicationId " +
+						   "inner join dblp.school as sch on thesis.schoolId = sch.schoolId " +
+						   "where pub.publicationTitle like ? " +
+						   "group by sch.schoolId, sch.schoolName, sch.schoolLocation";
+		
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		
 		return returnStatement;
 	}
 }

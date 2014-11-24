@@ -33,12 +33,19 @@ $(function() {
 	    if(topic!="")
 	    	{
 	    		//window.alert(topic);
-	    		codeAddress(topic);
+	    		jsRoutes.controllers.GraphDisplay.getSchoolsByTopic(encodeURIComponent(topic)).ajax({
+	    			success : function(data) {
+	    					for(var i = 0; i < data.length; i++) {
+	    						var obj = data[i];
+	    						codeAddress(obj.schoolName, i);
+	    					}
+	    				}
+	    		});
 	    	}
 	});
 	});
 
-function codeAddress(name) {
+function codeAddress(name, focus) {
    geocoder.geocode( { 'address': name}, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
     	  var lat = results[0].geometry.location.lat();
@@ -54,7 +61,9 @@ function codeAddress(name) {
     	  placemark.setGeometry(point);
     	  ge.getFeatures().appendChild(placemark);
     	  
-    	  setDefaultLocation(lat, long);
+    	  if(focus == 0){
+    		  setDefaultLocation(lat, long);
+    	  }
       } else {
         alert("Geocode was not successful for the following reason: " + status);
       }

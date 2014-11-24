@@ -13,8 +13,8 @@ GET     /logout                             controllers.Application.logout()
 # Graph Display
 GET     /graphDisplay                       controllers.GraphDisplay.graphDisplay()
 GET     /getCoAuthorGraphData/:topic        controllers.GraphDisplay.getCoAuthorGraphData(topic: String)
-GET     /getInstituteByTopic/:topic         controllers.GraphDisplay.getInstituteByTopic(topic: String)
-GET     /mapInstituteLocation               controllers.GraphDisplay.mapInstituteLocation()
+GET     /getSchoolsByTopic/:topic           controllers.GraphDisplay.getSchoolsByTopic(topic: String)
+GET     /mapSchoolsLocation                 controllers.GraphDisplay.mapSchoolsLocation()
 
 # Map route to the javascript which contains the routes used by the AJAX calls
 GET     /assets/js/routes                   controllers.Application.javascriptRoutes()
