@@ -242,7 +242,7 @@ RadialPlacement = function() {
 Network = function() {
   var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
   width = 900;
-  height = 900;
+  height = 600;
   allData = [];
   curLinksData = [];
   curNodesData = [];
@@ -318,6 +318,7 @@ Network = function() {
   
   update = function() {
     var artists;
+    
     curNodesData = filterNodes(allData.nodes);
     curLinksData = filterLinks(allData.links, curNodesData);
     if (layout === "radial") {
@@ -749,6 +750,22 @@ $(function() {
     });
     }
   });
+  
+  $("#searchbtn").on("click", function(e) {
+	    var topic;
+	    var temp = new Array();
+	    topic = $("#topictextbox").val();
+	   // alert(topic);
+	   
+	 temp = topic.split(",");
+	 
+	 var pairs = [];
+	 for (var key in temp)
+	 if (temp.hasOwnProperty(key))
+	 pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(temp[key]));
+	  pairs.join('&');
+	  alert(pairs);
+	  });
   $("#search").keyup(function() {
     var searchTerm;
     searchTerm = $(this).val();
