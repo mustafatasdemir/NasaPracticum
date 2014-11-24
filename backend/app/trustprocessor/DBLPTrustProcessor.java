@@ -120,7 +120,7 @@ public class DBLPTrustProcessor {
 		
 		while(resultSet.next()){
 			
-			Integer.parseInt(resultSet.getString("citationCount"));
+			//Integer.parseInt(resultSet.getString("citationCount"));
 			
 			user.setId(Integer.parseInt(resultSet.getString("authorId")));
 			user.setName(name);
@@ -197,9 +197,7 @@ public class DBLPTrustProcessor {
 		//dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
 		// //////////////////////////////////
 
-		dblpTrustModel.setTrustValue(dblpSocialFactor.getkCoauthorship()
-				.getTimeScaledCoauthorship()
-				+ dblpKnowledgeFactor.getkPaperPublished()
+		dblpTrustModel.setTrustValue(dblpKnowledgeFactor.getkPaperPublished()
 				.getFinalKPaperPublished());
 
 		return dblpTrustModel;
@@ -312,12 +310,13 @@ public class DBLPTrustProcessor {
 		
 		Connection connection = DB.getConnection();
 		PreparedStatement preparedStatement = util.SQLQueries.getPublicationInfo(connection, author,topic );
+		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
 		while(resultSet.next()){//Looping over all publications
 			int numberOfCitations = Integer.parseInt(resultSet.getString("citationCount"));
 			
-			int publicationYear = Integer.parseInt(resultSet.getString("year"));
+			int publicationYear = resultSet.getString("year").equals("null") ? 0 : Integer.parseInt(resultSet.getString("year"));
 			
 			/*-----------Calculation of Number of citations for article starts here ----------*/
 			if(resultSet.getString("type").equals("article")){
@@ -638,7 +637,7 @@ public class DBLPTrustProcessor {
 	public static void main(String args[]) throws Exception {
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
-		expertNames.add("Werner John");
+		expertNames.add("Þórir Harðarson");
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
 				.expertTrustMatrix(expertNames).get(0);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
@@ -660,5 +659,32 @@ public class DBLPTrustProcessor {
 				+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
 				.values());
 
+	}
+	
+	public void testIt() throws Exception{
+
+		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
+		List<String> expertNames = new ArrayList<String>();
+		expertNames.add("Þórir Harðarson");
+		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
+				.expertTrustMatrix(expertNames).get(0);
+		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
+				.getDblpKnowledgeFactor();
+		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
+
+		KPaperPublished kPaperPublished = dblpKnowledgeFactor
+				.getkPaperPublished();
+		//KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
+		// KCitePower kCitePower = kPaperPublished.getkCitePower();
+		System.out.println("Trust Value for Charles: "
+				+ dblpTrustModel.getTrustValue());
+
+		System.out.println("Value of KPaperPublished: "
+				+ kPaperPublished.getFinalKPaperPublished());
+//		System.out.println("Value of coauthorships: "
+//				+ kCoauthorship.getTimeScaledCoauthorship());
+//		System.out.println("Set of coauthorship edges: "
+//				+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
+//				.values());
 	}
 }

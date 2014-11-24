@@ -62,15 +62,17 @@ public class SQLQueries {
 					+" union all "
 					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
 					+") ja"
-					+" where a.authorName= ? "
+					+" where a.authorName= 'Þórir Harðarson' "
 					+" and a.authorId = map.authorId"
 					+" and map.publicationId = p.publicationId"
 					+" and ja.id = p.publicationId"
 					+" limit 100"
 					;
+			
+			//statement = "select * from dblp.Author a where a.authorName='Þórir Harðarson'";
 
 			 	PreparedStatement returnStatement = connection.prepareStatement(statement);
-				returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
+				//returnStatement.setString(1, (authorName.isEmpty() ? "%%" : ("%"+authorName+"%")));
 				return returnStatement;
 		}
 		else{
