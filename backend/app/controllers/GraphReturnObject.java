@@ -30,4 +30,18 @@ public class GraphReturnObject extends Controller{
 	    return ok(Json.toJson(graphReturnObject));
 	}
 
+	public static Result getCoAuthorGraphDataMultipleTopic(String topic) throws SQLException, UnsupportedEncodingException
+	{
+		topic = URLDecoder.decode(topic, "UTF-8");
+		String[] topics = topic.split(",");
+		models.GraphReturnObject graphReturnObject = new models.GraphReturnObject();
+		graphReturnObject.CoAuthorGraphDataMultipleTopic(topics);
+	    
+	    if (graphReturnObject.nodes == null) {
+	      return notFound("No data found");
+	    }
+
+	    return ok(Json.toJson(graphReturnObject));
+	}
+
 }

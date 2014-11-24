@@ -27,6 +27,15 @@ public class GraphDisplay extends Controller {
 		return ok(graphData);
 	}
 	
+
+	public static Result getCoAuthorGraphDataMultipleTopic(String topic) throws UnsupportedEncodingException
+	{
+		topic = util.Helper.TransformEncoding(topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_MULTIPLE_TOPIC + "/" + topic);
+		  
+		return ok(graphData);
+	}
+	
 	public static Result mapInstituteLocation()
 	{
 		return ok(mapInstituteLocation.render());

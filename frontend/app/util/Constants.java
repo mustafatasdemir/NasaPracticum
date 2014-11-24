@@ -6,5 +6,6 @@ public class Constants {
   
   //Application
   public static final String GET_COAUTHOR_GRAPH_DATA = "getCoAuthorGraphData";
+  public static final String GET_COAUTHOR_GRAPH_DATA_MULTIPLE_TOPIC = "getCoAuthorGraphDataMultipleTopic";
   public static final String GET_INSTITUTES_BY_TOPIC ="getGoogleMapUniversityAddress";
 }
