@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import play.mvc.*;
 import util.APICall;
 import views.html.graphDisplay;
+import views.html.mapInstituteLocation;
 
 public class GraphDisplay extends Controller {
 	
@@ -25,5 +26,19 @@ public class GraphDisplay extends Controller {
 		  
 		return ok(graphData);
 	}
+	
+	public static Result mapInstituteLocation()
+	{
+		return ok(mapInstituteLocation.render());
+	}
 
+	public static Result getInstituteByTopic(String topic) throws UnsupportedEncodingException
+	{
+		topic = util.Helper.TransformEncoding(topic);
+		final JsonNode addressData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_INSTITUTES_BY_TOPIC + "/" + topic);
+		  
+		return ok(addressData);
+	}
+	
+	
 }
