@@ -7,6 +7,7 @@ GET     /                                       controllers.Application.index()
 
 
 GET     /getCoAuthorGraphData/:topic            controllers.GraphReturnObject.getCoAuthorGraphData(topic: String)
+GET     /getTest/            controllers.Application.testFor()
 
 
 # Map static resources from the /public folder to the /assets URL path

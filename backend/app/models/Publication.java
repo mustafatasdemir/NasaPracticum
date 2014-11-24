@@ -32,6 +32,8 @@ public class Publication {
 		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(connection, id );// Query to get all userInformation and set the user object
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
+		resultSet.first();
+		
 		this.publicationId = id;
 		//this.authorNames = resultSet.getString("authorNames");
 		this.citationCount = Integer.parseInt(resultSet.getString("citationCount"));
