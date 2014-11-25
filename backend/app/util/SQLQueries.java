@@ -9,7 +9,7 @@ import java.sql.SQLException;
 // to construct and return a prepared statement
 public class SQLQueries {
 
-	public static PreparedStatement getCoAuthorshipNodeInfo(Connection connection, String topic) throws SQLException
+	public static PreparedStatement getCoAuthorshipNodeInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
 		String statement = "select rel.authorId,"
 				+ "(select au.authorName from dblp.Author as au where au.authorId = rel.authorId) as AuthorName,"
@@ -22,37 +22,41 @@ public class SQLQueries {
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
-		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
 
 		return returnStatement;
 	}
 
 
 
-	public static PreparedStatement getCoAuthorshipMultipleTopicsNodeInfo(Connection connection, String[] topic) throws SQLException
+	public static PreparedStatement getCoAuthorshipMultipleTopicsNodeInfo(Connection connection, String[] topic, String sort, int limit) throws SQLException
 	{
-		String statement = "select po.authorId, po.authorName, GROUP_CONCAT(po.publicationTitle, '@@@') from ("
-				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
-				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by p.citationCount desc) "
+		String statement = "select po.authorId, po.authorName, po.citationCount, po.topic, GROUP_CONCAT(po.publicationTitle, '@@@') as PublicationList from ("
+				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount, 0 as topic from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
+				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by ? limit ?) "
 				+ "union all "
-				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
-				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by p.citationCount desc) "
+				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount, 1 as topic from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
+				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by ? limit ?) "
 				+ ") as po "
 				+ "group by po.authorId "
-				+ "order by po.citationCount desc "
-				+ "limit 100;";
+				+ "order by ?;";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		if(topic != null && topic.length >=2){
-			returnStatement.setString(1, topic[0]);
-			returnStatement.setString(2, topic[1]);
+			returnStatement.setString(1, (topic[0].isEmpty() ? "%%" : ("%"+topic[0].trim()+"%")));
+			returnStatement.setString(2, (sort.equals("Citation") ? "p.citationCount desc" : "p.citationCount desc"));
+			returnStatement.setInt(3, limit);
+			returnStatement.setString(4, (topic[1].isEmpty() ? "%%" : ("%"+topic[1].trim()+"%")));
+			returnStatement.setString(5, (sort.equals("Citation") ? "p.citationCount desc" : "p.citationCount desc"));
+			returnStatement.setInt(6, limit);
+			returnStatement.setString(7, (sort.equals("Citation") ? "po.citationCount desc" : "po.citationCount desc"));
 		}
 
 		return returnStatement;
 	}
 
-	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic) throws SQLException
+	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
 		String statement = "select rel.publicationId, GROUP_CONCAT(rel.authorId) as Authors "
 				+ "from dblp.AuthorPublicationMap as rel where rel.publicationId in ("
@@ -61,26 +65,38 @@ public class SQLQueries {
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
-		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
 
 		return returnStatement;
 	}
 
 
-	public static PreparedStatement getCoAuthorshipLinkInfoMultipleTopic(Connection connection, String[] topic) throws SQLException
+	public static PreparedStatement getCoAuthorshipLinkInfoMultipleTopic(Connection connection, String[] topic, String sort, int limit) throws SQLException
 	{
-		String statement = "select rel.publicationId, GROUP_CONCAT(rel.authorId) as Authors "
-				+"from dblp.AuthorPublicationMap as rel where rel.publicationId in ( "
-				+"(select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? "
+		String statement = "select links.publicationId, GROUP_CONCAT(links.authorId) as Authors from ( "
+				+"(select rel.publicationId, rel.authorId from dblp.AuthorPublicationMap as rel " 
+				+"inner join dblp.Publication as pub on rel.publicationId = pub.publicationId "
+				+"where pub.publicationTitle like ? "
+				+"order by ? "
+				+"limit ?) "
 				+"union all "
-				+"select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? order by pub.citationCount desc) "
-				+") group by rel.publicationId;";
+				+"(select rel.publicationId, rel.authorId from dblp.AuthorPublicationMap as rel " 
+				+"inner join dblp.Publication as pub on rel.publicationId = pub.publicationId "
+				+"where pub.publicationTitle like ? "
+				+"order by ? "
+				+"limit ?)"
+				+") as links group by links.publicationId;";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
-		if(topic != null && topic.length >=2){
-			returnStatement.setString(1, topic[0]);
-			returnStatement.setString(2, topic[1]);
+		if(topic != null && topic.length >=2)
+		{
+			returnStatement.setString(1, (topic[0].isEmpty() ? "%%" : ("%"+topic[0].trim()+"%")));
+			returnStatement.setString(2, sort.equals("") ? "pub.citationCount desc" : "pub.citationCount desc");
+			returnStatement.setInt(3, limit);
+			returnStatement.setString(4, (topic[1].isEmpty() ? "%%" : ("%"+topic[1].trim()+"%")));
+			returnStatement.setString(5, sort.equals("") ? "pub.citationCount desc" : "pub.citationCount desc");
+			returnStatement.setInt(6, limit);
 		}
 
 		return returnStatement;

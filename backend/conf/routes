@@ -7,7 +7,6 @@ GET     /                                       controllers.Application.index()
 
 # GraphReturnObject
 GET     /getCoAuthorGraphData/:topic            controllers.GraphReturnObject.getCoAuthorGraphData(topic: String)
-GET     /getCoAuthorGraphDataMultipleTopic/:topic            controllers.GraphReturnObject.getCoAuthorGraphDataMultipleTopic(topic: String)
 
 # Map Schools
 GET		/getSchoolsByTopic/:topic				controllers.SchoolMap.GetSchoolsByTopic(topic: String)
