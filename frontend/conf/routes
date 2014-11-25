@@ -13,6 +13,9 @@ GET     /logout                             controllers.Application.logout()
 # Graph Display
 GET     /graphDisplay                       controllers.GraphDisplay.graphDisplay()
 GET     /getCoAuthorGraphData/:topic        controllers.GraphDisplay.getCoAuthorGraphData(topic: String)
+GET     /getCoAuthorGraphDataMultipleTopic/:topic        controllers.GraphDisplay.getCoAuthorGraphDataMultipleTopic(topic: String)
+
+# Map Schools
 GET     /getSchoolsByTopic/:topic           controllers.GraphDisplay.getSchoolsByTopic(topic: String)
 GET     /mapSchoolsLocation                 controllers.GraphDisplay.mapSchoolsLocation()
 

@@ -27,11 +27,21 @@ public class GraphDisplay extends Controller {
 		return ok(graphData);
 	}
 	
+	// Called to render Co-Author graph when multiple topics are provided. Comments for getCoAuthorGraphData explains more in details
+	public static Result getCoAuthorGraphDataMultipleTopic(String topic) throws UnsupportedEncodingException
+	{
+		topic = util.Helper.TransformEncoding(topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_MULTIPLE_TOPIC + "/" + topic);
+		  
+		return ok(graphData);
+	}
+	
 	public static Result mapSchoolsLocation()
 	{
 		return ok(mapSchoolsLocation.render());
 	}
 
+	//Called to get school details relevant to the topic being searched.
 	public static Result getSchoolsByTopic(String topic) throws UnsupportedEncodingException
 	{
 		topic = util.Helper.TransformEncoding(topic);
