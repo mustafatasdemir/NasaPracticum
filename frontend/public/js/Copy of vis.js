@@ -1,152 +1,7 @@
 var Network, RadialPlacement, activate, root;
-var w = 900,
-h = 900,
-nodeCircles,
-linkLines;
-var vis1;
-var node,link;
-var linkV,nodeV;
-var SHOW_THRESHOLD = 2.5;
-var width = 900,
-height = 900;
-var WIDTH = 900,
-HEIGHT = 900;
-var currentZoom=1;
-var currentOffset = { x : 0, y : 0 };
+
 root = typeof exports !== "undefined" && exports !== null ? exports : this;
-/*** Configure zoom behaviour ***/
-//The D3.js scales
-var xScale = d3.scale.linear()
-  .domain([0, w])
-  .range([0, w]);
-var yScale = d3.scale.linear()
-  .domain([0, h])
-  .range([0, h]);
-var zoomScale = d3.scale.linear()
-  .domain([1,6])
-  .range([1,6])
-  .clamp(true);
-function zoom() {
-    console.log("zoom", d3.event.translate, d3.event.scale);
-    vis1.attr("transform", 
-             "translate(" + d3.event.translate + ")" 
-                + " scale(" + d3.event.scale + ")" );
-}
-/* --------------------------------------------------------------------- */
-/* Move all graph elements to its new positions. Triggered:
-   - on node repositioning (as result of a force-directed iteration)
-   - on translations (user is panning)
-   - on zoom changes (user is zooming)
-   - on explicit node highlight (user clicks in a movie panel link)
-   Set also the values keeping track of current offset & zoom values
-*/
-function repositionGraph( off, z, mode ) {
-  console.log( "REPOS: off="+off, "zoom="+z, "mode="+mode );
 
-  // do we want to do a transition?
-  var doTr = (mode == 'move');
-
-  // drag: translate to new offset
-  if( off !== undefined &&
-  (off.x != currentOffset.x || off.y != currentOffset.y ) ) {
-g = d3.select('grpParent')
-if( doTr )
-  g = g.transition().duration(500);
-g.attr("transform", function(d) { return "translate("+
-				  off.x+","+off.y+")" } );
-currentOffset.x = off.x;
-currentOffset.y = off.y;
-  }
-
-  // zoom: get new value of zoom
-  if( z === undefined ) {
-if( mode != 'tick' )
-  return;	// no zoom, no tick, we don't need to go further
-z = currentZoom;
-  }
-  else
-currentZoom = z;
-
- 
-  // move nodes
-  n = doTr ? nodeV.transition().duration(500) : nodeV;
-  n
-.attr("transform", function(d) { return "translate("
-				 +z*d.x+","+z*d.y+")" } );
-  // move edges
-  e = doTr ? linkV.transition().duration(500) : linkV;
-  e
-.attr("x1", function(d) { return z*(d.source.x); })
-    .attr("y1", function(d) { return z*(d.source.y); })
-    .attr("x2", function(d) { return z*(d.target.x); })
-    .attr("y2", function(d) { return z*(d.target.y); });
-
-  // move labels
- /* l = doTr ? graphLabels.transition().duration(500) : graphLabels;
-  l
-.attr("transform", function(d) { return "translate("
-				 +z*d.x+","+z*d.y+")" } );*/
-}
-       
-
-/* --------------------------------------------------------------------- */
-/* Perform drag
- */
-function dragmove(d) {
-  console.log("DRAG",d3.event);
-  offset = { x : currentOffset.x + d3.event.dx,
-	 y : currentOffset.y + d3.event.dy };
-  console.log("DRAGoffset",offset);
-  repositionGraph( offset, undefined, 'drag' );
-}
-// Get the current size & offset of the browser's viewport window
-function getViewportSize( w ) {
-  var w = w || window;
-  console.log(w);
-  if( w.innerWidth != null ) 
-    return { w: w.innerWidth, 
-	       h: w.innerHeight,
-	       x : w.pageXOffset,
-	       y : w.pageYOffset };
-  var d = w.document;
-  if( document.compatMode == "CSS1Compat" )
-    return { w: d.documentElement.clientWidth,
-	       h: d.documentElement.clientHeight,
-	       x: d.documentElement.scrollLeft,
-	       y: d.documentElement.scrollTop };
-  else
-    return { w: d.body.clientWidth, 
-	       h: d.body.clientHeight,
-	       x: d.body.scrollLeft,
-	       y: d.body.scrollTop};
-}
-function doZoom( increment ) {
-    newZoom = increment === undefined ? d3.event.scale 
-					: zoomScale(currentZoom+increment);
-    console.log("ZOOM",currentZoom,"->",newZoom,increment);
-    if( currentZoom == newZoom )
-	return;	// no zoom change
-
-   /* // See if we cross the 'show' threshold in either direction
-    if( currentZoom<SHOW_THRESHOLD && newZoom>=SHOW_THRESHOLD )
-	vis1.selectAll("g.label").classed('on',true);
-    else if( currentZoom>=SHOW_THRESHOLD && newZoom<SHOW_THRESHOLD )
-	vis1.selectAll("g.label").classed('on',false);*/
-
-  /*  // See what is the current graph window size
-    s = getViewportSize();
-    width  = s.w<WIDTH  ? s.w : WIDTH;
-    height = s.h<HEIGHT ? s.h : HEIGHT;*/
-
-    // Compute the new offset, so that the graph center does not move
-    zoomRatio = newZoom/currentZoom;
-    newOffset = { x : currentOffset.x*zoomRatio + width/2*(1-zoomRatio),
-		    y : currentOffset.y*zoomRatio + height/2*(1-zoomRatio) };
-    console.log("offset",currentOffset,"->",newOffset);
-
-    // Reposition the graph
-    repositionGraph( newOffset, newZoom, "zoom" );
-  }
 RadialPlacement = function() {
   var center, current, increment, place, placement, radialLocation, radius, setKeys, start, values;
   values = d3.map();
@@ -240,9 +95,9 @@ RadialPlacement = function() {
 };
 
 Network = function() {
-  var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
-  width = 900;
-  height = 600;
+  var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, link, linkedByIndex, linksG, mapNodes, moveToRadialLayout, neighboring, network, node, nodeColors, nodeCounts, nodesG, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
+  width = 1600;
+  height = 1600;
   allData = [];
   curLinksData = [];
   curNodesData = [];
@@ -262,18 +117,11 @@ Network = function() {
     return -Math.pow(node.radius, 2.0) / 2;
   };
   network = function(selection, data) {
-  //  var vis1;
-  //  var zoomer = d3.behavior.zoom()
-   // .scaleExtent([0.1,10])
-//allow 10 times zoom in or out
-   // .on("zoom", zoom);
-//define the event handler function
+    var vis;
     allData = setupData(data);
-    vis1 = d3.select(selection).append("svg").attr("width", width).attr("height", height).append("g")
-    .attr("class", "grpParent");
-   // .call(zoomer); //Attach zoom behaviour.
-    linksG = vis1.append("g").attr("id", "links");
-    nodesG = vis1.append("g").attr("id", "nodes");
+    vis = d3.select(selection).append("svg").attr("width", width).attr("height", height);
+    linksG = vis.append("g").attr("id", "links");
+    nodesG = vis.append("g").attr("id", "nodes");
     var text = d3.select(selection).append("text")
     /*.attr("x", 20)
     .attr("dy", 0)*/
@@ -286,29 +134,6 @@ Network = function() {
     force.size([width, height]);
     setLayout("force");
     setFilter("all");
- // Add a transparent background rectangle to catch
- // mouse events for the zoom behaviour.
- // Note that the rectangle must be inside the element (graph)
- // which has the zoom behaviour attached, but must be *outside*
- // the group that is going to be transformed.
-    vis1.call( d3.behavior.zoom()
-  	      .x(xScale)
-  	      .y(yScale)
-  	      .scaleExtent([1, 4])
-  	      .on("zoom", zoom) );
-    vis1.call( d3.behavior.drag()
-    	      .on("drag",dragmove) );
- /*var rect = vis1.append("rect")
-     .attr("width", width)
-     .attr("height", height)
-     .style("fill", "none") 
-         //make transparent (vs black if commented-out)
-     .style("pointer-events", "all");  
-         //respond to mouse, even when transparent
-
-  vis = vis1.append("svg:g")
-             .attr("class", "plotting-area");
-*/ //create a group that will hold all the content to be zoomed
     return update();
     /*
      * added
@@ -318,7 +143,6 @@ Network = function() {
   
   update = function() {
     var artists;
-    
     curNodesData = filterNodes(allData.nodes);
     curLinksData = filterLinks(allData.links, curNodesData);
     if (layout === "radial") {
@@ -502,7 +326,7 @@ Network = function() {
       return d.id;
     });
     
-    nodeV=node.enter().append("circle").attr("class", "grp gNodes").attr("cx", function(d) {
+    node.enter().append("circle").attr("class", "node").attr("cx", function(d) {
       return d.x;
     }).attr("cy", function(d) {
       return d.y;
@@ -543,7 +367,7 @@ Network = function() {
 	});
 	http://www.is.kau.se/julioangulo/angulo/blog/?p=157568737
   */
-   linkV= link.enter().append("line").attr("class", "grp gLinks").attr("stroke", "#ddd").style("stroke-width", function(d) { return Math.sqrt(d.value); }).attr("stroke-opacity", 0.8).attr("x1", function(d) {
+    link.enter().append("line").attr("class", "link").attr("stroke", "#ddd").style("stroke-width", function(d) { return Math.sqrt(d.value); }).attr("stroke-opacity", 0.8).attr("x1", function(d) {
       return d.source.x;
     }).attr("y1", function(d) {
       return d.source.y;
@@ -750,48 +574,6 @@ $(function() {
     });
     }
   });
-  
-  $("#searchbtn").on("click", function(e) {
-	    var topic;
-	    var sort;
-	    var limit;
-	    
-	    if($('#sort_select_topic').is(":visible")){
-	    	sort = $('#sort_select_topic').val();
-	    }
-	    else{
-	    	sort = $('#sort_select_author').val();
-	    }
-	    
-	    if($('#limit_select_topic').is(":visible")){
-	    	limit = $('#limit_select_topic').val();
-	    }
-	    else{
-	    	limit = $('#limit_select_author').val();
-	    }
-	    
-	    if($('#topictextbox').is(":visible")){
-	    	topic = $("#topictextbox").val();
-	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic).concat("&", encodeURIComponent(sort).concat("&", encodeURIComponent(limit)))).ajax({
-	    		success : function(data) {
-	    			return myNetwork.updateData(data);
-	    			}
-		    });
-	    }
-	    else{
-	    	topic = $("#author").val();
-	    }
-	   // alert(topic);
-	   
-//	 temp = topic.split(",");
-//	 
-//	 var pairs = [];
-//	 for (var key in temp)
-//	 if (temp.hasOwnProperty(key))
-//	 pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(temp[key]));
-//	  pairs.join('&');
-//	  alert(pairs);
-	  });
   $("#search").keyup(function() {
     var searchTerm;
     searchTerm = $(this).val();

@@ -47,7 +47,7 @@ public class APICall {
       });
 
     try {
-      return bodyPromise.get(10000L);
+      return bodyPromise.get(300000L);
     } catch (Exception e) {
       return createResponse(ResponseType.TIMEOUT);
     }

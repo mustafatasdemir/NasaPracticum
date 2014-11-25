@@ -29,33 +29,24 @@ public class TrustModelWeights {
 	public static double tOld;
 	
 	public TrustModelWeights(){
-		Properties properties = new Properties();
-		InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("trustmodel.properties");
-		System.out.println(inputStream);
-		try {
-			properties.load(inputStream);
-			Pw = Double.parseDouble(properties.get("Pw").toString().trim());
-			Cw = Double.parseDouble(properties.get("Cw").toString().trim());
-			alphaArticle = Double.parseDouble(properties.get("alphaArticle").toString().trim());
-			alphaInCollection = Double.parseDouble(properties.get("alphaInCollection").toString().trim());
-			alphaInProceeding = Double.parseDouble(properties.get("alphaInProceeding").toString().trim());
-			alphaMasterThesis = Double.parseDouble(properties.get("alphaMasterThesis").toString().trim());
-			alphaPhdThesis = Double.parseDouble(properties.get("alphaPhdThesis").toString().trim());
-			alphaProceeding = Double.parseDouble(properties.get("alphaProceeding").toString().trim());
-			alphaWWW = Double.parseDouble(properties.get("alphaWWW").toString().trim());
-			alphaBook = Double.parseDouble(properties.get("alphaBook").toString().trim());
-			
-			sigmaRetweet = Double.parseDouble(properties.get("sigmaRetweet").toString().trim());
-			
-			recentYears = Integer.parseInt(properties.get("recentYears").toString().trim().trim());
-			intermediateYears = Integer.parseInt(properties.get("intermediateYears").toString().trim());
-			tRecent = Double.parseDouble(properties.get("tRecent").toString().trim());
-			tIntermediate = Double.parseDouble(properties.get("tIntermediate").toString().trim());
-			tOld = Double.parseDouble(properties.get("tOld").toString().trim());			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Pw = Double.parseDouble("0.3");
+		Cw = Double.parseDouble("0.5");
+		alphaArticle = Double.parseDouble("0.075");
+		alphaInCollection = Double.parseDouble("0.15");
+		alphaInProceeding = Double.parseDouble("0.175");
+		alphaMasterThesis = Double.parseDouble("0.1");
+		alphaPhdThesis = Double.parseDouble("0.125");
+		alphaProceeding = Double.parseDouble("0.2");
+		alphaWWW = Double.parseDouble("0.05");
+		alphaBook = Double.parseDouble("0.125");
+		
+		sigmaRetweet = Double.parseDouble("0.2");
+		
+		recentYears = Integer.parseInt("6");
+		intermediateYears = Integer.parseInt("6");
+		tRecent = Double.parseDouble("0.5");
+		tIntermediate = Double.parseDouble("0.3");
+		tOld = Double.parseDouble("0.2");	
 	}
 
 }

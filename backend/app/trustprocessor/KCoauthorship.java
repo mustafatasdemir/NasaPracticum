@@ -23,38 +23,5 @@ public class KCoauthorship {
 	public void setCoauthorIdToSocialFactorFromCoauthor(
 			HashMap<Integer, Double> coauthorIdToSocialFactorFromCoauthor) {
 		this.coauthorIdToSocialFactorFromCoauthor = coauthorIdToSocialFactorFromCoauthor;
-	}
-	
-	
-	
-//	private double recentCoauthorshipNCOX;
-//	private double intermediateCoauthorshipNCOX;
-//	private double oldCoauthorshipNCOX;
-//	
-//	public double getRecentCoauthorshipNCOX() {
-//		return recentCoauthorshipNCOX;
-//	}
-//	public void setRecentCoauthorshipNCOX(double recentCoauthorshipNCOX) {
-//		this.recentCoauthorshipNCOX = recentCoauthorshipNCOX;
-//	}
-//	public double getIntermediateCoauthorshipNCOX() {
-//		return intermediateCoauthorshipNCOX;
-//	}
-//	public void setIntermediateCoauthorshipNCOX(double intermediateCoauthorshipNCOX) {
-//		this.intermediateCoauthorshipNCOX = intermediateCoauthorshipNCOX;
-//	}
-//	public double getOldCoauthorshipNCOX() {
-//		return oldCoauthorshipNCOX;
-//	}
-//	public void setOldCoauthorshipNCOX(double oldCoauthorshipNCOX) {
-//		this.oldCoauthorshipNCOX = oldCoauthorshipNCOX;
-//	}
-//	public double getTimeScaledCoauthorship() {
-//		return timeScaledCoauthorship;
-//	}
-//	public void setTimeScaledCoauthorship(double timeScaledCoauthorship) {
-//		this.timeScaledCoauthorship = timeScaledCoauthorship;
-//	}
-	
-	
+	}	
 }

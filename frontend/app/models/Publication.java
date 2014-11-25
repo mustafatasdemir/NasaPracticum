@@ -1,121 +1,121 @@
 package models;
 
-import util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.databind.*;
-import com.google.gson.Gson;
-
-import java.util.*;
-
+// Corresponds to a wrapper class for all types of publications in DBLP
 public class Publication {
+	
+	private int publicationId;
+	private String publicationChannel;
+	private int citationCount;
+	private List<String> authorNames = new ArrayList<String>();
+	private String publicationTitle;
+	private String year;
+	private String url;
+	private String publisher;
+	private String note;
+	private String keywords;
+	private List<String> tags;
+	
+	public int getPublicationId() {
+		return publicationId;
+	}
 
-  public enum Channel {
-    Book, BookChapter, Conference, Journal, WebPage
-  }
+	public void setPublicationId(int publicationId) {
+		this.publicationId = publicationId;
+	}
 
-  private String paperId;
-  private String paperTitle;
-  private String[] paperAuthors;
-  private String[] keywords;
-  private String[] systemTags;
-  private String[] crowdTags;
-  private Channel publicationChannel;
-  private int year;
+	public String getPublicationChannel() {
+		return publicationChannel;
+	}
 
-  public String getId() {
-    return this.paperId;
-  }
+	public void setPublicationChannel(String publicationChannel) {
+		this.publicationChannel = publicationChannel;
+	}
 
-  public String getTitle() {
-    return this.paperTitle;
-  }
+	public int getCitationCount() {
+		return citationCount;
+	}
 
-  public String[] getAuthors() {
-    return this.paperAuthors;
-  }
+	public void setCitationCount(int citationCount) {
+		this.citationCount = citationCount;
+	}
 
-  public String[] getKeywords() {
-    return this.keywords;
-  }
+	public List<String> getAuthorNames() {
+		return authorNames;
+	}
 
-  public String[] getSystemTags() {
-    return this.systemTags;
-  }
+	public void setAuthorNames(List<String> authorNames) {
+		this.authorNames = authorNames;
+	}
 
-  public String[] getCrowdTags() {
-    return this.crowdTags;
-  }
+	public String getPublicationTitle() {
+		return publicationTitle;
+	}
 
-  public Channel getChannel() {
-    return this.publicationChannel;
-  }
+	public void setPublicationTitle(String publicationTitle) {
+		this.publicationTitle = publicationTitle;
+	}
 
-  public String getChannelString() { 
-    String ret = "";
+	public String getYear() {
+		return year;
+	}
 
-    if (this.publicationChannel == Channel.Journal) {
-      ret = "Journal";
-    }
-    else if (this.publicationChannel == Channel.Conference) {
-      ret = "Conference";
-    }
-    else if (this.publicationChannel == Channel.WebPage) {
-      ret = "Web Page";
-    }
-    else if (this.publicationChannel == Channel.Book) {
-      ret = "Book";
-    }
-    else if (this.publicationChannel == Channel.BookChapter) {
-      ret = "Book Chapter";
-    }
+	public void setYear(String year) {
+		this.year = year;
+	}
 
-    return ret;
-  }
+	public String getUrl() {
+		return url;
+	}
 
-  public int getYear() {
-    return this.year;
-  }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-  public String formatStringArray(String[] arr) {
-	  if(arr!=null)
-	  {
-		  String listString = Arrays.asList(arr).toString();
-		  return listString.substring(1, listString.length()-1);
-	  }
-	  else return "";    
-  }
+	public String getPublisher() {
+		return publisher;
+	}
 
-  private static final String GET_PUBLICATION = util.Constants.HOSTNAME + util.Constants.GET_PUBLICATION_ROUTE;
-  private static final String GET_ALL_PUBLICATIONS = util.Constants.HOSTNAME + util.Constants.ALL_PUBLICATIONS_ROUTE; 
-  private static final String DELETE_PUBLICATION = util.Constants.HOSTNAME + util.Constants.DELETE_PUBLICATION_ROUTE;
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
 
-  public static Publication get(String id) {
-    final JsonNode publicationNode = APICall.callAPI(GET_PUBLICATION + "/" + id);
+	public String getNote() {
+		return note;
+	}
 
-    if (publicationNode == null || publicationNode.has("error")) {
-      return null;
-    }
+	public void setNote(String note) {
+		this.note = note;
+	}
 
-    Publication publication = new Gson().fromJson(publicationNode.toString(), Publication.class);
+	public String getKeywords() {
+		return keywords;
+	}
 
-    return publication;
-  }
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
 
-  public static List<Publication> getAllPublications() {
-    List<Publication> publicationList = new ArrayList<Publication>();
+	public List<String> getTags() {
+		return tags;
+	}
 
-    final JsonNode publicationsNode = APICall.callAPI(GET_ALL_PUBLICATIONS);
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
 
-    if (publicationsNode == null || publicationsNode.has("error") || !publicationsNode.isArray()) {
-      return publicationList;
-    }
-
-    Publication[] publicationArray = new Gson().fromJson(publicationsNode.toString(), Publication[].class);
-
-    return Arrays.asList(publicationArray);
-  }
-
-  public static JsonNode delete(String id) {
-    return APICall.deleteAPI(DELETE_PUBLICATION + "/" + id);
-  }
+	public Publication() {
+		super();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Publication) {
+			if(this.getPublicationTitle().equals(((Publication) o).getPublicationTitle()))
+				return true;
+		}
+		return false;
+	}
 }

@@ -30,9 +30,7 @@ CREATE TABLE `AuthorPublicationMap` (
   `authorPublicationMapId` int(11) NOT NULL AUTO_INCREMENT,
   `publicationId` int(11) DEFAULT NULL,
   `authorId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`authorPublicationMapId`),
-  KEY `publicationId` (`publicationId`),
-  KEY `authorId` (`authorId`)
+  PRIMARY KEY (`authorPublicationMapId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `Book` (
@@ -148,4 +146,4 @@ CREATE TABLE `WebPage` (
   PRIMARY KEY (`webPageId`),
   KEY `publicationId` (`publicationId`),
   CONSTRAINT `webpage_ibfk_1` FOREIGN KEY (`publicationId`) REFERENCES `Publication` (`publicationId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

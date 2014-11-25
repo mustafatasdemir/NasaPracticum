@@ -5,41 +5,11 @@
 # Home page
 GET     /                                       controllers.Application.index()
 
-GET     /test                                   controllers.Publications.test()
-
-GET     /getPublication/:id                     controllers.Publications.get(id: String)
-GET     /getAllPublications                     controllers.Publications.getAll()
-DELETE  /deletePublication/:id                  controllers.Publications.delete(id: String)
-
-GET     /getJournalPublication/:id              controllers.JournalPublications.get(id: String)
-GET     /getAllJournalPublications              controllers.JournalPublications.getAll()
-POST    /addJournalPublication                  controllers.JournalPublications.add()
-POST    /updateJournalPublication               controllers.JournalPublications.update()
-
-GET     /getBookPublication/:id                 controllers.BookPublications.get(id: String)
-GET     /getAllBookPublications                 controllers.BookPublications.getAll()
-POST    /addBookPublication                     controllers.BookPublications.add()
-POST    /updateBookPublication                  controllers.BookPublications.update()
-
-GET     /getBookChapterPublication/:id          controllers.BookChapterPublications.get(id: String)
-GET     /getAllBookChapterPublications          controllers.BookChapterPublications.getAll()
-POST    /addBookChapterPublication              controllers.BookChapterPublications.add()
-POST    /updateBookChapterPublication           controllers.BookChapterPublications.update()
-
-GET     /getConferencePublication/:id           controllers.ConferencePublications.get(id: String)
-GET     /getAllConferencePublications           controllers.ConferencePublications.getAll()
-POST    /addConferencePublication               controllers.ConferencePublications.add()
-POST    /updateConferencePublication            controllers.ConferencePublications.update()
-
-GET     /getWebPagePublication/:id              controllers.WebPagePublications.get(id: String)
-GET     /getAllWebPagePublications              controllers.WebPagePublications.getAll()
-POST    /addWebPagePublication                  controllers.WebPagePublications.add()
-POST    /updateWebPagePublication               controllers.WebPagePublications.update()
-
-GET     /getUser/:email                         controllers.Users.getUser(email: String)
-
+# GraphReturnObject
 GET     /getCoAuthorGraphData/:topic            controllers.GraphReturnObject.getCoAuthorGraphData(topic: String)
 
+# Map Schools
+GET		/getSchoolsByTopic/:topic				controllers.SchoolMap.GetSchoolsByTopic(topic: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                     controllers.Assets.at(path="/public", file)

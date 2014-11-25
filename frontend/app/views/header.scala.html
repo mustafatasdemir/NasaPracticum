@@ -12,25 +12,12 @@
 
         <li><a href="@routes.Application.index()">Home</a></li>
 
-        <li class="drowdown"><a href="#" class="drowdown-toggle" data-toggle="dropdown">Publication Data <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="@routes.Publications.display()">All Publications</a></li>
-            <li><a href="@routes.JournalPublications.display()">Journal</a></li>
-            <li><a href="@routes.ConferencePublications.display()">Conference</a></li>
-            <li><a href="@routes.WebPagePublications.display()">Web Page</a></li>
-            <li><a href="@routes.BookPublications.display()">Book</a></li>
-            <li><a href="@routes.BookChapterPublications.display()">Book Chapter</a></li>
-          </ul>
-        </li>
-
         @if(!session.get("email")){
         <form class="navbar-form navbar-right" action="@routes.Application.login()">
           <button type="submit" class="btn btn-link">Log in</button>
         </form>
         }else{
-        <li><a href="@routes.JournalPublications.addPage()">Add Publication</a></li>
-
-        <form class="navbar-form navbar-right" action="@routes.Application.logout()">
+          <form class="navbar-form navbar-right" action="@routes.Application.logout()">
           <button type="submit" class="btn btn-link">Log out</button>
         </form>
         }
