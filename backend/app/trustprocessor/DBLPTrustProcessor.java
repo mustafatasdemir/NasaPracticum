@@ -164,7 +164,6 @@ public class DBLPTrustProcessor {
 	}
 	*/
 
-	//Commented by Jisha
 	/*private DBLPUser getDBLPUserFromID(Long id) throws SAXException, ParserConfigurationException {
 		DBLPUser result;
 
@@ -195,6 +194,7 @@ public class DBLPTrustProcessor {
 		// //// Social Factor ///////////
 		DBLPSocialFactor dblpSocialFactor = new DBLPSocialFactor();
 		//KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser.getId());
+		KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser);
 
 
 		//dblpSocialFactor.setkCoauthorship(kCoauthorship);
@@ -207,15 +207,15 @@ public class DBLPTrustProcessor {
 		return dblpTrustModel;
 	}
 
-	/*Commented by Jisha
-	 * private KCoauthorship calculateKCoauthorship(int authorId) throws Exception {
+	 private KCoauthorship calculateKCoauthorship(DBLPUser dblpUser) throws Exception {
 		double coauthorshipCount = 0;
 
 		TimeScale timeScale = new TimeScale();
 		KCoauthorship kCoauthorship = new KCoauthorship();
 		double socialCoathorshipFactorForaCoauthor = 0;
 
-		List<CoauthorshipEdge> coauthorshipDetailsList = getCoAuthorshipEdgeList(authorId);
+		//List<CoauthorshipEdge> coauthorshipDetailsList = getCoAuthorshipEdgeList(authorId);
+		List<CoauthorshipEdge> coauthorshipDetailsList = getCoAuthorshipEdgeList(dblpUser);
 
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
@@ -265,10 +265,11 @@ public class DBLPTrustProcessor {
 		kCoauthorship.setTimeScaledCoauthorship(Math.ceil(coauthorshipCount));
 
 		return kCoauthorship;
-	}*/
+	}
 
-	/*private List<CoauthorshipEdge> getCoAuthorshipEdgeList(int authorId) throws Exception {
-		DBLPUser author = getDBLPUserFromID((long) authorId);
+	private List<CoauthorshipEdge> getCoAuthorshipEdgeList(DBLPUser user) throws Exception {
+		//DBLPUser author = getDBLPUserFromID((long) authorId);
+		DBLPUser author = user;
 		List<CoauthorshipEdge> result = new ArrayList<CoauthorshipEdge>();
 		List<CoAuthorShip> coauthors = author.getCoauthors();
 		ListIterator<CoAuthorShip> iterator = coauthors.listIterator();
@@ -276,7 +277,7 @@ public class DBLPTrustProcessor {
 		while(iterator.hasNext()) {
 			CoAuthorShip c = iterator.next();
 			CoauthorshipEdge singleEdge = new CoauthorshipEdge();
-			singleEdge.setUserId(authorId);
+			singleEdge.setUserId(c.getUserid());
 			singleEdge.setCoauthorId(c.getCoauthorid());
 			singleEdge.setMappingId(c.getCoauthorshipid());
 
@@ -294,7 +295,7 @@ public class DBLPTrustProcessor {
 			result.add(singleEdge);
 		}	
 		return result;
-	}*/
+	}
 
 	
 	/*
