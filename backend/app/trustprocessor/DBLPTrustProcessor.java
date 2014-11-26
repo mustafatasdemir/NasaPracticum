@@ -49,7 +49,9 @@ public class DBLPTrustProcessor {
 	 * names to DBLP Trust Values
 	 */
 
-	public HashMap<String, DBLPTrustModel> calculateDeveloperTrustMatrix(
+	/*Commented by Jisha
+	 * public HashMap<String, DBLPTrustModel> calculateDeveloperTrustMatrix(
+	 *
 			List<String> developerList, String context) throws Exception {
 
 		HashMap<String, DBLPTrustModel> developerNameMappedToTrustModelValue = new HashMap<String, DBLPTrustModel>();
@@ -65,11 +67,11 @@ public class DBLPTrustProcessor {
 		/*for (DBLPUser contextFilteredDBLPUser : contextFilteredDBLPUserList) {
 			contextFilteredDBLPUserNameToObject.put(
 					contextFilteredDBLPUser.getName(), contextFilteredDBLPUser);
-		}*/
+		}
 
 		/*
 		 * Take each Software then get the set of developers on that
-		 */
+		 
 
 		for (String developerName : developerList) {
 			DBLPUser matchedDeveloper = contextFilteredDBLPUserNameToObject
@@ -84,9 +86,9 @@ public class DBLPTrustProcessor {
 		}
 		return developerNameMappedToTrustModelValue;
 
-	}
+	}*/
 
-	public ArrayList<DBLPTrustModel> expertTrustMatrix(List<String> expertNames) throws Exception {
+	public ArrayList<DBLPTrustModel> expertTrustMatrix(List<String> expertNames,String topic) throws Exception {
 
 		ArrayList<DBLPTrustModel> expertTrustModelList = new ArrayList<DBLPTrustModel>();
 
@@ -101,7 +103,7 @@ public class DBLPTrustProcessor {
 
 		DBLPTrustModel dblpTrustModel = null;
 		for (DBLPUser expertUser : expertDBLPObjects) {
-			dblpTrustModel = calculateDBLPTrustFactor(expertUser);
+			dblpTrustModel = calculateDBLPTrustFactor(expertUser,topic);
 			dblpTrustModel.setDblpUser(expertUser);			
 			expertTrustModelList.add(dblpTrustModel);
 		}
@@ -138,7 +140,8 @@ public class DBLPTrustProcessor {
 		return user;
 	}
 
-	public ArrayList<DBLPTrustModel> trustModelForAuthorIds(ArrayList<Long> authorIdList) throws Exception {
+	/*Commented by Jisha
+	 * public ArrayList<DBLPTrustModel> trustModelForAuthorIds(ArrayList<Long> authorIdList) throws Exception {
 
 		ArrayList<DBLPTrustModel> expertTrustModelList = new ArrayList<DBLPTrustModel>();
 
@@ -159,6 +162,7 @@ public class DBLPTrustProcessor {
 		return expertTrustModelList;
 
 	}
+	*/
 
 	//Commented by Jisha
 	/*private DBLPUser getDBLPUserFromID(Long id) throws SAXException, ParserConfigurationException {
@@ -178,11 +182,11 @@ public class DBLPTrustProcessor {
 	 * Need to consider topic also
 	 * need to change the input to String if only the name is passed from front end
 	 */
-	public DBLPTrustModel calculateDBLPTrustFactor(DBLPUser dblpUser) throws Exception {
+	public DBLPTrustModel calculateDBLPTrustFactor(DBLPUser dblpUser, String topic) throws Exception {
 		DBLPTrustModel dblpTrustModel = new DBLPTrustModel();
 
 		// ///// Knowledge Factor ///////////
-		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser);
+		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser,topic);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = new DBLPKnowledgeFactor();
 		dblpKnowledgeFactor.setkPaperPublished(kPaperPublished);
 
@@ -296,7 +300,7 @@ public class DBLPTrustProcessor {
 	/*
 	 * 
 	 */
-	private KPaperPublished calculateKPaperPublished(DBLPUser dblpUser) throws Exception {
+	private KPaperPublished calculateKPaperPublished(DBLPUser dblpUser, String topic) throws Exception {
 		double kPaperPublished = 0;
 
 		KPaperPublished publishingConstants = new KPaperPublished();
@@ -306,7 +310,7 @@ public class DBLPTrustProcessor {
 		//List<Publication> publicationList = dblpUser.getPublicationList();//TODO: Need to fetch publications on the basis of topic
 		KCitePower kCitePower = new KCitePower();
 		String author = dblpUser.getName();//This user is the author who's trust value has to be calculated
-		String topic = "";//TODO:Need to pass this as a parameter
+		//topic = "";//TODO:Need to pass this as a parameter
 		
 		Connection connection = DB.getConnection();
 		PreparedStatement preparedStatement = util.SQLQueries.getPublicationInfo(connection, author,topic );
@@ -579,30 +583,32 @@ public class DBLPTrustProcessor {
 		return result;
 	}*/
 
-	public Double getTrustValueFromName(String name) throws Exception {
+	public Double getTrustValueFromName(String name,String topic) throws Exception {
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
 		expertNames.add(name);
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
-				.expertTrustMatrix(expertNames).get(0);
+				.expertTrustMatrix(expertNames,topic).get(0);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
 				.getDblpKnowledgeFactor();
-		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
+		//Commented by jisha:DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
 
 		KPaperPublished kPaperPublished = dblpKnowledgeFactor
 				.getkPaperPublished();
-		KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
+		//Commented by Jisha:KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
 		return dblpTrustModel.getTrustValue();
 	}
 
-	public HashMap<String, Double> getIndividualTrustComponentsByName(String name) throws Exception {
+	/*Commented by Jisha
+	 * public HashMap<String, Double> getIndividualTrustComponentsByName(String name) throws Exception {
+	 *
 		HashMap<String, Double> result = new HashMap<String, Double>();
 
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
 		expertNames.add(name);
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
-				.expertTrustMatrix(expertNames).get(0);
+				.expertTrustMatrix(expertNames,topic).get(0);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
 				.getDblpKnowledgeFactor();
 		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
@@ -619,7 +625,7 @@ public class DBLPTrustProcessor {
 				+ kCoauthorship.getTimeScaledCoauthorship());
 		System.out.println("Set of coauthorship edges: "
 				+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
-						.values());*/
+						.values());
 
 		result.put("KPaperPublished", kPaperPublished.getFinalKPaperPublished());
 		result.put("KCoAuthorship", kCoauthorship.getTimeScaledCoauthorship());
@@ -627,19 +633,22 @@ public class DBLPTrustProcessor {
 
 		return result;
 	}
+*/
 	
-	public static Double getTrustOfAuthorBeforeYear (String name, int inputyear) throws Exception {
+	/*Commented by Jisha
+	 * public static Double getTrustOfAuthorBeforeYear (String name, int inputyear) throws Exception {
 		//DBLPParser.getPriorPublicationsXML("Modified_dblp_example.xml", inputyear, "modified_dblp.xml");
 		DBLPTrustProcessor trustProcessor = new DBLPTrustProcessor("modified_dblp.xml");
 		return trustProcessor.getTrustValueFromName(name);
-	}
+	}*/
 	
 	public static void main(String args[]) throws Exception {
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
 		expertNames.add("Þórir Harðarson");
+		String topic = "";
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
-				.expertTrustMatrix(expertNames).get(0);
+				.expertTrustMatrix(expertNames,topic).get(0);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
 				.getDblpKnowledgeFactor();
 		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
@@ -666,8 +675,9 @@ public class DBLPTrustProcessor {
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
 		expertNames.add("Þórir Harðarson");
+		String topic = "";
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
-				.expertTrustMatrix(expertNames).get(0);
+				.expertTrustMatrix(expertNames,topic).get(0);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
 				.getDblpKnowledgeFactor();
 		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
