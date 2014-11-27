@@ -22,6 +22,8 @@ import models.Publication;
 import org.xml.sax.SAXException;
 import org.apache.commons.lang3.StringUtils;
 
+import trustprocessor.DBLPSocialFactor;
+import trustprocessor.KCoauthorship;
 import play.db.DB;
 
 public class DBLPTrustProcessor {
@@ -49,9 +51,9 @@ public class DBLPTrustProcessor {
 	 * names to DBLP Trust Values
 	 */
 
-	/*Commented by Jisha
-	 * public HashMap<String, DBLPTrustModel> calculateDeveloperTrustMatrix(
-	 *
+	/*Commented by Jisha*/
+	/* public HashMap<String, DBLPTrustModel> calculateDeveloperTrustMatrix(
+
 			List<String> developerList, String context) throws Exception {
 
 		HashMap<String, DBLPTrustModel> developerNameMappedToTrustModelValue = new HashMap<String, DBLPTrustModel>();
@@ -64,13 +66,13 @@ public class DBLPTrustProcessor {
 
 		HashMap<String, DBLPUser> contextFilteredDBLPUserNameToObject = new HashMap<String, DBLPUser>();
 		//Commented by Jisha
-		/*for (DBLPUser contextFilteredDBLPUser : contextFilteredDBLPUserList) {
+		for (DBLPUser contextFilteredDBLPUser : contextFilteredDBLPUserList) {
 			contextFilteredDBLPUserNameToObject.put(
 					contextFilteredDBLPUser.getName(), contextFilteredDBLPUser);
 		}
 
-		/*
-	 * Take each Software then get the set of developers on that
+
+	// Take each Software then get the set of developers on that
 
 
 		for (String developerName : developerList) {
@@ -88,21 +90,46 @@ public class DBLPTrustProcessor {
 
 	}*/
 
+
+
+	//ADDED BY JISHA 
+	public HashMap<DBLPUser, DBLPTrustModel> calculateDeveloperTrustMatrix(
+
+			List<DBLPUser> developerList, String context) throws Exception {
+
+		HashMap<DBLPUser, DBLPTrustModel> developerNameMappedToTrustModelValue = new HashMap<DBLPUser, DBLPTrustModel>();
+
+		for (DBLPUser developer : developerList) {
+
+			DBLPTrustModel dblpTrustModel = new DBLPTrustModel();
+			dblpTrustModel = calculateDBLPTrustFactor(developer,context);
+			dblpTrustModel.setDblpUser(developer);
+			developerNameMappedToTrustModelValue.put(developer,
+					dblpTrustModel);
+
+		}
+		return developerNameMappedToTrustModelValue;
+
+	}
+
+
+	/*
+	 * Calls the method to get trust for each user
+	 */
 	public ArrayList<DBLPTrustModel> expertTrustMatrix(List<String> expertNames,String topic) throws Exception {
 
 		ArrayList<DBLPTrustModel> expertTrustModelList = new ArrayList<DBLPTrustModel>();
 
-		//		ArrayList<DBLPUser> expertDBLPObjects = SOLRQueries
-		//				.parseDBLPUserInfoFromName(expertNames);
 
 		ArrayList<DBLPUser> expertDBLPObjects = new ArrayList<DBLPUser>();
 
 		for(String name: expertNames) {
 			expertDBLPObjects.add(getDBLPUserFromName(name,topic));
 		}
+	
 
 		DBLPTrustModel dblpTrustModel = null;
-		for (DBLPUser expertUser : expertDBLPObjects) {
+		for (DBLPUser expertUser : expertDBLPObjects) {//Calculates trust for each DBLPUser
 			dblpTrustModel = calculateDBLPTrustFactor(expertUser,topic);
 			dblpTrustModel.setDblpUser(expertUser);			
 			expertTrustModelList.add(dblpTrustModel);
@@ -111,6 +138,9 @@ public class DBLPTrustProcessor {
 
 	}
 
+	/*
+	 * Creates DBLPUser Object of the author/authors whose trust value is to be calculated
+	 */
 	private DBLPUser getDBLPUserFromName(String name,String topic) throws Exception {
 		DBLPUser user = new DBLPUser();
 		List<Publication> publicationList = new ArrayList<Publication>();
@@ -134,6 +164,7 @@ public class DBLPTrustProcessor {
 
 			user.setPublicationList(publicationList);
 			int authorId = user.getId();
+			System.out.println("user Id"+authorId);
 			PreparedStatement preparedStatementCoAuthors = util.SQLQueries.getCoAuthors(connection, authorId);
 			ResultSet resultSetcoAuthor= preparedStatementCoAuthors.executeQuery();
 
@@ -147,20 +178,24 @@ public class DBLPTrustProcessor {
 					coauthor.setCoauthorName(resultSetcoAuthor.getString("coauthorName"));
 					coauthor.setCoauthorshipid(i++);
 					coauthor.setCount(0);
+					System.out.println("coauthor:"+coauthor.getAuthorName());
 
 					String[] coAuthorPublications = resultSetcoAuthor.getString("publications").split(",");
 					for(int j=0;j<coAuthorPublications.length;j++)
 					{
-						coauthor.getPublicationList().add(new Publication(Integer.parseInt(coAuthorPublications[j])));
+						Publication p = new Publication(Integer.parseInt(coAuthorPublications[j]));
+						coauthor.getDate().add(p.getYear());
+						coauthor.getPublicationList().add(new Publication());
+						System.out.println("\npublications:   "+coauthor.getPublicationList().get(j).getPublicationTitle()+"---Year:     " +coauthor.getPublicationList().get(j).getYear());
 					}
 					user.getCoauthors().add(coauthor);
 				}
 
-				
+
 
 			}
 
-			
+
 		}
 
 		return user;
@@ -202,35 +237,52 @@ public class DBLPTrustProcessor {
 
 		return null;
 	}*/
+	
+	
+	
+	
+	
 	/*
-	 * Method to calculate trust factor for a user
-	 * Need to consider topic also
-	 * need to change the input to String if only the name is passed from front end
+	 * Method to calculate trust factor for the user
 	 */
 	public DBLPTrustModel calculateDBLPTrustFactor(DBLPUser dblpUser, String topic) throws Exception {
 		DBLPTrustModel dblpTrustModel = new DBLPTrustModel();
 
-		// ///// Knowledge Factor ///////////
+		/*----------------------Knowledge Factor-----------------------------*/
 		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser,topic);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = new DBLPKnowledgeFactor();
+		
 		dblpKnowledgeFactor.setkPaperPublished(kPaperPublished);
 
-		// ///////////////////////////////////
 		dblpTrustModel.setDblpKnowledgeFactor(dblpKnowledgeFactor);
-		// //// Social Factor ///////////
+		System.out.println("calculated knowledge factor:"+dblpKnowledgeFactor.getkPaperPublished().getFinalKPaperPublished());
+
+		
+		
+		
+		/*----------------------Social Factor-----------------------------*/
 		DBLPSocialFactor dblpSocialFactor = new DBLPSocialFactor();
-		//KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser.getId());
 		KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser);
+		
 
 
-		//dblpSocialFactor.setkCoauthorship(kCoauthorship);
-		//dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
-		// //////////////////////////////////
+		dblpSocialFactor.setkCoauthorship(kCoauthorship);
+		dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
+		System.out.println("calculated social factor:"+kCoauthorship.getTimeScaledCoauthorship());
 
-		dblpTrustModel.setTrustValue(dblpKnowledgeFactor.getkPaperPublished()
+		
+		dblpTrustModel.setTrustValue(dblpSocialFactor.getkCoauthorship()
+				.getTimeScaledCoauthorship()
+				+ dblpKnowledgeFactor.getkPaperPublished()
 				.getFinalKPaperPublished());
 
 		return dblpTrustModel;
+		
+		
+		
+		
+		
+
 	}
 
 	private KCoauthorship calculateKCoauthorship(DBLPUser dblpUser) throws Exception {
@@ -288,7 +340,8 @@ public class DBLPTrustProcessor {
 			coauthorshipCount = coauthorshipCount
 					+ coauthorIdToSocialFactorFromCoauthor.get(coauthorid);
 		}
-		kCoauthorship.setTimeScaledCoauthorship(Math.ceil(coauthorshipCount));
+		//Commented by Jisha:kCoauthorship.setTimeScaledCoauthorship(Math.ceil(coauthorshipCount));
+		kCoauthorship.setTimeScaledCoauthorship(coauthorshipCount);
 
 		return kCoauthorship;
 	}
@@ -325,19 +378,17 @@ public class DBLPTrustProcessor {
 
 
 	/*
-	 * 
+	 * Method to get the trust value based on number of papers published and citation count
 	 */
 	private KPaperPublished calculateKPaperPublished(DBLPUser dblpUser, String topic) throws Exception {
 		double kPaperPublished = 0;
 
 		KPaperPublished publishingConstants = new KPaperPublished();
-		//	int publicationYear;
 		int year = Calendar.getInstance().get(Calendar.YEAR);
 		TimeScale timeScale = new TimeScale();
-		//List<Publication> publicationList = dblpUser.getPublicationList();//TODO: Need to fetch publications on the basis of topic
 		KCitePower kCitePower = new KCitePower();
 		String author = dblpUser.getName();//This user is the author who's trust value has to be calculated
-		//topic = "";//TODO:Need to pass this as a parameter
+		//topic = "";//TODO Jisha:Need to pass this as a parameter
 
 		Connection connection = DB.getConnection();
 		PreparedStatement preparedStatement = util.SQLQueries.getPublicationInfo(connection, author,topic );
@@ -587,8 +638,10 @@ public class DBLPTrustProcessor {
 																		* kCitePower.getNumberOfCitationsP()
 																		+ publishingConstants.getAlphaWWW()
 																		* kCitePower.getNumberOfCitationsW();
-
-		publishingConstants.setFinalKPaperPublished(Math.ceil(kPaperPublished));
+		System.out.println("kPaperPublished"+kPaperPublished);
+		System.out.println("CEILED kPaperPublished"+Math.ceil(kPaperPublished));
+		publishingConstants.setFinalKPaperPublished(kPaperPublished);
+		System.out.println(publishingConstants.getkCitePower());
 		return publishingConstants;
 	}
 
@@ -701,16 +754,15 @@ public class DBLPTrustProcessor {
 
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
-		expertNames.add("Þórir Harðarson");
+		expertNames.add("Scott Gose");
 		String topic = "";
 		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
 				.expertTrustMatrix(expertNames,topic).get(0);
-		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel
-				.getDblpKnowledgeFactor();
+		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel.getDblpKnowledgeFactor();
+		System.out.println("dblpKnowledgeFactor--->"+dblpKnowledgeFactor.getkPaperPublished());
 		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
-
-		KPaperPublished kPaperPublished = dblpKnowledgeFactor
-				.getkPaperPublished();
+		System.out.println("dblpSocialFactor"+dblpSocialFactor);
+		KPaperPublished kPaperPublished = dblpKnowledgeFactor.getkPaperPublished();
 		//KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
 		// KCitePower kCitePower = kPaperPublished.getkCitePower();
 		System.out.println("Trust Value for Charles: "
@@ -719,7 +771,7 @@ public class DBLPTrustProcessor {
 		System.out.println("Value of KPaperPublished: "
 				+ kPaperPublished.getFinalKPaperPublished());
 		//		System.out.println("Value of coauthorships: "
-		//				+ kCoauthorship.getTimeScaledCoauthorship());
+		//			+ kCoauthorship.getTimeScaledCoauthorship());
 		//		System.out.println("Set of coauthorship edges: "
 		//				+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
 		//				.values());
