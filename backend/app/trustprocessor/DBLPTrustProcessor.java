@@ -139,8 +139,9 @@ public class DBLPTrustProcessor {
 
 			int i=1;
 			while(resultSetcoAuthor.next()){
-				if(Integer.parseInt(resultSet.getString("coauthorId")) != user.getId()){
+				if(Integer.parseInt(resultSetcoAuthor.getString("coauthorId")) != user.getId()){
 					CoAuthorShip coauthor = new CoAuthorShip();
+
 					coauthor.setAuthorName(name);
 					coauthor.setCoauthorid(Integer.parseInt(resultSetcoAuthor.getString("coauthorId")));
 					coauthor.setCoauthorName(resultSetcoAuthor.getString("coauthorName"));
@@ -152,13 +153,14 @@ public class DBLPTrustProcessor {
 					{
 						coauthor.getPublicationList().add(new Publication(Integer.parseInt(coAuthorPublications[j])));
 					}
+					user.getCoauthors().add(coauthor);
 				}
 
-
+				
 
 			}
 
-
+			
 		}
 
 		return user;
