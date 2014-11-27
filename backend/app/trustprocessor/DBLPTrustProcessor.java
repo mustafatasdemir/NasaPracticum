@@ -135,19 +135,19 @@ public class DBLPTrustProcessor {
 			user.setPublicationList(publicationList);
 			int authorId = user.getId();
 			PreparedStatement preparedStatementCoAuthors = util.SQLQueries.getCoAuthors(connection, authorId);
-			ResultSet resultSet1 = preparedStatement.executeQuery();
+			ResultSet resultSetcoAuthor= preparedStatementCoAuthors.executeQuery();
 
 			int i=1;
-			while(resultSet1.next()){
+			while(resultSetcoAuthor.next()){
 				if(Integer.parseInt(resultSet.getString("coauthorId")) != user.getId()){
 					CoAuthorShip coauthor = new CoAuthorShip();
 					coauthor.setAuthorName(name);
-					coauthor.setCoauthorid(Integer.parseInt(resultSet.getString("coauthorId")));
-					coauthor.setCoauthorName(resultSet.getString("coauthorName"));
+					coauthor.setCoauthorid(Integer.parseInt(resultSetcoAuthor.getString("coauthorId")));
+					coauthor.setCoauthorName(resultSetcoAuthor.getString("coauthorName"));
 					coauthor.setCoauthorshipid(i++);
 					coauthor.setCount(0);
 
-					String[] coAuthorPublications = resultSet.getString("publications").split(",");
+					String[] coAuthorPublications = resultSetcoAuthor.getString("publications").split(",");
 					for(int j=0;j<coAuthorPublications.length;j++)
 					{
 						coauthor.getPublicationList().add(new Publication(Integer.parseInt(coAuthorPublications[j])));
