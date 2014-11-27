@@ -218,4 +218,27 @@ public class SQLQueries {
 		
 		return returnStatement;
 	}
+	
+	/*
+	 * SQL to get all coAuthors
+	 */
+	public static PreparedStatement getCoAuthors(Connection connection,int authorId) throws Exception{
+		
+		String statement ="select a1.authorId coauthorId,a1.authorName coauthorName,group_concat(p.PublicationId) publications"+
+		 "from dblp.AuthorPublicationMap m1 , dblp.Author a1, dblp.Publication p,("+
+		"select m.* from dblp.AuthorPublicationMap m, dblp.Publication p"+
+		"where p.publicationId = m.publicationId"+
+		"and m.authorId = ?"+
+		") res "+
+		"where res.publicationId = m1.publicationId"+
+		"and m1.authorId = a1.authorId"+
+		"and m1.publicationId = p.publicationId"+
+		"group by a1.authorId,a1.authorName ";
+		
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		returnStatement.setInt(1, authorId);
+		//returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		return returnStatement;
+		
+	}
 }

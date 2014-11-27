@@ -71,6 +71,9 @@ public class CoAuthorShip {
 	}
 
 	public List<Publication> getPublicationList() {
+		if(publicationList==null){
+			return new ArrayList<Publication>();
+		}
 		return publicationList;
 	}
 
