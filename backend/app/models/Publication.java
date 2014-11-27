@@ -24,12 +24,11 @@ public class Publication {
 	private String keywords;
 	private List<String> tags;
 	
-	public Publication(int id) throws Exception{
+	public Publication(int id, Connection conn) throws Exception{
 		
 		
 		
-		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(connection, id );// Query to get all userInformation and set the user object
+		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(conn, id );// Query to get all userInformation and set the user object
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
 		resultSet.first();

@@ -159,7 +159,7 @@ public class DBLPTrustProcessor {
 			String[] publications = resultSet.getString("publications").split(",");
 			for(int i=0;i<publications.length;i++)
 			{
-				publicationList.add( new Publication(Integer.parseInt(publications[i])));
+				publicationList.add( new Publication(Integer.parseInt(publications[i]), connection));
 			}
 
 			user.setPublicationList(publicationList);
@@ -183,7 +183,7 @@ public class DBLPTrustProcessor {
 					String[] coAuthorPublications = resultSetcoAuthor.getString("publications").split(",");
 					for(int j=0;j<coAuthorPublications.length;j++)
 					{
-						Publication p = new Publication(Integer.parseInt(coAuthorPublications[j]));
+						Publication p = new Publication(Integer.parseInt(coAuthorPublications[j]), connection);
 						coauthor.getDate().add(p.getYear());
 						coauthor.getPublicationList().add(new Publication());
 						System.out.println("\npublications:   "+coauthor.getPublicationList().get(j).getPublicationTitle()+"---Year:     " +coauthor.getPublicationList().get(j).getYear());
