@@ -17,6 +17,7 @@ public class Publication {
 	private String note;
 	private String keywords;
 	private List<String> tags;
+	private String type;
 	
 	public int getPublicationId() {
 		return publicationId;
@@ -110,6 +111,14 @@ public class Publication {
 		super();
 	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if(o instanceof Publication) {

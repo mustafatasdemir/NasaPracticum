@@ -23,6 +23,7 @@ public class Publication {
 	private String note;
 	private String keywords;
 	private List<String> tags;
+	private String type;
 	
 	public Publication(int id, Connection conn) throws Exception{
 		
@@ -42,6 +43,7 @@ public class Publication {
 		this.publisher = resultSet.getString("publisher");
 		this.year = resultSet.getString("year");
 		this.publicationTitle =  resultSet.getString("publicationTitle");
+		this.type = resultSet.getString("type");
 		
 		
 	}
@@ -132,6 +134,14 @@ public class Publication {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public Publication() {

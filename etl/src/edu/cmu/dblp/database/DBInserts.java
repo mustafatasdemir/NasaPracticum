@@ -156,7 +156,8 @@ public class DBInserts {
 				+ "@@@" + publication.getPublisher()
 				+ "@@@" + publication.getNote()
 				+ "@@@" + publication.getKeywords()
-				+ "@@@" + publication.getTags() + "\n");
+				+ "@@@" + publication.getTags()
+				+ "@@@" + publication.getType()+ "\n");
 
 		if (publication instanceof Book) {
 			String editors = "";
