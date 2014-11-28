@@ -41,6 +41,7 @@ public class Publication {
 		this.publicationChannel = resultSet.getString("publicationChannel");
 		this.publisher = resultSet.getString("publisher");
 		this.year = resultSet.getString("year");
+		this.publicationTitle =  resultSet.getString("publicationTitle");
 		
 		
 	}
