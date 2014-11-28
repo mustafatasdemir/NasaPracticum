@@ -130,11 +130,11 @@ public class SQLQueries {
 					+" limit 100"
 					;*/
 			
-			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
 					+" where a.authorId = ? "
 					+" and a.authorId = map.authorId"
 					+" and map.publicationId = p.publicationId"
-					+" and ja.id = p.publicationId"
+					+" and map.authorId = a.authorId "
 					+" limit 100"
 					;
 
@@ -167,11 +167,11 @@ public class SQLQueries {
 					;
 			*/
 			
-			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map  "
 					+" where a.authorId = ? "
 					+" and a.authorId = map.authorId"
 					+" and map.publicationId = p.publicationId"
-					+" and ja.id = p.publicationId"
+					+" and map.authorId = a.authorId "
 					+" and p.publicationTitle like ? "
 					+" limit 100"
 					;
@@ -252,6 +252,8 @@ public class SQLQueries {
 		"and m1.publicationId = p.publicationId "+
 		"group by a1.authorId,a1.authorName ";
 		
+		
+		
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setInt(1, authorId);
 		//returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
@@ -267,10 +269,10 @@ public class SQLQueries {
 	
 public static PreparedStatement getAuthors(Connection connection,String topic) throws Exception{
 		
-	String statement = "select a.authorName from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+	String statement = "select a.authorName from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
 			+" where a.authorId = map.authorId "
 			+" and map.publicationId = p.publicationId "
-			+" and ja.id = p.publicationId "
+			+" and map.authorId = a.authorId "
 			+" and p.publicationTitle like ? "
 			+" limit 100"
 			;
