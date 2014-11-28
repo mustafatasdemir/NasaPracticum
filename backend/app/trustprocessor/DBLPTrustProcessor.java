@@ -784,26 +784,48 @@ public class DBLPTrustProcessor {
 
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
-		expertNames.add("Scott Gose");
-		String topic = "";
-		DBLPTrustModel dblpTrustModel = dblpTrustProcessor
-				.expertTrustMatrix(expertNames,topic).get(0);
-		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel.getDblpKnowledgeFactor();
-		System.out.println("dblpKnowledgeFactor--->"+dblpKnowledgeFactor.getkPaperPublished());
-		DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
-		System.out.println("dblpSocialFactor"+dblpSocialFactor);
-		KPaperPublished kPaperPublished = dblpKnowledgeFactor.getkPaperPublished();
-		//KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
-		// KCitePower kCitePower = kPaperPublished.getkCitePower();
-		System.out.println("Trust Value for Charles: "
-				+ dblpTrustModel.getTrustValue());
+		
+		
+		
+		String topic = "cloud";
+		
+		
+		
+		Connection connection = DB.getConnection();
+		PreparedStatement preparedStatement = util.SQLQueries.getAuthors(connection, topic );
 
-		System.out.println("Value of KPaperPublished: "
-				+ kPaperPublished.getFinalKPaperPublished());
-		//		System.out.println("Value of coauthorships: "
-		//			+ kCoauthorship.getTimeScaledCoauthorship());
-		//		System.out.println("Set of coauthorship edges: "
-		//				+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
-		//				.values());
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		while(resultSet.next()){
+			expertNames.add(resultSet.getString("authorName"));
+			
+			
+			
+			
+			DBLPTrustModel dblpTrustModel = dblpTrustProcessor
+					.expertTrustMatrix(expertNames,topic).get(0);
+			DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel.getDblpKnowledgeFactor();
+			System.out.println("dblpKnowledgeFactor--->"+dblpKnowledgeFactor.getkPaperPublished());
+			DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
+			System.out.println("dblpSocialFactor"+dblpSocialFactor);
+			KPaperPublished kPaperPublished = dblpKnowledgeFactor.getkPaperPublished();
+			KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
+			KCitePower kCitePower = kPaperPublished.getkCitePower();
+			System.out.println("Trust Value for Charles: "
+					+ dblpTrustModel.getTrustValue());
+
+			System.out.println("Value of KPaperPublished: "
+					+ kPaperPublished.getFinalKPaperPublished());
+					System.out.println("Value of coauthorships: "
+					+ kCoauthorship.getTimeScaledCoauthorship());
+					System.out.println("Set of coauthorship edges: "
+							+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
+							.values());
+			
+			
+		}
+		
+		
+		
 	}
 }

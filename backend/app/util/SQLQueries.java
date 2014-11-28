@@ -109,7 +109,7 @@ public class SQLQueries {
 		String statement = "";
 
 		if(topic.isEmpty() || topic == null){//Calls this query if topic is null
-			statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
+			/*statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
 					+"dblp. AuthorPublicationMap map," 
 					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
 					+" union all "
@@ -128,6 +128,14 @@ public class SQLQueries {
 					+" and map.publicationId = p.publicationId"
 					+" and ja.id = p.publicationId"
 					+" limit 100"
+					;*/
+			
+			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+					+" where a.authorId = ? "
+					+" and a.authorId = map.authorId"
+					+" and map.publicationId = p.publicationId"
+					+" and ja.id = p.publicationId"
+					+" limit 100"
 					;
 
 			//statement = "select * from dblp.Author a where a.authorName='Þórir Harðarson'";
@@ -137,7 +145,7 @@ public class SQLQueries {
 			return returnStatement;
 		}
 		else{
-			statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p, " 
+			/*statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p, " 
 					+"dblp. AuthorPublicationMap map, " 
 					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle " 
 					+" union all "
@@ -157,7 +165,16 @@ public class SQLQueries {
 					+" and ja.id = p.publicationId "
 					+" and p.publicationTitle like ? "
 					;
-
+			*/
+			
+			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+					+" where a.authorId = ? "
+					+" and a.authorId = map.authorId"
+					+" and map.publicationId = p.publicationId"
+					+" and ja.id = p.publicationId"
+					+" and p.publicationTitle like ? "
+					+" limit 100"
+					;
 			PreparedStatement returnStatement = connection.prepareStatement(statement);
 			returnStatement.setInt(1, authorId);
 			returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
@@ -238,6 +255,29 @@ public class SQLQueries {
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setInt(1, authorId);
 		//returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		return returnStatement;
+		
+	}
+	
+	/*
+	 * SQL to get all authors in a particular field
+	 * 
+	 * 
+	 */
+	
+public static PreparedStatement getAuthors(Connection connection,String topic) throws Exception{
+		
+	String statement = "select a.authorName from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map, "
+			+" where a.authorId = map.authorId "
+			+" and map.publicationId = p.publicationId "
+			+" and ja.id = p.publicationId "
+			+" and p.publicationTitle like ? "
+			+" limit 100"
+			;
+		
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		//returnStatement.setInt(1, authorId);
+		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
 		return returnStatement;
 		
 	}
