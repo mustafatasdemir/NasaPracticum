@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -29,6 +30,12 @@ import play.db.DB;
 public class DBLPTrustProcessor {
 	//Commented by Jisha :HashMap<String,DBLPUser> dblp;
 	TrustModelWeights trustModelWeights;
+
+	public static HashSet<DBLPUser> trustMatrix = new HashSet<DBLPUser>();//HashMap to hold the final trust scores
+	public static HashSet<DBLPUser> UserMap = new HashSet<DBLPUser>();//HashMap to hold the final trust scores
+
+	public static HashMap<Integer,List<DBLPUser>> publicationAuthorMap = new HashMap<Integer,List<DBLPUser>>();
+
 
 	public DBLPTrustProcessor() throws SAXException, ParserConfigurationException{
 		trustModelWeights = new TrustModelWeights();
@@ -126,7 +133,7 @@ public class DBLPTrustProcessor {
 		for(String name: expertNames) {
 			expertDBLPObjects.add(getDBLPUserFromName(name,topic,connection));
 		}
-	
+
 
 		DBLPTrustModel dblpTrustModel = null;
 		for (DBLPUser expertUser : expertDBLPObjects) {//Calculates trust for each DBLPUser
@@ -170,19 +177,19 @@ public class DBLPTrustProcessor {
 			//PreparedStatement preparedStatementCoAuthors = util.SQLQueries.getCoAuthors(connection1, authorId);
 			//ResultSet resultSetcoAuthor= preparedStatementCoAuthors.executeQuery();
 			Calendar end = Calendar.getInstance() ;
-			
+
 			System.out.println("coauthor    :"+(end.getTimeInMillis() - start.getTimeInMillis()));
 
 			int i=1;
-			
+
 			List<CoAuthorShip> coauthorList = new ArrayList<CoAuthorShip>();
-			
+
 			/*while(resultSetcoAuthor.next()){
 				System.out.println("coauthor id"+Integer.parseInt(resultSetcoAuthor.getString("coauthorId")));
 				CoAuthorShip coauthor = new CoAuthorShip();
-				
+
 				if(Integer.parseInt(resultSetcoAuthor.getString("coauthorId")) != user.getId()){
-					
+
 
 					coauthor.setAuthorName(name);
 					coauthor.setCoauthorid(Integer.parseInt(resultSetcoAuthor.getString("coauthorId")));
@@ -192,24 +199,24 @@ public class DBLPTrustProcessor {
 					System.out.println("coauthor:"+coauthor.getCoauthorName());
 
 					String[] coAuthorPublications = resultSetcoAuthor.getString("publications").split(",");
-					
+
 					List<Publication> coauthorPublicationList = new ArrayList<Publication>();
 					List<String> dateList = new ArrayList<String>();
-					
+
 					for(int j=0;j<coAuthorPublications.length;j++)
 					{
 						System.out.println(coAuthorPublications[j]);
 						Publication p = new Publication(Integer.parseInt(coAuthorPublications[j]), connection);
 						coauthorPublicationList.add(p);
 						dateList.add(p.getYear());
-						
+
 						System.out.println("\npublications:   "+p.getPublicationTitle()+"---Year:     " +p.getYear());
 					}
 					coauthor.setPublicationList(coauthorPublicationList);
 					coauthor.setDate(dateList);
 				}
-				
-				
+
+
 				coauthorList.add(coauthor);
 
 
@@ -257,11 +264,11 @@ public class DBLPTrustProcessor {
 
 		return null;
 	}*/
-	
-	
-	
-	
-	
+
+
+
+
+
 	/*
 	 * Method to calculate trust factor for the user
 	 */
@@ -271,40 +278,41 @@ public class DBLPTrustProcessor {
 		/*----------------------Knowledge Factor-----------------------------*/
 		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser,topic);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = new DBLPKnowledgeFactor();
-		
+
 		dblpKnowledgeFactor.setkPaperPublished(kPaperPublished);
 
 		dblpTrustModel.setDblpKnowledgeFactor(dblpKnowledgeFactor);
 		System.out.println("calculated knowledge factor:"+dblpKnowledgeFactor.getkPaperPublished().getFinalKPaperPublished());
 
-		
-		
-		
+
+
+
 		/*----------------------Social Factor-----------------------------*/
-		//DBLPSocialFactor dblpSocialFactor = new DBLPSocialFactor();
-		//KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser);
-		
+		DBLPSocialFactor dblpSocialFactor = new DBLPSocialFactor();
+		KCoauthorship kCoauthorship = calculateKCoauthorship(dblpUser);
 
 
-		//dblpSocialFactor.setkCoauthorship(kCoauthorship);
-		//dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
-		//System.out.println("calculated social factor:"+kCoauthorship.getTimeScaledCoauthorship());
 
-		/*
+		dblpSocialFactor.setkCoauthorship(kCoauthorship);
+		dblpTrustModel.setDblpSocialFactor(dblpSocialFactor);
+		System.out.println("calculated social factor:"+dblpSocialFactor.getkCoauthorship()
+				.getTimeScaledCoauthorship());
+
+
 		dblpTrustModel.setTrustValue(dblpSocialFactor.getkCoauthorship()
 				.getTimeScaledCoauthorship()
 				+ dblpKnowledgeFactor.getkPaperPublished()
-				.getFinalKPaperPublished());*/
-		dblpTrustModel.setTrustValue(
-				+ dblpKnowledgeFactor.getkPaperPublished()
 				.getFinalKPaperPublished());
+		/*dblpTrustModel.setTrustValue(
+				+ dblpKnowledgeFactor.getkPaperPublished()
+				.getFinalKPaperPublished());*/
 
 		return dblpTrustModel;
-		
-		
-		
-		
-		
+
+
+
+
+
 
 	}
 
@@ -412,27 +420,24 @@ public class DBLPTrustProcessor {
 		KCitePower kCitePower = new KCitePower();
 		String author = dblpUser.getName();//This user is the author who's trust value has to be calculated
 		int authorId = dblpUser.getId();
-		//topic = "";//TODO Jisha:Need to pass this as a parameter
-		
-		Calendar start = null;
-		Calendar end = null;
 
-		start = Calendar.getInstance();
-		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getPublicationInfo(connection, authorId,topic );
+		System.out.println(author);
+		System.out.println( dblpUser.getPublicationList().size());
 
-		ResultSet resultSet = preparedStatement.executeQuery();
-		end = Calendar.getInstance();
-		
-		System.out.println("Query calc: " + (end.getTimeInMillis() - start.getTimeInMillis()));
+		List<Publication> publicationList = dblpUser.getPublicationList();
 
-		while(resultSet.next()){//Looping over all publications
-			int numberOfCitations = Integer.parseInt(resultSet.getString("citationCount"));
+		for(Publication p : publicationList){
 
-			int publicationYear = resultSet.getString("year").equals("null") ? 0 : Integer.parseInt(resultSet.getString("year"));
+			//while(resultSet.next()){//Looping over all publications
+			//int numberOfCitations = Integer.parseInt(resultSet.getString("citationCount"));
+			int numberOfCitations = p.getCitationCount();
+
+			//int publicationYear = resultSet.getString("year").equals("null") ? 0 : Integer.parseInt(resultSet.getString("year"));
+			int publicationYear = Integer.parseInt(p.getYear());
 
 			/*-----------Calculation of Number of citations for article starts here ----------*/
-			if(resultSet.getString("type").equals("article")){
+			if(p.getType().equals("article")){
+				//if(resultSet.getString("type").equals("article")){
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
@@ -455,7 +460,7 @@ public class DBLPTrustProcessor {
 			}
 			/*-----------Calculation of Number of citations for article ends here----------*/
 			/*-----------Calculation of Number of citations for book starts here ----------*/
-			if(resultSet.getString("type").equals("book")){
+			if(p.getType().equals("book")){
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
 					.setNumOfBooksRecentNOX((publishingConstants
@@ -472,10 +477,13 @@ public class DBLPTrustProcessor {
 				}
 				kCitePower.setNumberOfCitationsB(kCitePower
 						.getNumberOfCitationsB() + numberOfCitations);
+
+
 			}
 			/*-----------Calculation of Number of citations for book ends here----------*/
 			/*-----------Calculation of Number of citations for www starts here----------*/
-			if(resultSet.getString("type").equals("webpage")){
+			if(p.getType().equals("webpage")){
+				//if(resultSet.getString("type").equals("webpage")){
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
@@ -497,8 +505,9 @@ public class DBLPTrustProcessor {
 			/*-----------Calculation of Number of citations for www ends here----------*/
 			/*-----------Calculation of Number of citations for bookchpater(Incollection) starts here----------*/
 
+			if(p.getType().equals("bookchapter")){
 
-			if (resultSet.getString("type").equals("bookchapter")) {
+				//if (resultSet.getString("type").equals("bookchapter")) {
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
@@ -517,11 +526,15 @@ public class DBLPTrustProcessor {
 				}
 				kCitePower.setNumberOfCitationsIC(kCitePower
 						.getNumberOfCitationsIC() + numberOfCitations);
+
+
+
 			}
 			/*-----------Calculation of Number of citations for bookchpater(Incollection) ends here----------*/
 			/*-----------Calculation of Number of citations for conferencepaper(Inproceedings) ends here----------*/
 
-			if (resultSet.getString("type").equals("conferencepaper")) {
+			if(p.getType().equals("conferencepaper")){
+				//if (resultSet.getString("type").equals("conferencepaper")) {
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
@@ -544,8 +557,8 @@ public class DBLPTrustProcessor {
 			}
 			/*-----------Calculation of Number of citations for conferencepaper(Inproceedings) ends here----------*/
 			/*-----------Calculation of Number of citations for phdthesis starts here----------*/
-
-			if (resultSet.getString("type").equals("phdthesis")) {
+			if(p.getType().equals("phdthesis")){
+				//if (resultSet.getString("type").equals("phdthesis")) {
 
 				if (publicationYear >= year - timeScale.getRecentYears()) {
 					publishingConstants
@@ -593,8 +606,8 @@ public class DBLPTrustProcessor {
 			}*/
 
 		}
-		
-		start = Calendar.getInstance();
+
+		//start = Calendar.getInstance();
 
 		kPaperPublished = publishingConstants.getAlphaArticle()
 				* (timeScale.gettRecent()
@@ -671,15 +684,10 @@ public class DBLPTrustProcessor {
 																		* kCitePower.getNumberOfCitationsP()
 																		+ publishingConstants.getAlphaWWW()
 																		* kCitePower.getNumberOfCitationsW();
-		
-		end = Calendar.getInstance();
-		
-		System.out.println("Knowledge Time: " + (end.getTimeInMillis()-start.getTimeInMillis()));
-		
-		System.out.println("kPaperPublished"+kPaperPublished);
-		System.out.println("CEILED kPaperPublished"+Math.ceil(kPaperPublished));
+
+
+
 		publishingConstants.setFinalKPaperPublished(kPaperPublished);
-		System.out.println(publishingConstants.getkCitePower());
 		return publishingConstants;
 	}
 
@@ -760,7 +768,7 @@ public class DBLPTrustProcessor {
 		return trustProcessor.getTrustValueFromName(name);
 	}*/
 
-/*public static void main(String args[]) throws Exception {
+	/*public static void main(String args[]) throws Exception {
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
 		expertNames.add("Þórir Harðarson");
@@ -788,57 +796,126 @@ public class DBLPTrustProcessor {
 
 	}*/
 
+
+
+
+	/*
+	 * Method to set the coAuthors 
+	 */
+	public static void setCoAuthors() throws Exception{
+		for(DBLPUser u:trustMatrix){
+
+			int i=0;
+			List<CoAuthorShip> coAuthorList = new ArrayList<CoAuthorShip>();
+			for(Publication p : u.getPublicationList()){//publications of the user
+
+				List<DBLPUser> coAuthors = publicationAuthorMap.get(p.getPublicationId());
+				for(DBLPUser c : coAuthors){
+					if(!coAuthorList.contains(c)){
+						CoAuthorShip coauthor = new CoAuthorShip();
+
+						coauthor.setAuthorName(u.getName());
+						coauthor.setCoauthorid(c.getId());
+						coauthor.setCoauthorName(c.getName());
+						coauthor.setCoauthorshipid(i++);
+						coauthor.setCount(0);
+
+
+						List<Publication> coauthorPublicationList = new ArrayList<Publication>();
+						List<String> dateList = new ArrayList<String>();
+
+						for(int j=0;j<c.getPublicationList().size();j++)//Getting all publications of the user
+						{
+							coauthorPublicationList.add(c.getPublicationList().get(j));
+							dateList.add(c.getPublicationList().get(j).getYear());
+
+						}
+						coauthor.setPublicationList(coauthorPublicationList);
+						coauthor.setDate(dateList);
+
+						coAuthorList.add(coauthor);
+
+
+					}
+
+
+				}
+
+
+			}
+			u.setCoauthors(coAuthorList);
+
+			UserMap.add(u);
+
+
+		}
+	}
+
+
+	/*
+	 * Method to create User Object and add it to HashSet
+	 */
+	public static void createUsers(String topic) throws Exception{
+
+
+
+		Connection connection = DB.getConnection();
+		PreparedStatement preparedStatement = util.SQLQueries.getAuthors(connection,topic );// Query to get all userInformation and set the user object
+		ResultSet resultSet = preparedStatement.executeQuery();
+
+
+		while(resultSet.next()){
+			DBLPUser user = new DBLPUser();
+			List<Publication> publicationList = new ArrayList<Publication>();
+
+			user.setId(Integer.parseInt(resultSet.getString("authorId")));
+			user.setName(resultSet.getString("authorName"));
+			String[] publications = resultSet.getString("publications").split(",");
+			for(int i=0;i<publications.length;i++)
+			{
+				publicationList.add( new Publication(Integer.parseInt(publications[i]), connection));
+				if(publicationAuthorMap.containsKey(Integer.parseInt(publications[i]))){
+					List<DBLPUser> userList = publicationAuthorMap.get(Integer.parseInt(publications[i]));
+					userList.add(user);
+					publicationAuthorMap.put(Integer.parseInt(publications[i]), userList);
+				}
+				else{
+					List<DBLPUser> userList = new ArrayList<DBLPUser>();
+					userList.add(user);
+					publicationAuthorMap.put(Integer.parseInt(publications[i]), userList);
+				}
+
+			}
+
+			user.setPublicationList(publicationList);
+			int authorId = user.getId();
+
+			trustMatrix.add(user);
+
+
+		}
+
+
+	}
+
 	public void testIt() throws Exception{
 
 		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
 		List<String> expertNames = new ArrayList<String>();
-		
-		
-		
+
+
+
 		String topic = "cloud";
-		
-		
-		
-		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getAuthors(connection, topic );
 
-		ResultSet resultSet = preparedStatement.executeQuery();
-		
-		while(resultSet.next()){
-			expertNames.add(resultSet.getString("authorName"));	
-			
-			
-		}
-		
-		ArrayList<DBLPTrustModel> dblpTrustModels = dblpTrustProcessor.expertTrustMatrix(expertNames,topic,connection);
-		
-		
-		for(DBLPTrustModel model : dblpTrustModels){
-			System.out.println(model.getDblpUser().getName() + " : " + model.getTrustValue());
-		}
-		
-		//DBLPTrustModel dblpTrustModel = dblpTrustProcessor.expertTrustMatrix(expertNames,topic);
-		
-//		DBLPKnowledgeFactor dblpKnowledgeFactor = dblpTrustModel.getDblpKnowledgeFactor();
-//		System.out.println("dblpKnowledgeFactor--->"+dblpKnowledgeFactor.getkPaperPublished());
-//		//DBLPSocialFactor dblpSocialFactor = dblpTrustModel.getDblpSocialFactor();
-//		//System.out.println("dblpSocialFactor"+dblpSocialFactor);
-//		KPaperPublished kPaperPublished = dblpKnowledgeFactor.getkPaperPublished();
-//		//KCoauthorship kCoauthorship = dblpSocialFactor.getkCoauthorship();
-//		KCitePower kCitePower = kPaperPublished.getkCitePower();
-//		System.out.println("Trust Value for Charles: "
-//				+ dblpTrustModel.getTrustValue());
+		createUsers(topic);//Jisha:Calling the method which creates user objects
 
-		/*System.out.println("Value of KPaperPublished: "
-				+ kPaperPublished.getFinalKPaperPublished());
-				//System.out.println("Value of coauthorships: "
-				//+ kCoauthorship.getTimeScaledCoauthorship());
-				System.out.println("Set of coauthorship edges: "
-						+ kCoauthorship.getCoauthorIdToSocialFactorFromCoauthor()
-						.values());*/
-		
-		
-		
-		
+		setCoAuthors();//Method to set coAuthors in the User object
+
+		for(DBLPUser k : UserMap ){
+			calculateDBLPTrustFactor(k,topic);//Calling the method to calculate Trust
+		}	
+
+
+
 	}
 }
