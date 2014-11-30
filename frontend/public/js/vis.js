@@ -241,7 +241,7 @@ RadialPlacement = function() {
 
 Network = function() {
   var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
-  width = 900;
+  width = 600;
   height = 600;
   allData = [];
   curLinksData = [];
@@ -275,14 +275,15 @@ Network = function() {
     linksG = vis1.append("g").attr("id", "links");
     nodesG = vis1.append("g").attr("id", "nodes");
     var text = d3.select(selection).append("text")
-    /*.attr("x", 20)
-    .attr("dy", 0)*/
-   // .style("text-anchor","end") 
-    .attr("startOffset","-300%")
-    .text('Publication list: ')
+    .attr("x", 20)
+    .attr("dy", 0)
+    .style("text-anchor","end") 
+    .attr("startOffset","3%")
+    .text(' ')
     .attr("font-family", "sans-serif")
     .attr("font-size", "40px")
     .attr("fill","blue");
+    
     force.size([width, height]);
     setLayout("force");
     setFilter("all");
@@ -515,7 +516,8 @@ Network = function() {
     }).style("stroke-width", 1.0);
     /*
     node.append("text").attr("dx", ".12").attr("dy", ".35").text(function(d) { return d.name; });*/
-    node.on("mouseover", showDetails).on("mouseout", hideDetails).on("click",function(d){d3.select("text").text(d.detail);});
+    node.on("mouseover", showDetails).on("mouseout", hideDetails)
+    .on("click",function(d){d3.select("text").html("<h3>"+d.artist+"'s Publication list:</h3><br>"+d.detail);});
     
     
     return node.exit().remove();
@@ -620,12 +622,38 @@ Network = function() {
     return d3.select(this).style("stroke", "blue").style("stroke-width", 2.0).append("title");
   };
   showDetails = function(d, i) {
-    var content;
+    var content="";
+    var tablecontent="";
     content = '<p class="main">' + d.group + ':</span></p>';
     content += '<hr class="tooltip-hr">';
-    content += '<p class="main">' + d.artist + '</span></p>';
+    content += '<p class="main"><b>' + d.artist + '</b></span></p>';
     content += '<hr class="tooltip-hr">';
-    content += '<p class="main">' + d.name + '</span></p>';
+    content += '<p class="main"><b>' + d.name + '</b></span></p>';
+    /*tablecontent += '<p>' + d.group + '</p>';
+	
+	tablecontent += '<p><b>' + d.artist + '</b></p>';
+	
+	tablecontent += '<p><b>' + d.name + '</b></p>';*/
+    tablecontent += '<table id=myTable border=1 ><tr>NAME</tr>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;<tr>PUBLICATION LIST</tr>';
+    node.style("stroke", function(n) {
+    	
+        if (n.searched || neighboring(d, n)) {
+        	
+        	
+        	tablecontent += '<tr><td width=20%>' + n.artist + '</td>';
+        	
+        	tablecontent += '<td width=80%>' + n.detail + '</td></tr>';
+           
+            function rightTopSidebarAd() {
+                return "<h3>"+d.artist+"'s CoAuthorship Detail:</h3><br>"+tablecontent;
+            } 
+            $(function(){
+                $('#rightTopSidebar').html(rightTopSidebarAd());
+            });
+           
+            
+        }
+      });
     tooltip.showTooltip(content, d3.event);
     if (link) {
       link.attr("stroke", function(l) {
@@ -711,6 +739,7 @@ $(function() {
     return myNetwork.toggleFilter(newFilter);
   });
   d3.selectAll("#sorts a").on("click", function(d) {
+	  $('#rightTopSidebar').html("");
     /*var newSort;
     newSort = d3.select(this).attr("id");
     activate("sorts", newSort);
@@ -721,8 +750,9 @@ $(function() {
   });
   d3.selectAll("#both a").on("click", function(d) {
 	//  json=JSON.parse(data);
+	  $('#rightTopSidebar').html("");
 		  return d3.json("assets/data/authorandpublication.json", function(json) {
-			  
+			 
 		      return myNetwork.updateData(json);
 		  });    
 	  
@@ -738,6 +768,7 @@ $(function() {
   $("#song_select").on("change", function(e) {
     var topic;
     topic = $(this).val();
+    $('#rightTopSidebar').html("");
     if (topic=="Cloud Computing" || topic=="All") {
     //Dynamic data load by directly calling the backend which supplies the data in json format itself. Uses Play's javascriptrouter.
     	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic)).ajax({
@@ -755,6 +786,9 @@ $(function() {
 	    var topic;
 	    var temp = new Array();
 	    topic = $("#topictextbox").val();
+	    jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic)).ajax({
+    		success : function(data) {
+    			return myNetwork.updateData(data);}});
 	   // alert(topic);
 	   
 //	 temp = topic.split(",");

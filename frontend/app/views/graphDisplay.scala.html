@@ -41,7 +41,7 @@
       <form name="searchmodal">
 <input type="radio" name="search_by" value="Topic" checked onClick="toggleDiv('bytopic','byauthor')"><b><i>&nbsp;&nbsp;TOPIC</i></b>
 <br>
-<div name="topic_search"  id="bytopic">
+<div name="topic_search"  id="bytopic" style = "float:right; width: 70%;">
         <p class="search_title">Enter Topics(Multiple topics separated by comma):  <input type="text" class="text-input" id="topictextbox" value="" /></p>
        <p>Sort by:
         <select id="sort_select">
@@ -62,7 +62,7 @@
       </div>
       
 <input type="radio" name="search_by" value="Author" onClick="toggleDiv('byauthor','bytopic')"><b><i>&nbsp;&nbsp;AUTHOR</i></b>
-<div name="Author_search" style="display:none;" id="byauthor">
+<div name="Author_search" style="display:none;float:right; width: 70%;" id="byauthor">
         <p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="topic" value="" /></p>
         <p>Sort by:
         <select id="sort_select">
@@ -83,7 +83,7 @@
       </div>
       
 </form>
- <div class="searchfooter">
+ <div class="searchfooter" style="float:right; width: 70%;">
        
         <button type="button" id="searchbtn" class="btn btn-primary">Search</button>
       </div>
@@ -128,19 +128,14 @@ function toggleCheckboxauthor(element)
         <h3>Topic</h3>
         <select id="song_select">
           <option value="auth_cloud_computing.json">Big Data</option>
-          <!--  <option value="sledgehammer_2_rounds.json">Machine Learning</option> -->
           <option value="auth_mach_learng.json">Machine Learning</option>
           <option value="Cloud Computing">Cloud Computing</option>
           <option value="All">All</option>
-          <!-- <option value="jolene.json">Earth Sciences</option>
-          <option value="helplessness_blues.json">Operating System</option>
-          <option value="she_said.json">Distributed System</option>
-          <option value="short_skirt.json">Modeling networks</option> -->
         </select>
 
       </div>
     <div id="controls">
-      <div id="layouts" class="control">
+      <!--  <div id="layouts" class="control">
         <h3>Layout</h3>
         <a id="force" class="active">Force Directed Network</a>
         <a id="radial">Authors</a>
@@ -150,30 +145,33 @@ function toggleCheckboxauthor(element)
         <a id="all" class="active">All</a>
         <a id="popular">Expert</a>
         <a id="obscure">Amateur</a>
-      </div>
+      </div>  -->
+    
       <div id="sorts" class="control">
-        <h3>Kinds of Network</h3>
+        <h3>Kind of Network</h3>
         <a id="songs" class="active">Publication Network</a>
       </div> 
       <div id="both" class="control">
       <h3>.</h3>
         <a id="links">Author and Publication Network</a>
       </div>
-      <div id="mapview" class="control">
-      <h3>Map View</h3>
-        <a id="map" href="/mapInstituteLocation">Map Institutes</a>
-      </div>
+      
      <!-- <div id="dynamic" class="control">
        <h3>.</h3>
         <a id="links">Real time Author Network</a>
       </div> -->
       <div id="search_section" class="control">
         <form id="search_form" action=""  method="post">
-          <p class="search_title">Search Author Name in Graph <input type="text" class="text-input" id="search" value="" /></p>
+          <p class="search_title">Search Author Name in Graph: <input type="text" class="text-input" id="search" value="" /></p>
         </form>
       </div> 
-    <div id="main" role="main">
-      <div id="vis"></div>
+      <div id="mapview" class="control">
+      <h3>Map View</h3>
+        <a id="map" href="/mapInstituteLocation">Map Institutes</a>
+      </div>
+    <div id="main"  role="main">
+      <div id="vis" style = "float:left; width: 55%;"></div>
+        <div style = "float:right; width: 40%;" id="rightTopSidebar"></div >
     </div>
     
     
