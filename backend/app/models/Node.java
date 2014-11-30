@@ -3,78 +3,108 @@ package models;
 // Model representing the nodes in the graphs being visualized
 public class Node {
 	
-	private String match;
+	private String trustScore;
+	private String topic;
 	private String name;
-	private String artist;
-	private String detail;
+	private String list;
 	private String id;
-	private String group;
-	private long playcount;
+	private String type;
+	private long citationCount;
+	
+	
 
-	public String getMatch() {
-		return match;
+	public String getTrustScore() {
+		return trustScore;
 	}
 
-	public void setMatch(String match) {
-		this.match = match;
+
+
+	public void setTrustScore(String trustScore) {
+		this.trustScore = trustScore;
 	}
+
+
+
+	public String getTopic() {
+		return topic;
+	}
+
+
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+
+
 
 	public String getName() {
 		return name;
 	}
 
+
+
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getArtist() {
-		return artist;
+
+
+	public String getList() {
+		return list;
 	}
 
-	public void setArtist(String artist) {
-		this.artist = artist;
+
+
+	public void setList(String list) {
+		this.list = list;
 	}
 
-	public String getDetail() {
-		return detail;
-	}
 
-	public void setDetail(String detail) {
-		this.detail = detail;
-	}
 
 	public String getId() {
 		return id;
 	}
 
+
+
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getGroup() {
-		return group;
+
+
+	public String getType() {
+		return type;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public long getPlaycount() {
-		return playcount;
+
+
+	public long getCitationCount() {
+		return citationCount;
 	}
 
-	public void setPlaycount(long playcount) {
-		this.playcount = playcount;
+
+
+	public void setCitationCount(long citationCount) {
+		this.citationCount = citationCount;
 	}
 
-	public Node(String match, String name, String artist, String detail, String id, String group, long playcount) {
-		this.match = match;
+
+
+	public Node(String trustScore, String topic, String name, String list, String id, String type, long citationCount) {
+		this.trustScore = trustScore;
+		this.topic = topic;
 		this.name = name;
-		this.artist = artist;
-		this.detail = detail;
+		this.list = list;
 		this.id = id;
-		this.group = group;
-		this.playcount = playcount;
+		this.type = type;
+		this.citationCount = citationCount;
 	}
 
 }
