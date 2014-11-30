@@ -136,14 +136,14 @@ public class DBInserts {
 			authorInsert.setAuthorName(publication.getAuthorNames().get(i));
 			authorInsert.setInstitution("");//Need to assign actual value if in future we start getting institution from the dataset
 
-			if(authors.containsKey(authorInsert.getAuthorName())){
-				authorId = authors.get(authorInsert.getAuthorName());
+			if(authors.containsKey(authorInsert.getAuthorName().toUpperCase())){
+				authorId = authors.get(authorInsert.getAuthorName().toUpperCase());
 			}
 			else{
-				authors.put(authorInsert.getAuthorName(), ++authorCounter);
+				authors.put(authorInsert.getAuthorName().toUpperCase(), ++authorCounter);
 				publicationAuthorFile.write(++publicationAuthorCounter + "@@@" + publicationId + "@@@" + authorCounter + "\n");
 			}
-			authorsList += authorInsert.getAuthorName() + ",";
+			authorsList += authorInsert.getAuthorName().toUpperCase() + ",";
 		}
 
 		publicationFile.write(publicationCounter + "@@@" 
