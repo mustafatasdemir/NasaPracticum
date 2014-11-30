@@ -241,7 +241,7 @@ RadialPlacement = function() {
 
 Network = function() {
   var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
-  width = 600;
+  width = 550;
   height = 600;
   allData = [];
   curLinksData = [];
@@ -361,14 +361,14 @@ Network = function() {
     return node.each(function(d) {
       var element, match;
       element = d3.select(this);
-      match = d.artist.toLowerCase().search(searchRegEx);
+      match = d.name.toLowerCase().search(searchRegEx);
       if (searchTerm.length > 0 && match >= 0) {
         element.style("fill", "#F38630").style("stroke-width", 2.0).style("stroke", "#555");
         return d.searched = true;
       } else {
         d.searched = false;
         return element.style("fill", function(d) {
-          return nodeColors(d.group);
+          return nodeColors(d.type);
         }).style("stroke-width", 1.0);
       }
     });
@@ -382,7 +382,7 @@ Network = function() {
   setupData = function(data) {
     var circleRadius, countExtent, nodesMap;
     countExtent = d3.extent(data.nodes, function(d) {
-      return d.playcount;
+      return d.citationCount;
     });
     circleRadius = d3.scale.sqrt().range([3, 12]).domain(countExtent);
     data.nodes.forEach(function(n) {
@@ -391,7 +391,7 @@ Network = function() {
       var randomnumber;
       n.x = randomnumber = Math.floor(Math.random() * width);
       n.y = randomnumber = Math.floor(Math.random() * height);
-      return n.radius = circleRadius(n.playcount);
+      return n.radius = circleRadius(n.citationCount);
     });
     
     
@@ -434,14 +434,14 @@ Network = function() {
     filteredNodes = allNodes;
     if (filter === "popular" || filter === "obscure") {
       playcounts = allNodes.map(function(d) {
-        return d.playcount;
+        return d.citationCount;
       }).sort(d3.ascending);
       cutoff = d3.quantile(playcounts, 0.5);
       filteredNodes = allNodes.filter(function(n) {
         if (filter === "popular") {
-          return n.playcount > cutoff;
+          return n.citationCount > cutoff;
         } else if (filter === "obscure") {
-          return n.playcount <= cutoff;
+          return n.citationCount <= cutoff;
         }
       });
     }
@@ -454,18 +454,18 @@ Network = function() {
       counts = {};
       links.forEach(function(l) {
         var _name, _name1;
-        if (counts[_name = l.source.artist] == null) {
+        if (counts[_name = l.source.name] == null) {
           counts[_name] = 0;
         }
-        counts[l.source.artist] += 1;
-        if (counts[_name1 = l.target.artist] == null) {
+        counts[l.source.name] += 1;
+        if (counts[_name1 = l.target.name] == null) {
           counts[_name1] = 0;
         }
-        return counts[l.target.artist] += 1;
+        return counts[l.target.name] += 1;
       });
       nodes.forEach(function(n) {
         var _name;
-        return counts[_name = n.artist] != null ? counts[_name] : counts[_name] = 0;
+        return counts[_name = n.name] != null ? counts[_name] : counts[_name] = 0;
       });
       artists = d3.entries(counts).sort(function(a, b) {
         return b.value - a.value;
@@ -474,7 +474,7 @@ Network = function() {
         return v.key;
       });
     } else {
-      counts = nodeCounts(nodes, "artist");
+      counts = nodeCounts(nodes, "name");
       artists = d3.entries(counts).sort(function(a, b) {
         return b.value - a.value;
       });
@@ -510,14 +510,14 @@ Network = function() {
     }).attr("r", function(d) {
       return d.radius;
     }).style("fill", function(d) {
-      return nodeColors(d.group);
+      return nodeColors(d.type);
     }).style("stroke", function(d) {
       return strokeFor(d);
     }).style("stroke-width", 1.0);
     /*
     node.append("text").attr("dx", ".12").attr("dy", ".35").text(function(d) { return d.name; });*/
     node.on("mouseover", showDetails).on("mouseout", hideDetails)
-    .on("click",function(d){d3.select("text").html("<h3>"+d.artist+"'s Publication list:</h3><br>"+d.detail);});
+    .on("click",function(d){d3.select("text").html("<h3>"+d.name+"'s Publication list:</h3><br>"+d.list);});
     
     
     return node.exit().remove();
@@ -610,13 +610,13 @@ Network = function() {
     k = alpha * 0.1;
     return function(d) {
       var centerNode;
-      centerNode = groupCenters(d.artist);
+      centerNode = groupCenters(d.name);
       d.x += (centerNode.x - d.x) * k;
       return d.y += (centerNode.y - d.y) * k;
     };
   };
   strokeFor = function(d) {
-    return d3.rgb(nodeColors(d.artist)).darker().toString();
+    return d3.rgb(nodeColors(d.name)).darker().toString();
   };
   showlinkDetails = function(d) {
     return d3.select(this).style("stroke", "blue").style("stroke-width", 2.0).append("title");
@@ -624,11 +624,11 @@ Network = function() {
   showDetails = function(d, i) {
     var content="";
     var tablecontent="";
-    content = '<p class="main">' + d.group + ':</span></p>';
-    content += '<hr class="tooltip-hr">';
-    content += '<p class="main"><b>' + d.artist + '</b></span></p>';
+    content = '<p class="main">' + d.type + ':</span></p>';
     content += '<hr class="tooltip-hr">';
     content += '<p class="main"><b>' + d.name + '</b></span></p>';
+    content += '<hr class="tooltip-hr">';
+    content += '<p class="main"><b>' + d.topic + '</b></span></p>';
     /*tablecontent += '<p>' + d.group + '</p>';
 	
 	tablecontent += '<p><b>' + d.artist + '</b></p>';
@@ -640,12 +640,12 @@ Network = function() {
         if (n.searched || neighboring(d, n)) {
         	
         	
-        	tablecontent += '<tr><td width=20%>' + n.artist + '</td>';
+        	tablecontent += '<tr><td width=20%>' + n.name + '</td>';
         	
-        	tablecontent += '<td width=80%>' + n.detail + '</td></tr>';
+        	tablecontent += '<td width=80%>' + n.list + '</td></tr>';
            
             function rightTopSidebarAd() {
-                return "<h3>"+d.artist+"'s CoAuthorship Detail:</h3><br>"+tablecontent;
+                return "<h3>"+d.name+"'s CoAuthorship Detail:</h3><br>"+tablecontent;
             } 
             $(function(){
                 $('#rightTopSidebar').html(rightTopSidebarAd());
@@ -673,11 +673,11 @@ Network = function() {
     link.each(function(l) {
       if (l.source === d || l.target === d) {
         l.attr("stroke", "red");
-        return content = '<p class="main">' + d.name + '</span></p>';
+        return content = '<p class="main">' + d.topic + '</span></p>';
       }
     });
     content += '<hr class="tooltip-hr">';
-    content += '<p class="main">' + d.artist + '</span></p>';
+    content += '<p class="main">' + d.name + '</span></p>';
     tooltip.showTooltip(content, d3.event);
     node.style("stroke", function(n) {
       if (n.searched || neighboring(d, n)) {
