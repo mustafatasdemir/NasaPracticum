@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DBLPUser {
@@ -27,6 +28,9 @@ public class DBLPUser {
 		this.publicationList = publicationList;
 	}
 	public List<CoAuthorShip> getCoauthors() {
+		if(coauthors == null){
+			return new ArrayList<CoAuthorShip>();
+		}
 		return coauthors;
 	}
 	public void setCoauthors(List<CoAuthorShip> coauthors) {

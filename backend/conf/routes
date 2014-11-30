@@ -5,11 +5,11 @@
 # Home page
 GET     /                                       controllers.Application.index()
 
-
+# GraphReturnObject
 GET     /getCoAuthorGraphData/:topic            controllers.GraphReturnObject.getCoAuthorGraphData(topic: String)
-GET     /getCoAuthorGraphDataMultipleTopic/:topic            controllers.GraphReturnObject.getCoAuthorGraphDataMultipleTopic(topic: String)
-GET     /getTest/            controllers.Application.testFor()
 
+# Map Schools
+GET		/getSchoolsByTopic/:topic				controllers.SchoolMap.GetSchoolsByTopic(topic: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                     controllers.Assets.at(path="/public", file)

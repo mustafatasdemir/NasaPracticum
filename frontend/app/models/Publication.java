@@ -17,6 +17,7 @@ public class Publication {
 	private String note;
 	private String keywords;
 	private List<String> tags;
+	private String type;
 	
 	public int getPublicationId() {
 		return publicationId;
@@ -104,6 +105,14 @@ public class Publication {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public Publication() {

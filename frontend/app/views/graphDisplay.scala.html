@@ -44,12 +44,12 @@
 <div name="topic_search"  id="bytopic" style = "float:right; width: 70%;">
         <p class="search_title">Enter Topics(Multiple topics separated by comma):  <input type="text" class="text-input" id="topictextbox" value="" /></p>
        <p>Sort by:
-        <select id="sort_select">
+        <select id="sort_select_topic">
           <option value="Publication">Publication Count</option>
           <option value="Citation">Citation Count</option>
         </select></p>
       <p>Limit to:
-        <select id="limit_select">
+        <select id="limit_select_topic">
         <option value="10">Less than 10</option>
         <option value="30">Less than 30</option>
           <option value="50">Less than 50</option>
@@ -57,20 +57,20 @@
         </select></p>
          <p><input name="trust" type="checkbox" onclick="toggleCheckbox('trustbyauthor')">Add Trust Score
          <div name="Author_trustsearch" style="display:none;" id="trustbyauthor">
-         Enter Author Name:  <input type="text" class="text-input" id="author" value=""></p> 
+         Enter Author Name:  <input type="text" class="text-input" id="topic_trust_author" value=""></p> 
       </div>
       </div>
       
 <input type="radio" name="search_by" value="Author" onClick="toggleDiv('byauthor','bytopic')"><b><i>&nbsp;&nbsp;AUTHOR</i></b>
-<div name="Author_search" style="display:none;float:right; width: 70%;" id="byauthor">
-        <p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="topic" value="" /></p>
+<div name="Author_search" style="display:none;" id="byauthor">
+        <p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="author" value="" /></p>
         <p>Sort by:
-        <select id="sort_select">
+        <select id="sort_select_author">
           <option value="Publication">Publication Count</option>
           <option value="Citation">Citation Count</option>
         </select></p>
       <p>Limit to:
-        <select id="limit_select">
+        <select id="limit_select_author">
         <option value="10">Less than 10</option>
         <option value="30">Less than 30</option>
           <option value="50">Less than 50</option>
@@ -78,7 +78,7 @@
         </select></p>
          <p><input name="trustauthor" type="checkbox" onclick="toggleCheckboxauthor('trustbyauthor1')">Add Trust Score
          <div name="Author_trustsearch" style="display:none;" id="trustbyauthor1">
-         Enter Author Name:  <input type="text" class="text-input" id="author" value=""></p> 
+         Enter Author Name:  <input type="text" class="text-input" id="author_trust_author" value=""></p> 
       </div>
       </div>
       
@@ -155,7 +155,6 @@ function toggleCheckboxauthor(element)
       <h3>.</h3>
         <a id="links">Author and Publication Network</a>
       </div>
-      
      <!-- <div id="dynamic" class="control">
        <h3>.</h3>
         <a id="links">Real time Author Network</a>
@@ -167,7 +166,7 @@ function toggleCheckboxauthor(element)
       </div> 
       <div id="mapview" class="control">
       <h3>Map View</h3>
-        <a id="map" href="/mapInstituteLocation">Map Institutes</a>
+        <a id="map" href="/mapSchoolsLocation">Map Institutes</a>
       </div>
     <div id="main"  role="main">
       <div id="vis" style = "float:left; width: 55%;"></div>

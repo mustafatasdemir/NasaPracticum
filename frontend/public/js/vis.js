@@ -784,11 +784,34 @@ $(function() {
   
   $("#searchbtn").on("click", function(e) {
 	    var topic;
-	    var temp = new Array();
-	    topic = $("#topictextbox").val();
-	    jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic)).ajax({
-    		success : function(data) {
-    			return myNetwork.updateData(data);}});
+	    var sort;
+	    var limit;
+	    
+	    if($('#sort_select_topic').is(":visible")){
+	    	sort = $('#sort_select_topic').val();
+	    }
+	    else{
+	    	sort = $('#sort_select_author').val();
+	    }
+	    
+	    if($('#limit_select_topic').is(":visible")){
+	    	limit = $('#limit_select_topic').val();
+	    }
+	    else{
+	    	limit = $('#limit_select_author').val();
+	    }
+	    
+	    if($('#topictextbox').is(":visible")){
+	    	topic = $("#topictextbox").val();
+	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic).concat("&", encodeURIComponent(sort).concat("&", encodeURIComponent(limit)))).ajax({
+	    		success : function(data) {
+	    			return myNetwork.updateData(data);
+	    			}
+		    });
+	    }
+	    else{
+	    	topic = $("#author").val();
+	    }
 	   // alert(topic);
 	   
 //	 temp = topic.split(",");

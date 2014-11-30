@@ -23,13 +23,13 @@ public class Publication {
 	private String note;
 	private String keywords;
 	private List<String> tags;
+	private String type;
 	
-	public Publication(int id) throws Exception{
+	public Publication(int id, Connection conn) throws Exception{
 		
 		
 		
-		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(connection, id );// Query to get all userInformation and set the user object
+		PreparedStatement preparedStatement = util.SQLQueries.getPublicationObject(conn, id );// Query to get all userInformation and set the user object
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
 		resultSet.first();
@@ -42,6 +42,8 @@ public class Publication {
 		this.publicationChannel = resultSet.getString("publicationChannel");
 		this.publisher = resultSet.getString("publisher");
 		this.year = resultSet.getString("year");
+		this.publicationTitle =  resultSet.getString("publicationTitle");
+		this.type = resultSet.getString("type");
 		
 		
 	}
@@ -132,6 +134,14 @@ public class Publication {
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public Publication() {

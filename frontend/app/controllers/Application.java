@@ -53,7 +53,7 @@ public class Application extends Controller {
 	    return ok(
 	        Routes.javascriptRouter("jsRoutes",
 	            controllers.routes.javascript.GraphDisplay.getCoAuthorGraphData(),
-	            controllers.routes.javascript.GraphDisplay.getInstituteByTopic()
+	            controllers.routes.javascript.GraphDisplay.getSchoolsByTopic()
 	        )
 	    );
 	}
