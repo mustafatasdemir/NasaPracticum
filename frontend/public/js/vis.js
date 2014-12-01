@@ -787,6 +787,7 @@ $(function() {
 	    var topic;
 	    var sort;
 	    var limit;
+	    var trust;
 	    
 	    if($('#sort_select_topic').is(":visible")){
 	    	sort = $('#sort_select_topic').val();
@@ -802,9 +803,16 @@ $(function() {
 	    	limit = $('#limit_select_author').val();
 	    }
 	    
+	    if($('#trustCheckboxTopic').is(":visible")){
+	    	trust = $('#trustCheckboxTopic').val().toString() === "on" ? "true" : "false";
+	    }
+	    else{
+	    	trust = "false";
+	    }
+	    
 	    if($('#topictextbox').is(":visible")){
 	    	topic = $("#topictextbox").val();
-	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(topic).concat("&", encodeURIComponent(sort).concat("&", encodeURIComponent(limit)))).ajax({
+	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(topic).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 	    		success : function(data) {
 	    			return myNetwork.updateData(data);
 	    			}
