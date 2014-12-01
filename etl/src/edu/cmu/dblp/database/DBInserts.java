@@ -138,6 +138,7 @@ public class DBInserts {
 
 			if(authors.containsKey(authorInsert.getAuthorName().toUpperCase())){
 				authorId = authors.get(authorInsert.getAuthorName().toUpperCase());
+				publicationAuthorFile.write(++publicationAuthorCounter + "@@@" + publicationId + "@@@" + authorId + "\n");
 			}
 			else{
 				authors.put(authorInsert.getAuthorName().toUpperCase(), ++authorCounter);
