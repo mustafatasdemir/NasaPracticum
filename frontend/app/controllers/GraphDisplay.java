@@ -16,14 +16,58 @@ public class GraphDisplay extends Controller {
 		return ok(graphDisplay.render());
 	}
 	
-	// Called to render Co-Author graph directly from the javascript. Takes a string parameter as the topic to be searched.
+	// Called to render Co-Author graph directly from the javascript. Takes a string parameter as the topic to be searched along with the limit.
 	// Calls the transform encoding helper as the topic parameter uses javascripts encodeuricomponent which outputs a 
 	// different format when compared to Java's URLEncoding/Decoding, which the frontend - backend applications use to transfer parameters 
-	public static Result getCoAuthorGraphData(String topic) throws UnsupportedEncodingException
+	public static Result getCoAuthorGraphDataByTopic(String topic) throws UnsupportedEncodingException
 	{
 		topic = util.Helper.TransformEncoding(topic);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA + "/" + topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
 		  
+		return ok(graphData);
+	}
+	
+	// Called to render AuthorPublication graph directly from the javascript. Takes a string parameter as the topic to be searched along with the limit.
+	// Calls the transform encoding helper as the topic parameter uses javascripts encodeuricomponent which outputs a 
+	// different format when compared to Java's URLEncoding/Decoding, which the frontend - backend applications use to transfer parameters 
+	public static Result getAuthorPublicationGraphDataByTopic(String topic) throws UnsupportedEncodingException
+	{
+		topic = util.Helper.TransformEncoding(topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
+
+		return ok(graphData);
+	}
+	
+	// Called to render Co-Publication graph directly from the javascript. Takes a string parameter as the topic to be searched along with the limit.
+	// Calls the transform encoding helper as the topic parameter uses javascripts encodeuricomponent which outputs a 
+	// different format when compared to Java's URLEncoding/Decoding, which the frontend - backend applications use to transfer parameters 
+	public static Result getCoPublicationGraphDataByTopic(String topic) throws UnsupportedEncodingException
+	{
+		topic = util.Helper.TransformEncoding(topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
+
+		return ok(graphData);
+	}
+	
+	// Called to render Co-Author graph directly from the javascript. Takes a string parameter as the author name to be searched along with the limit.
+	// Calls the transform encoding helper as the topic parameter uses javascripts encodeuricomponent which outputs a 
+	// different format when compared to Java's URLEncoding/Decoding, which the frontend - backend applications use to transfer parameters 
+	public static Result getCoAuthorGraphDataByAuthor(String author) throws UnsupportedEncodingException
+	{
+		author = util.Helper.TransformEncoding(author);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + author);
+
+		return ok(graphData);
+	}
+
+	// Called to render AuthorPublication graph directly from the javascript. Takes a string parameter as the author name to be searched along with the limit.
+	// Calls the transform encoding helper as the topic parameter uses javascripts encodeuricomponent which outputs a 
+	// different format when compared to Java's URLEncoding/Decoding, which the frontend - backend applications use to transfer parameters 
+	public static Result getAuthorPublicationGraphDataByAuthor(String author) throws UnsupportedEncodingException
+	{
+		author = util.Helper.TransformEncoding(author);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + author);
+
 		return ok(graphData);
 	}
 	
@@ -40,6 +84,5 @@ public class GraphDisplay extends Controller {
 		  
 		return ok(addressData);
 	}
-	
 	
 }

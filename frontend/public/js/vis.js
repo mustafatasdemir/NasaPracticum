@@ -804,7 +804,7 @@ $(function() {
 	    
 	    if($('#topictextbox').is(":visible")){
 	    	topic = $("#topictextbox").val();
-	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic).concat("&", encodeURIComponent(sort).concat("&", encodeURIComponent(limit)))).ajax({
+	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(topic).concat("&", encodeURIComponent(sort).concat("&", encodeURIComponent(limit)))).ajax({
 	    		success : function(data) {
 	    			return myNetwork.updateData(data);
 	    			}

@@ -38,7 +38,7 @@ public class Main {
 
 	private static final Logger logger = Logger.getLogger( Main.class.getName() );
 
-	private static String dblpExample = "/Users/ironstone/Downloads/dblp/dblp.xml";
+	private static String dblpExample = "G:\\My Documents\\CMU\\INI\\Coursework\\3rd Sem\\Practicum\\DBLP dataset\\dblp.xml";
 
 
 	public static void main(String[] args) {

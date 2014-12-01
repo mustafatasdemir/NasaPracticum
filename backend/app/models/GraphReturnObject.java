@@ -36,7 +36,7 @@ public class GraphReturnObject {
 	}
 	
 	// Sets the nodes and links to reflect Co-Authorship of the topic being queried. Topic 'All' returns all data  
-	public void CoAuthorGraphData(String parameter) throws SQLException
+	public void CoAuthorGraphDataByTopic(String parameter) throws SQLException
 	{
 		Connection connection = DB.getConnection();
 		PreparedStatement preparedStatement = null;
