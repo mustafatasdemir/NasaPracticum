@@ -258,7 +258,7 @@ public class SQLQueries {
 	 */
 	public static PreparedStatement getCoAuthorByAuthor(Connection connection,String author) throws Exception{
 
-		String statement =
+		/*String statement =
 				"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '~' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
 						+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
 						+"(select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
@@ -267,7 +267,19 @@ public class SQLQueries {
 						+"where a1.authorId = m1.authorId  "
 						+"and m1.publicationId = r1.publicationId "
 						+"and m1.publicationId = p1.publicationId "
-						+"group by a1.authorId " ;
+						+"group by a1.authorId " ;*/
+		//Commented above and added below to send publication ids instead of titles
+		String statement =
+		"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '~' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
+				+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
+				+"(select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
+				+"where  m.authorId = a.authorId "
+				+"and UPPER(a.authorName) = UPPER( ? )) r1 "
+				+"where a1.authorId = m1.authorId  "
+				+"and m1.publicationId = r1.publicationId "
+				+"and m1.publicationId = p1.publicationId "
+				+"group by a1.authorId " ;
+		
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
