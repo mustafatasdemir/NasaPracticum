@@ -109,27 +109,8 @@ public class SQLQueries {
 		String statement = "";
 
 		if(topic.isEmpty() || topic == null){//Calls this query if topic is null
-			/*statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p," 
-					+"dblp. AuthorPublicationMap map," 
-					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle" 
-					+" union all "
-					+"select dblp.Book.publicationId id,'book' type  from dblp.Book" 
-					+" union all "
-					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter" 
-					+" union all "
-					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper"
-					+" union all "
-					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis"
-					+" union all "
-					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage" 
-					+") ja"
-					+" where a.authorId = ? "
-					+" and a.authorId = map.authorId"
-					+" and map.publicationId = p.publicationId"
-					+" and ja.id = p.publicationId"
-					+" limit 100"
-					;*/
-			
+
+
 			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
 					+" where a.authorId = ? "
 					+" and a.authorId = map.authorId"
@@ -138,35 +119,14 @@ public class SQLQueries {
 					+" limit 100"
 					;
 
-			//statement = "select * from dblp.Author a where a.authorName='Þórir Harðarson'";
 
 			PreparedStatement returnStatement = connection.prepareStatement(statement);
 			returnStatement.setInt(1, authorId);
 			return returnStatement;
 		}
 		else{
-			/*statement ="select ja.type, p.* from dblp.Author a, dblp.Publication p, " 
-					+"dblp. AuthorPublicationMap map, " 
-					+"(select dblp.JournalArticle.publicationId id,'article' type  from dblp.JournalArticle " 
-					+" union all "
-					+"select dblp.Book.publicationId id,'book' type  from dblp.Book " 
-					+" union all "
-					+"select dblp.BookChapter.publicationId id,'bookchapter' type  from dblp.BookChapter " 
-					+" union all "
-					+"select dblp.ConferencePaper.publicationId id,'conferencepaper' type  from dblp.ConferencePaper "
-					+" union all "
-					+"select dblp.PhDThesis.publicationId id,'phdthesis' type  from dblp.PhDThesis "
-					+" union all "
-					+"select dblp.WebPage.publicationId id,'webpage' type  from dblp.WebPage " 
-					+") ja "
-					+" where a.authorId=? "
-					+" and a.authorId = map.authorId "
-					+" and map.publicationId = p.publicationId "
-					+" and ja.id = p.publicationId "
-					+" and p.publicationTitle like ? "
-					;
-			*/
-			
+
+
 			statement = "select p.* from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map  "
 					+" where a.authorId = ? "
 					+" and a.authorId = map.authorId"
@@ -221,67 +181,116 @@ public class SQLQueries {
 		returnStatement.setLong(1, id);
 		return returnStatement;
 	}
-	
+
 	public static PreparedStatement getSchoolsByTopic(Connection connection, String topic) throws SQLException
 	{
 		String statement = "select sch.schoolId, sch.schoolName, sch.schoolLocation, COUNT(*) as count from dblp.Publication as pub " + 
-						   "inner join dblp.PhdThesis as thesis on pub.publicationId = thesis.publicationId " +
-						   "inner join dblp.school as sch on thesis.schoolId = sch.schoolId " +
-						   "where pub.publicationTitle like ? " +
-						   "group by sch.schoolId, sch.schoolName, sch.schoolLocation";
-		
+				"inner join dblp.PhdThesis as thesis on pub.publicationId = thesis.publicationId " +
+				"inner join dblp.school as sch on thesis.schoolId = sch.schoolId " +
+				"where pub.publicationTitle like ? " +
+				"group by sch.schoolId, sch.schoolName, sch.schoolLocation";
+
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
-		
+
 		return returnStatement;
 	}
-	
+
 	/*
 	 * SQL to get all coAuthors
 	 */
 	public static PreparedStatement getCoAuthors(Connection connection,int authorId) throws Exception{
-		
-		String statement ="select a1.authorId coauthorId,a1.authorName coauthorName,group_concat(p.PublicationId) publications "+
-		 "from dblp.AuthorPublicationMap m1 , dblp.Author a1, dblp.Publication p,( "+
-		"select m.* from dblp.AuthorPublicationMap m, dblp.Publication p "+
-		"where p.publicationId = m.publicationId "+
-		"and m.authorId = ? "+
-		") res "+
-		"where res.publicationId = m1.publicationId "+
-		"and m1.authorId = a1.authorId "+
-		"and m1.publicationId = p.publicationId "+
-		"group by a1.authorId,a1.authorName ";
-		
-		
-		
+
+		String statement ="select a1.authorId coauthorId,a1.authorName coauthorName,group_concat(p.PublicationId) publications  "+
+				"from dblp.AuthorPublicationMap m1 , dblp.Author a1, dblp.Publication p,( "+
+				"select m.* from dblp.AuthorPublicationMap m, dblp.Publication p "+
+				"where p.publicationId = m.publicationId "+
+				"and m.authorId = ? "+
+				") res "+
+				"where res.publicationId = m1.publicationId "+
+				"and m1.authorId = a1.authorId "+
+				"and m1.publicationId = p.publicationId "+
+				"group by a1.authorId,a1.authorName ";
+
+
+
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setInt(1, authorId);
 		//returnStatement.setString(2, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
 		return returnStatement;
-		
+
 	}
-	
+
 	/*
 	 * SQL to get all authors in a particular field
 	 * 
 	 * 
 	 */
-	
-public static PreparedStatement getAuthors(Connection connection,String topic) throws Exception{
-		
-	String statement = "select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications  from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
-			+" where a.authorId = map.authorId "
-			+" and map.publicationId = p.publicationId "
-			+" and map.authorId = a.authorId "
-			+" and p.publicationTitle like ? "
-			+"group by a.authorId,a.authorName "
-			+" limit 100"
-			;
-		
+
+	public static PreparedStatement getAuthors(Connection connection,String topic) throws Exception{
+
+		String statement = "select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications  from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
+				+" where a.authorId = map.authorId "
+				+" and map.publicationId = p.publicationId "
+				+" and map.authorId = a.authorId "
+				+" and p.publicationTitle like ? "
+				+"group by a.authorId,a.authorName "
+				+" limit 100"
+				;
+
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
-		//returnStatement.setInt(1, authorId);
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
 		return returnStatement;
-		
+
 	}
+
+	/*
+	 * SQL to get the CoAuthorNodeInfo if queried by Author
+	 */
+	public static PreparedStatement getCoAuthorByAuthor(Connection connection,String author) throws Exception{
+
+		String statement =
+				"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '~' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
+						+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
+						+"(select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
+						+"where  m.authorId = a.authorId "
+						+"and UPPER(a.authorName) = UPPER( ? )) r1 "
+						+"where a1.authorId = m1.authorId  "
+						+"and m1.publicationId = r1.publicationId "
+						+"and m1.publicationId = p1.publicationId "
+						+"group by a1.authorId " ;
+
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		return returnStatement;
+
+
+
+	}
+
+	/*
+	 * SQL to get the CoAuthorLInkInfo if queried by Author
+	 */
+	public static PreparedStatement getCoAuthorLinkByAuthor(Connection connection,String author) throws Exception{
+
+		String statement =
+				"select p1.publicationId ,GROUP_CONCAT( a1.authorId ) Authors "
+						+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
+						+" (select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
+						+"where  m.authorId = a.authorId "
+						+"and UPPER(a.authorName) = UPPER('Jia Zhang')) r1 "
+						+"where a1.authorId = m1.authorId  "
+						+"and m1.publicationId = r1.publicationId "
+						+"and m1.publicationId = p1.publicationId "
+						+"group by p1.publicationId  " ;
+
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		return returnStatement;
+
+
+
+	}
+
+
 }
