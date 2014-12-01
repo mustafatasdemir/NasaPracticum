@@ -149,7 +149,9 @@ public class DBInserts {
 
 		/*-------------Insert into master table publication ends here ----------------------------*/
 
-
+		if(publication.getAuthorNames().size()==0){
+			return;
+		}
 
 		for (int i = 0; i < publication.getAuthorNames().size(); i++) {
 			//List < Author > author = new DBSelectQueries < Author > (Author.class, dBConnection, explicitColumnNames, "authorName='" + publication.getAuthorNames().get(i).replace("'", "\\'") + "'").getResults();
