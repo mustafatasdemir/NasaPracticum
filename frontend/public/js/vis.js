@@ -518,8 +518,8 @@ Network = function() {
     /*
     node.append("text").attr("dx", ".12").attr("dy", ".35").text(function(d) { return d.name; });*/
     node.on("mouseover", showDetails).on("mouseout", hideDetails)
-    .on("click",function(d){d3.select("text").html("<h3>"+d.name+"'s Publication list:</h3><br>"+d.list);});
-    
+  //  .on("click",function(d){d3.select("text").html("<h3>"+d.name+"'s Publication list:</h3><br>"+d.list);});
+    .on("click",function(d){d3.select("text").html("<h3>"+d.name+"'s Publication list:</h3><br>"+(d.list).split('@@@').join('<br/><br/>'));});
     
     return node.exit().remove();
   };
@@ -642,8 +642,16 @@ Network = function() {
         	
         	
         	tablecontent += '<tr><td width=20%>' + n.name + '</td>';
-        	
-        	tablecontent += '<td width=80%>' + n.list + '</td></tr>';
+        	var pubList=n.list;
+        	var pubSplit=pubList.split('@@@');
+        	tablecontent += '<td width=80%>' ;
+        	for (i = 0; i < pubSplit.length; i++) { 
+        		//if(pubSplit[i].replace(/\s/g,"") == ""){
+        	tablecontent += '<div style="border:1px solid grey">' + (i+1) +") "+pubSplit[i] + '</div>';}
+        		//}
+        	//tablecontent += '<td width=80%>' + n.list + '</td></tr>';
+        	tablecontent += '</td></tr>';
+        	//tablecontent += '<td width=80%>' + n.list + '</td></tr>';
            
             function rightTopSidebarAd() {
                 return "<h3>"+d.name+"'s CoAuthorship Detail:</h3><br>"+tablecontent;

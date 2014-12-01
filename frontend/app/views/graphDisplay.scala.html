@@ -62,7 +62,7 @@
       </div>
       
 <input type="radio" name="search_by" value="Author" onClick="toggleDiv('byauthor','bytopic')"><b><i>&nbsp;&nbsp;AUTHOR</i></b>
-<div name="Author_search" style="display:none;" id="byauthor">
+<div name="Author_search" style="display:none;float:right; width: 70%;" id="byauthor">
         <p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="author" value="" /></p>
         <p>Sort by:
         <select id="sort_select_author">
@@ -110,14 +110,14 @@ function fullName(form) {
 function toggleCheckbox(element)
 {
 	if (searchmodal.trust.checked) 
-		$("#"+element).show();
+		$("#"+element).hide();
 	else
 		$("#"+element).hide();
 }
 function toggleCheckboxauthor(element)
 {
 	if (searchmodal.trustauthor.checked) 
-		$("#"+element).show();
+		$("#"+element).hide();
 	else
 		$("#"+element).hide();
 }

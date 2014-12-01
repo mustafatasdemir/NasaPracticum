@@ -22,7 +22,7 @@ public class SQLQueries {
 		//Commented above and added below to send publication ids instead of publication titles
 		String statement = "select rel.authorId,"
 				+ "(select au.authorName from dblp.Author as au where au.authorId = rel.authorId) as AuthorName,"
-				+ "GROUP_CONCAT((select CONCAT(p.publicationTitle, ' (', p.Year, ')') from dblp.Publication as p where p.publicationId = rel.publicationId) SEPARATOR '~') as PublicationList,"
+				+ "GROUP_CONCAT((select CONCAT(p.publicationTitle, ' (', p.Year, ')') from dblp.Publication as p where p.publicationId = rel.publicationId) SEPARATOR '@@@') as PublicationList,"
 				+ "COUNT(rel.publicationId) as PublicationCount "
 				+ "from dblp.AuthorPublicationMap as rel "
 				+ "where rel.publicationId in ("
@@ -272,7 +272,7 @@ public class SQLQueries {
 						+"group by a1.authorId " ;*/
 		//Commented above and added below to send publication ids instead of titles
 		String statement =
-		"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '~' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
+		"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '@@@' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
 				+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
 				+"(select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
 				+"where  m.authorId = a.authorId "
