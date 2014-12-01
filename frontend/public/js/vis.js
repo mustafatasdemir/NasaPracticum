@@ -804,7 +804,7 @@ $(function() {
 	    }
 	    
 	    if($('#trustCheckboxTopic').is(":visible")){
-	    	trust = $('#trustCheckboxTopic').val().toString() === "on" ? "true" : "false";
+	    	trust = $('input[name="trust"]:checked').length > 0 ? "true" : "false";
 	    }
 	    else{
 	    	trust = "false";
