@@ -858,12 +858,12 @@ public class DBLPTrustProcessor {
 	/*
 	 * Method to create User Object and add it to HashSet
 	 */
-	public static void createUsers(String topic) throws Exception{
+	public static void createUsers(String topic, Integer limit) throws Exception{
 
 
 
 		Connection connection = DB.getConnection();
-		PreparedStatement preparedStatement = util.SQLQueries.getAuthors(connection,topic );// Query to get all userInformation and set the user object
+		PreparedStatement preparedStatement = util.SQLQueries.getAuthors(connection,topic,  limit);// Query to get all userInformation and set the user object
 		ResultSet resultSet = preparedStatement.executeQuery();
 
 
@@ -901,11 +901,9 @@ public class DBLPTrustProcessor {
 
 	}
 	
-	public void setTrustRelatedObjects() throws Exception{
+	public void setTrustRelatedObjects(String topic, Integer limit) throws Exception{
 
-		String topic = "cloud";
-
-		createUsers(topic);//Jisha:Calling the method which creates user objects
+		createUsers(topic, limit);//Jisha:Calling the method which creates user objects
 
 		setCoAuthors();//Method to set coAuthors in the User object
 		

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import play.libs.Json;
 import play.mvc.*;
+import trustprocessor.DBLPTrustProcessor;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -21,7 +22,21 @@ public class GraphReturnObject extends Controller{
 	{
 		parameter = URLDecoder.decode(parameter, "UTF-8");
 		models.GraphReturnObject graphReturnObject = new models.GraphReturnObject();
-		graphReturnObject.CoAuthorGraphDataByTopic(parameter);
+		
+		String[] params = parameter.split("&");
+		
+		if(params[3].equals("true")){
+			try {
+				DBLPTrustProcessor proc = new DBLPTrustProcessor();
+				proc.setTrustRelatedObjects(params[0], Integer.parseInt(params[2]));
+				graphReturnObject = proc.retrieveTrustBasedGraph(params[0]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			graphReturnObject.CoAuthorGraphDataByTopic(parameter);
+		}
 	    
 	    if (graphReturnObject.nodes == null) {
 	      return notFound("No data found");

@@ -236,7 +236,7 @@ public class SQLQueries {
 	 * 
 	 */
 
-	public static PreparedStatement getAuthors(Connection connection,String topic) throws Exception{
+	public static PreparedStatement getAuthors(Connection connection,String topic, Integer limit) throws Exception{
 
 		String statement = "select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications  from dblp.Author a, dblp.Publication p ,dblp. AuthorPublicationMap map "
 				+" where a.authorId = map.authorId "
@@ -244,11 +244,12 @@ public class SQLQueries {
 				+" and map.authorId = a.authorId "
 				+" and p.publicationTitle like ? "
 				+"group by a.authorId,a.authorName "
-				+" limit 100"
+				+" limit ?"
 				;
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
+		returnStatement.setInt(2, limit);
 		return returnStatement;
 
 	}
