@@ -195,7 +195,7 @@ public class SQLQueries {
 	{
 		String statement = "select sch.schoolId, sch.schoolName, sch.schoolLocation, COUNT(*) as count from dblp.Publication as pub " + 
 				"inner join dblp.PhdThesis as thesis on pub.publicationId = thesis.publicationId " +
-				"inner join dblp.school as sch on thesis.schoolId = sch.schoolId " +
+				"inner join dblp.School as sch on thesis.schoolId = sch.schoolId " +
 				"where pub.publicationTitle like ? " +
 				"group by sch.schoolId, sch.schoolName, sch.schoolLocation "
 				+ "limit 10";
