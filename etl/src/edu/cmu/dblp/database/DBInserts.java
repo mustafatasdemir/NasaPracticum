@@ -1,12 +1,12 @@
 package edu.cmu.dblp.database;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +16,19 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import edu.cmu.dblp.model.*;//Importing all the models
+import edu.cmu.dblp.model.Author;
+import edu.cmu.dblp.model.Book;
+import edu.cmu.dblp.model.BookChapter;
+import edu.cmu.dblp.model.BookChapterData;
+import edu.cmu.dblp.model.Conference;
+import edu.cmu.dblp.model.ConferencePaper;
+import edu.cmu.dblp.model.Journal;
+import edu.cmu.dblp.model.JournalArticle;
+import edu.cmu.dblp.model.MetaData;
+import edu.cmu.dblp.model.PhdThesis;
+import edu.cmu.dblp.model.Publication;
+import edu.cmu.dblp.model.School;//Importing all the models
+import edu.cmu.dblp.model.WebPage;
 
 public class DBInserts {
 	/*
@@ -27,6 +39,8 @@ public class DBInserts {
 	static HashMap<String, Integer> authors = null;
 	static HashMap<String, School> schools = null;
 	static HashMap<String, Journal> journals = null;
+
+	static HashMap<String, Integer> citations = null;
 
 	int publicationCounter = 0;
 	int authorCounter = 0;
@@ -56,6 +70,10 @@ public class DBInserts {
 	static BufferedWriter schoolFile = null;
 	static BufferedWriter phdThesisFile = null;
 	static BufferedWriter webPageFile = null;
+	
+	static BufferedReader citationsFile = null;
+
+	static int citationCounter = 0;
 
 
 	public DBInserts(){
@@ -85,6 +103,8 @@ public class DBInserts {
 			schoolFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/school.csv"),"UTF-8"));
 			phdThesisFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/phd.csv"),"UTF-8"));
 			webPageFile = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("csv/webPage.csv"),"UTF-8"));
+
+			citationsFile = new BufferedReader(new InputStreamReader(new FileInputStream("csv/citations.txt")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -92,12 +112,18 @@ public class DBInserts {
 		authors = new HashMap<String, Integer>();
 		schools = new HashMap<String, School>();
 		journals = new HashMap<String, Journal>();
+		citations = new HashMap<String, Integer>();
 	}
 
 	private static DBInserts instance = null;
 	public static DBInserts getInstance() {
 		if(instance == null) {
 			instance = new DBInserts();
+			try {
+				fillCitationsMap();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return instance;
 	}
@@ -145,6 +171,11 @@ public class DBInserts {
 				publicationAuthorFile.write(++publicationAuthorCounter + "@@@" + publicationId + "@@@" + authorCounter + "\n");
 			}
 			authorsList += authorInsert.getAuthorName().toUpperCase() + ",";
+		}
+
+		if(citations.containsKey(publication.getPublicationTitle())){
+			publication.setCitationCount(citations.get(publication.getPublicationTitle()));
+			//System.out.println(++citationCounter);
 		}
 
 		publicationFile.write(publicationCounter + "@@@" 
@@ -315,6 +346,30 @@ public class DBInserts {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void fillCitationsMap() throws IOException{
+		String line = "";
+		
+		int counter = 0;
+		String title = "";
+		
+		while ((line = citationsFile.readLine()) != null) {
+			if(line.trim().length() != 0){
+				if(line.startsWith("#*")){
+					counter = 0;
+					title = line.substring(2);
+				}
+				else if(line.startsWith("#%")){
+					counter++;
+				}
+			}
+			else{
+				if(!citations.containsKey(title)){
+					citations.put(title, counter);
+				}
+			}
+	    }
 	}
 
 

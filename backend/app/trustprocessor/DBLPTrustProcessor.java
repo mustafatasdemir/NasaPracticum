@@ -18,6 +18,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import models.CoAuthorShip;
 import models.DBLPUser;
+import models.GraphReturnObject;
+import models.Link;
+import models.Node;
 import models.Publication;
 
 import org.xml.sax.SAXException;
@@ -109,7 +112,7 @@ public class DBLPTrustProcessor {
 		for (DBLPUser developer : developerList) {
 
 			DBLPTrustModel dblpTrustModel = new DBLPTrustModel();
-			dblpTrustModel = calculateDBLPTrustFactor(developer,context);
+			dblpTrustModel = calculateDBLPTrustFactor(developer);
 			dblpTrustModel.setDblpUser(developer);
 			developerNameMappedToTrustModelValue.put(developer,
 					dblpTrustModel);
@@ -137,7 +140,7 @@ public class DBLPTrustProcessor {
 
 		DBLPTrustModel dblpTrustModel = null;
 		for (DBLPUser expertUser : expertDBLPObjects) {//Calculates trust for each DBLPUser
-			dblpTrustModel = calculateDBLPTrustFactor(expertUser,topic);
+			dblpTrustModel = calculateDBLPTrustFactor(expertUser);
 			dblpTrustModel.setDblpUser(expertUser);			
 			expertTrustModelList.add(dblpTrustModel);
 		}
@@ -272,11 +275,11 @@ public class DBLPTrustProcessor {
 	/*
 	 * Method to calculate trust factor for the user
 	 */
-	public DBLPTrustModel calculateDBLPTrustFactor(DBLPUser dblpUser, String topic) throws Exception {
+	public DBLPTrustModel calculateDBLPTrustFactor(DBLPUser dblpUser) throws Exception {
 		DBLPTrustModel dblpTrustModel = new DBLPTrustModel();
 
 		/*----------------------Knowledge Factor-----------------------------*/
-		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser,topic);
+		KPaperPublished kPaperPublished = calculateKPaperPublished(dblpUser);
 		DBLPKnowledgeFactor dblpKnowledgeFactor = new DBLPKnowledgeFactor();
 
 		dblpKnowledgeFactor.setkPaperPublished(kPaperPublished);
@@ -411,7 +414,7 @@ public class DBLPTrustProcessor {
 	/*
 	 * Method to get the trust value based on number of papers published and citation count
 	 */
-	private KPaperPublished calculateKPaperPublished(DBLPUser dblpUser, String topic) throws Exception {
+	private KPaperPublished calculateKPaperPublished(DBLPUser dblpUser) throws Exception {
 		double kPaperPublished = 0;
 
 		KPaperPublished publishingConstants = new KPaperPublished();
@@ -897,25 +900,87 @@ public class DBLPTrustProcessor {
 
 
 	}
-
-	public void testIt() throws Exception{
-
-		DBLPTrustProcessor dblpTrustProcessor = new DBLPTrustProcessor();
-		List<String> expertNames = new ArrayList<String>();
-
-
+	
+	public void setTrustRelatedObjects() throws Exception{
 
 		String topic = "cloud";
 
 		createUsers(topic);//Jisha:Calling the method which creates user objects
 
 		setCoAuthors();//Method to set coAuthors in the User object
+		
+	}
+	
+	public GraphReturnObject retrieveTrustBasedGraph(String topic) throws Exception{
+		
+		GraphReturnObject results = new GraphReturnObject();
+		
+		// This will prevent two-way relations of the same authors (mirror case in short)
+		HashMap<String, Long> linkMap = new HashMap<String, Long>();
+		
+		String edge = "";
+		String mirrorEdge = "";
 
 		for(DBLPUser k : UserMap ){
-			calculateDBLPTrustFactor(k,topic);//Calling the method to calculate Trust
+			DBLPTrustModel model = calculateDBLPTrustFactor(k);//Calling the method to calculate Trust
+			results.getNodes().add(new Node(String.valueOf(model.getTrustValue()), topic, k.getName(), constructPublicationns(k.getPublicationList()), String.valueOf(k.getId()), "Author", getCitationCountOfAuthor(k)));
+			
+			for (CoAuthorShip coAuth : k.getCoauthors()) {
+				edge = coAuth.getUserid() + "," + coAuth.getCoauthorid();
+				mirrorEdge = coAuth.getCoauthorid() + "," + coAuth.getUserid();
+				if(linkMap.containsKey(edge)){
+					linkMap.put(edge, linkMap.get(edge).longValue() + 1);
+				}
+				else if(linkMap.containsKey(mirrorEdge)){
+					linkMap.put(mirrorEdge, linkMap.get(mirrorEdge).longValue() + 1);
+				}
+				else{
+					linkMap.put(edge, 1L);
+				}
+			}
+		}
+		
+		for (String key : linkMap.keySet()) {
+			String[] link = key.split(",");
+			results.getLinks().add(new Link(link[0], link[1], linkMap.get(key)));
+		}
+		
+		
+		return results;
+		
+	}
+
+	public void testIt() throws Exception{
+
+		for(DBLPUser k : UserMap ){
+			calculateDBLPTrustFactor(k);//Calling the method to calculate Trust
 		}	
 
 
 
+	}
+	
+	public String constructPublicationns(List<Publication> publications){
+		String list = "";
+		for (Publication publication : publications) {
+			list = list += publication.getPublicationTitle() + ",";
+		}
+		return removeLastChar(list);
+	}
+	
+	public long getCitationCountOfAuthor(DBLPUser user){
+		long count = 0;
+		for (Publication pub : user.getPublicationList()) {
+			count += pub.getCitationCount();
+		}
+		return count;
+	}
+
+
+	public static String removeLastChar(String s) {
+		if (s == null || s.length() == 0) {
+			return s;
+		}
+		return s.substring(0, s.length()-1);
 	}
 }

@@ -17,6 +17,14 @@ public class GraphReturnObject {
 	public List<Node> nodes;
 	public List<Link> links;
 
+	public List<Node> getNodes() {
+		return nodes;
+	}
+
+	public List<Link> getLinks() {
+		return links;
+	}
+
 	public GraphReturnObject() {
 		// TODO Auto-generated constructor stub
 	}
