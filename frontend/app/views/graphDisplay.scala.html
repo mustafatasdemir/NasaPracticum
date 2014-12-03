@@ -42,45 +42,39 @@
 <input type="radio" name="search_by" value="Topic" checked onClick="toggleDiv('bytopic','byauthor')"><b><i>&nbsp;&nbsp;TOPIC</i></b>
 <br>
 <div name="topic_search"  id="bytopic" style = "float:right; width: 70%;">
-        <p class="search_title">Enter Topics(Multiple topics separated by comma):  <input type="text" class="text-input" id="topictextbox" value="" /></p>
-       <p>Sort by:
-        <select id="sort_select_topic">
-          <option value="Publication">Publication Count</option>
-          <option value="Citation">Citation Count</option>
-        </select></p>
-      <p>Limit to:
-        <select id="limit_select_topic">
-        <option value="10">Less than 10</option>
+	<p class="search_title">Enter Topics(Multiple topics separated by comma):  <input type="text" class="text-input" id="topictextbox" value="" /></p>
+    <div id = "sortbytopic"><p>Sort by:
+    <select id="sort_select_topic">
+    	<option value="Publication">Publication Count</option>
+        <option value="Citation">Citation Count</option>
+    </select></p></div>
+    <p>Limit to:
+    <select id="limit_select_topic">
+    	<option value="10">Less than 10</option>
         <option value="30">Less than 30</option>
-          <option value="50">Less than 50</option>
-          <option value="100">Less than 100</option>
-        </select></p>
-         <p><input name="trust" type="checkbox" onclick="toggleCheckbox('trustbyauthor')">Add Trust Score
-         <div name="Author_trustsearch" style="display:none;" id="trustbyauthor">
-         Enter Author Name:  <input type="text" class="text-input" id="topic_trust_author" value=""></p> 
-      </div>
-      </div>
+        <option value="50">Less than 50</option>
+        <option value="100">Less than 100</option>
+    </select></p>
+    <p><input name="trust" type="checkbox">Add Trust Score</p>
+</div>
       
 <input type="radio" name="search_by" value="Author" onClick="toggleDiv('byauthor','bytopic')"><b><i>&nbsp;&nbsp;AUTHOR</i></b>
 <div name="Author_search" style="display:none;float:right; width: 70%;" id="byauthor">
-        <p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="author" value="" /></p>
-        <p>Sort by:
-        <select id="sort_select_author">
-          <option value="Publication">Publication Count</option>
-          <option value="Citation">Citation Count</option>
-        </select></p>
-      <p>Limit to:
-        <select id="limit_select_author">
-        <option value="10">Less than 10</option>
-        <option value="30">Less than 30</option>
-          <option value="50">Less than 50</option>
-          <option value="100">Less than 100</option>
-        </select></p>
-         <p><input name="trustauthor" type="checkbox" onclick="toggleCheckboxauthor('trustbyauthor1')">Add Trust Score
-         <div name="Author_trustsearch" style="display:none;" id="trustbyauthor1">
-         Enter Author Name:  <input type="text" class="text-input" id="author_trust_author" value=""></p> 
-      </div>
-      </div>
+	<p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="author" value="" /></p>
+    <p>Sort by:
+    <select id="sort_select_author">
+    	<option value="Publication">Publication Count</option>
+        <option value="Citation">Citation Count</option>
+    </select></p>
+    <p>Limit to:
+    	<select id="limit_select_author">
+        	<option value="10">Less than 10</option>
+        	<option value="30">Less than 30</option>
+          	<option value="50">Less than 50</option>
+          	<option value="100">Less than 100</option>
+        </select>
+    </p>
+</div>
       
 </form>
  <div class="searchfooter" style="float:right; width: 70%;">
@@ -89,14 +83,7 @@
       </div>
  </div>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script>
-function toggleDiv(divId1,divId2) {
-	   $("#"+divId1).show();
-	   $("#"+divId2).hide();
-	   	
-	}
 
-</script>
 <SCRIPT LANGUAGE="JavaScript">
 function fullName(form) {
     for (var i = 0; i < form.search_by.length; i++) {
@@ -106,20 +93,6 @@ function fullName(form) {
     }
     alert("You chose " + form.search_by[i].value + ".")
     document.getElementById('bytopic').style.display = "block";
-}
-function toggleCheckbox(element)
-{
-	if (searchmodal.trust.checked) 
-		$("#"+element).hide();
-	else
-		$("#"+element).hide();
-}
-function toggleCheckboxauthor(element)
-{
-	if (searchmodal.trustauthor.checked) 
-		$("#"+element).hide();
-	else
-		$("#"+element).hide();
 }
 </SCRIPT>
       
@@ -147,21 +120,21 @@ function toggleCheckboxauthor(element)
         <a id="obscure">Amateur</a>
       </div>  -->
     
-      <div id="sorts" class="control">
+      <div id="coauthorgraphdiv" class="control">
         <h3>Type of Graph</h3>
-        <a id="songs" class="active">Publication Network</a>
+        <a id="coauthor" class="active">Author Network</a>
       </div> 
-      <div id="both" class="control">
+      <div id="authorpublicationgraphdiv" class="control">
       <h3>.</h3>
-        <a id="links">Author and Publication Network</a>
+        <a id="authorpublication">Author and Publication Network</a>
       </div>
-     <!-- <div id="dynamic" class="control">
+     <div id="copublicationgraphdiv" class="control">
        <h3>.</h3>
-        <a id="links">Real time Author Network</a>
-      </div> -->
+        <a id="copublication">Publication Network</a>
+      </div>
       <div id="search_section" class="control">
         <form id="search_form" action=""  method="post">
-          <p class="search_title">Search Author Name in Graph: <input type="text" class="text-input" id="search" value="" /></p>
+          <p class="search_title">Graph Node: <input type="text" class="text-input" id="search" value="" /></p>
         </form>
       </div> 
       <div id="mapview" class="control">
@@ -169,7 +142,10 @@ function toggleCheckboxauthor(element)
         <a id="map" href="/mapSchoolsLocation">Map Institutes</a>
       </div>
     <div id="main"  role="main">
-      <div id="vis" style = "float:left; width: 50%;"></div>
+    	<div id="vis" style = "float:left; width: 50%;"></div>
+      	<div id="loadingimagediv" style = "float:left; height: 5%; width: 5%;" hidden="true">
+      		<img src='@routes.Assets.at("images/loading.gif")'>
+      	</div>
         <div style = "float:right; width: 40%;" id="rightTopSidebar"></div >
     </div>
     

@@ -240,7 +240,7 @@ RadialPlacement = function() {
 };
 
 Network = function() {
-  var allData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
+  var allData, coAuthorData, authorPublicationData, coPublicationData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
   width = 550;
   height = 600;
   allData = [];
@@ -253,7 +253,7 @@ Network = function() {
   link = null;
   layout = "force";
   filter = "all";
-  sort = "songs";
+  sort = "coauthor";
   groupCenters = null;
   force = d3.layout.force();
   nodeColors = d3.scale.category20();
@@ -747,16 +747,19 @@ $(function() {
     activate("filters", newFilter);
     return myNetwork.toggleFilter(newFilter);
   });
-  d3.selectAll("#sorts a").on("click", function(d) {
-	  $('#rightTopSidebar').html("");
-    /*var newSort;
-    newSort = d3.select(this).attr("id");
-    activate("sorts", newSort);
-    return myNetwork.toggleSort(newSort);*/
-	  return d3.json("assets/data/publications.json", function(json) {
-	      return myNetwork.updateData(json);
-	  });    
+  
+  $("#coauthor").on("click", function(){
+	  return myNetwork.updateData(coAuthorData);
   });
+  
+  $("#authorpublication").on("click", function(){
+	  return myNetwork.updateData(authorPublicationData);
+  });
+  
+  $("#copublication").on("click", function(){
+	  return myNetwork.updateData(coPublicationData);
+  });
+  
   d3.selectAll("#both a").on("click", function(d) {
 	//  json=JSON.parse(data);
 	  $('#rightTopSidebar').html("");
@@ -766,33 +769,9 @@ $(function() {
 		  });    
 	  
   });
-  d3.selectAll("#dynamic a").on("click", function(d) {
-	  json=JSON.parse(data);
-		 // return d3.json("assets/data/authorandpublication.json", function(json) {
-			  
-		      return myNetwork.updateData(json);
-		 // });    
-	  
-  });
-  $("#song_select").on("change", function(e) {
-    var topic;
-    topic = $(this).val();
-    $('#rightTopSidebar').html("");
-    if (topic=="Cloud Computing" || topic=="All") {
-    //Dynamic data load by directly calling the backend which supplies the data in json format itself. Uses Play's javascriptrouter.
-    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphData(encodeURIComponent(topic)).ajax({
-    		success : function(data) {
-    			return myNetwork.updateData(data);}});
-      }
-    else{
-    return d3.json("assets/data/" + topic, function(json) {
-      return myNetwork.updateData(json);
-    });
-    }
-  });
   
   $("#searchbtn").on("click", function(e) {
-	    var topic;
+	    var parameter;
 	    var sort;
 	    var limit;
 	    var trust;
@@ -811,44 +790,103 @@ $(function() {
 	    	limit = $('#limit_select_author').val();
 	    }
 	    
-	    if($('#trustCheckboxTopic').is(":visible")){
-	    	trust = $('input[name="trust"]:checked').length > 0 ? "true" : "false";
+	    if($('#limit_select_topic').is(":visible")){
+	    	trust = $('input[name="trust"]')[0].checked ? "true" : "false";
 	    }
 	    else{
 	    	trust = "false";
 	    }
 	    
 	    if($('#topictextbox').is(":visible")){
-	    	topic = $("#topictextbox").val();
-	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(topic).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+	    	parameter = $("#topictextbox").val();
+	    	if(parameter === ""){
+	    		parameter = "All";
+	    	}
+	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 	    		success : function(data) {
-	    			return myNetwork.updateData(data);
+	    			$("#loadingimagediv").hide();
+	    			coAuthorData = data;
+	    			myNetwork.updateData(coAuthorData);
+	    			
+	    			if(parameter.indexOf(",") == -1){
+	    				jsRoutes.controllers.GraphDisplay.getAuthorPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+		    	    		success : function(data) {
+		    	    			$("#loadingimagediv").hide();
+		    	    			authorPublicationData = data;
+		    	    			return;
+		    	    		}
+		    		    });
+		    			
+		    			jsRoutes.controllers.GraphDisplay.getCoPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+		    	    		success : function(data) {
+		    	    			$("#loadingimagediv").hide();
+		    	    			coPublicationData = data;
+		    	    			return;
+		    	    		}
+		    		    });
 	    			}
+	    			return;
+	    		}
 		    });
 	    }
 	    else{
-	    	topic = $("#author").val();
+	    	parameter = $("#author").val();
+	    	if(parameter !== ""){
+	    		jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByAuthor(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+		    		success : function(data) {
+		    			$("#loadingimagediv").hide();
+		    			coAuthorData = data;
+		    			myNetwork.updateData(coAuthorData);
+		    			
+		    			jsRoutes.controllers.GraphDisplay.getAuthorPublicationGraphDataByAuthor(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+		    	    		success : function(data) {
+		    	    			$("#loadingimagediv").hide();
+		    	    			authorPublicationData = data;
+		    	    			return;
+		    	    		}
+		    		    });
+		    			return;
+		    		}
+			    });
+	    	}
+	    	
 	    }
-	   // alert(topic);
-	   
-//	 temp = topic.split(",");
-//	 
-//	 var pairs = [];
-//	 for (var key in temp)
-//	 if (temp.hasOwnProperty(key))
-//	 pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(temp[key]));
-//	  pairs.join('&');
-//	  alert(pairs);
-	  });
+  });
+  
   $("#search").keyup(function() {
     var searchTerm;
     searchTerm = $(this).val();
     return myNetwork.updateSearch(searchTerm);
   });
-  //return d3.json("assets/data/auth_cloud_computing.json", function(json) {
-    //return myNetwork("#vis", json);
-  //});
-  		//json=JSON.parse(data);
+  
+  $('input[name="trust"]').change(function () {
+	  if($('input[name="trust"]')[0].checked){
+		  $("#sortbytopic").hide();
+	  }
+	  else{
+		  $("#sortbytopic").show();
+	  }
+  });
+  
+  $(document).ajaxStart(function() {
+	  $("#loadingimagediv").show();
+	});
+
+	$(document).ajaxStop(function() {
+	  $("#loadingimagediv").hide();
+	});
+	
+	toggleDiv = function (divId1,divId2) {
+		$("#"+divId1).show();
+		$("#"+divId2).hide();
+		if(divId1 === "byauthor"){
+			$("#copublicationgraphdiv").hide();
+		}
+		else{
+			$("#copublicationgraphdiv").show();
+		}
+	}
+  
   return d3.json("assets/data/AuthAuth_all.json", function(json) {
 	    return myNetwork("#vis", json);
 	  });

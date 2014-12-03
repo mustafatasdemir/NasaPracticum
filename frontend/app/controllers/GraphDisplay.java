@@ -22,7 +22,7 @@ public class GraphDisplay extends Controller {
 	public static Result getCoAuthorGraphDataByTopic(String topic) throws UnsupportedEncodingException
 	{
 		topic = util.Helper.TransformEncoding(topic);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_CO_AUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
 		  
 		return ok(graphData);
 	}
@@ -33,7 +33,7 @@ public class GraphDisplay extends Controller {
 	public static Result getAuthorPublicationGraphDataByTopic(String topic) throws UnsupportedEncodingException
 	{
 		topic = util.Helper.TransformEncoding(topic);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_AUTHOR_PUBLICATION_GRAPH_DATA_BY_TOPIC + "/" + topic);
 
 		return ok(graphData);
 	}
@@ -44,7 +44,7 @@ public class GraphDisplay extends Controller {
 	public static Result getCoPublicationGraphDataByTopic(String topic) throws UnsupportedEncodingException
 	{
 		topic = util.Helper.TransformEncoding(topic);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + topic);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_CO_PUBLICATION_GRAPH_DATA_BY_TOPIC + "/" + topic);
 
 		return ok(graphData);
 	}
@@ -55,7 +55,7 @@ public class GraphDisplay extends Controller {
 	public static Result getCoAuthorGraphDataByAuthor(String author) throws UnsupportedEncodingException
 	{
 		author = util.Helper.TransformEncoding(author);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + author);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_CO_AUTHOR_GRAPH_DATA_BY_AUTHOR + "/" + author);
 
 		return ok(graphData);
 	}
@@ -66,7 +66,7 @@ public class GraphDisplay extends Controller {
 	public static Result getAuthorPublicationGraphDataByAuthor(String author) throws UnsupportedEncodingException
 	{
 		author = util.Helper.TransformEncoding(author);
-		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_COAUTHOR_GRAPH_DATA_BY_TOPIC + "/" + author);
+		final JsonNode graphData = APICall.callAPI(util.Constants.HOSTNAME + util.Constants.GET_AUTHOR_PUBLICATION_GRAPH_DATA_BY_AUTHOR + "/" + author);
 
 		return ok(graphData);
 	}

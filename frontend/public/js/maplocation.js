@@ -28,11 +28,10 @@ function failureCB(errorCode) {
 google.setOnLoadCallback(init);
 
 $(function() {
-	$("#searchtopic").focusout(function() {
-	    var topic = $(this).val();
+	$("#buttonsearchtopic").on("click", function(e) {
+	    var topic = $("#searchtopic").val();
 	    if(topic!="")
 	    	{
-	    		//window.alert(topic);
 	    		jsRoutes.controllers.GraphDisplay.getSchoolsByTopic(encodeURIComponent(topic)).ajax({
 	    			success : function(data) {
 	    					for(var i = 0; i < data.length; i++) {
