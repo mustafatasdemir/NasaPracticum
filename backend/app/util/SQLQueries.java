@@ -258,7 +258,7 @@ public class SQLQueries {
 	/*
 	 * SQL to get the CoAuthorNodeInfo if queried by Author
 	 */
-	public static PreparedStatement getCoAuthorByAuthor(Connection connection,String author) throws Exception{
+	public static PreparedStatement getCoAuthorByAuthor(Connection connection,String author,String sort, int limit) throws Exception{
 
 		/*String statement =
 				"select a1.authorId,a1.authorName,GROUP_CONCAT( concat(p1.publicationTitle, '(',p1.year,')') SEPARATOR '~' ) PublicationList,count(*) PublicationCount ,SUM(p1.citationCount) citationCount "
@@ -285,6 +285,9 @@ public class SQLQueries {
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		returnStatement.setString(2, (sort.isEmpty() ? "1" : ("p1."+sort)));
+		returnStatement.setInt(3, limit);
+		
 		return returnStatement;
 
 
@@ -294,21 +297,27 @@ public class SQLQueries {
 	/*
 	 * SQL to get the CoAuthorLInkInfo if queried by Author
 	 */
-	public static PreparedStatement getCoAuthorLinkByAuthor(Connection connection,String author) throws Exception{
+	public static PreparedStatement getCoAuthorLinkByAuthor(Connection connection,String author,String sort, int limit) throws Exception{
 
 		String statement =
 				"select p1.publicationId ,GROUP_CONCAT( a1.authorId ) Authors "
 						+"from dblp.Author a1, dblp.AuthorPublicationMap m1, dblp.Publication p1, "
 						+" (select publicationId from dblp.AuthorPublicationMap m,dblp.Author a "
 						+"where  m.authorId = a.authorId "
-						+"and UPPER(a.authorName) = UPPER('Jia Zhang')) r1 "
+						+"and UPPER(a.authorName) = UPPER( ? )) r1 "
 						+"where a1.authorId = m1.authorId  "
 						+"and m1.publicationId = r1.publicationId "
 						+"and m1.publicationId = p1.publicationId "
-						+"group by p1.publicationId  " ;
+						+"group by p1.publicationId  " 
+						+"order by ? "
+                        +"limit ? "
+						;
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		returnStatement.setString(2, (sort.isEmpty() ? "1" : ("p1."+sort)));
+		returnStatement.setInt(3, limit);
+
 		return returnStatement;
 
 
