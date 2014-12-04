@@ -65,7 +65,6 @@ CREATE INDEX school_index ON School(schoolId, schoolName);
 commit;
 
 ALTER TABLE `dblp`.`AuthorPublicationMap`
-DROP INDEX `idx_publication_id` ,
 ADD INDEX `idx_publication_id` (`publicationId` ASC, `authorId` ASC);
 
 commit;
