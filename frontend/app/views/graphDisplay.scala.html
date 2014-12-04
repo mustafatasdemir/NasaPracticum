@@ -26,6 +26,32 @@
   <!-- end CSS-->
 
   <script src='@routes.Assets.at("js/libs/modernizr-2.0.6.min.js")'></script>
+  <script>
+  $(document).ready(function() {
+	    function close_accordion_section() {
+	        $('.accordion .accordion-section-title').removeClass('active');
+	        $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
+	    }
+	 
+	    $('.accordion-section-title').click(function(e) {
+	        // Grab current anchor value
+	        var currentAttrValue = $(this).attr('href');
+	 
+	        if($(e.target).is('.active')) {
+	            close_accordion_section();
+	        }else {
+	            close_accordion_section();
+	 
+	            // Add active class to section title
+	            $(this).addClass('active');
+	            // Open up the hidden content panel
+	            $('.accordion ' + currentAttrValue).slideDown(300).addClass('open'); 
+	        }
+	 
+	        e.preventDefault();
+	    });
+	});
+  </script>
 </head>
 
 <body>
@@ -34,11 +60,16 @@
     <header>
     <h1>Scientific Collaboration Network</h1>
     <p>Researchers have been collaborating to make scientific breakthroughs. In this project, we aim to visualize and analyze 
-    researchers' past collaboration history and base on that, help to recommend potential collaborators.
+    researchers' past collaboration history and base on that, help to recommend potential collaborators.(Below is a sample co-author graph for cloud computing)
     </p>
     </header>
- <div class="modal-body">
-      <form name="searchmodal">
+    <div class="accordion">
+    <div class="accordion-section">
+        <a class="accordion-section-title" href="#accordion-1">Search Panel</a>
+         
+        <div id="accordion-1" class="accordion-section-content">
+            
+              <form name="searchmodal">
 <input type="radio" name="search_by" value="Topic" checked onClick="toggleDiv('bytopic','byauthor')"><b><i>&nbsp;&nbsp;TOPIC</i></b>
 <br>
 <div name="topic_search"  id="bytopic" style = "float:right; width: 70%;">
@@ -82,6 +113,55 @@
         <button type="button" id="searchbtn" class="btn btn-primary">Search</button>
       </div>
  </div>
+            
+            </div><!--end .accordion-section-content-->
+    </div><!--end .accordion-section-->
+</div><!--end .accordion-->
+<!--  <div class="modal-body">
+      <form name="searchmodal">
+<input type="radio" name="search_by" value="Topic" checked onClick="toggleDiv('bytopic','byauthor')"><b><i>&nbsp;&nbsp;TOPIC</i></b>
+<br>
+<div name="topic_search"  id="bytopic" style = "float:right; width: 70%;">
+	<p class="search_title">Enter Topics(Multiple topics separated by comma):  <input type="text" class="text-input" id="topictextbox" value="" /></p>
+    <div id = "sortbytopic"><p>Sort by:
+    <select id="sort_select_topic">
+    	<option value="Publication">Publication Count</option>
+        <option value="Citation">Citation Count</option>
+    </select></p></div>
+    <p>Limit to:
+    <select id="limit_select_topic">
+    	<option value="10">Less than 10</option>
+        <option value="30">Less than 30</option>
+        <option value="50">Less than 50</option>
+        <option value="100">Less than 100</option>
+    </select></p>
+    <p><input name="trust" type="checkbox">Add Trust Score</p>
+</div>
+      
+<input type="radio" name="search_by" value="Author" onClick="toggleDiv('byauthor','bytopic')"><b><i>&nbsp;&nbsp;AUTHOR</i></b>
+<div name="Author_search" style="display:none;float:right; width: 70%;" id="byauthor">
+	<p class="search_title"> Enter Author Name:  <input type="text" class="text-input" id="author" value="" /></p>
+    <p>Sort by:
+    <select id="sort_select_author">
+    	<option value="Publication">Publication Count</option>
+        <option value="Citation">Citation Count</option>
+    </select></p>
+    <p>Limit to:
+    	<select id="limit_select_author">
+        	<option value="10">Less than 10</option>
+        	<option value="30">Less than 30</option>
+          	<option value="50">Less than 50</option>
+          	<option value="100">Less than 100</option>
+        </select>
+    </p>
+</div>
+      
+</form>
+ <div class="searchfooter" style="float:right; width: 70%;">
+       
+        <button type="button" id="searchbtn" class="btn btn-primary">Search</button>
+      </div>
+ </div> -->
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -128,10 +208,10 @@ function fullName(form) {
       <h3>.</h3>
         <a id="authorpublication">Author and Publication Network</a>
       </div>
-     <div id="copublicationgraphdiv" class="control">
+     <!-- <div id="copublicationgraphdiv" class="control">
        <h3>.</h3>
         <a id="copublication">Publication Network</a>
-      </div>
+      </div> -->
       <div id="search_section" class="control">
         <form id="search_form" action=""  method="post">
           <p class="search_title">Graph Node: <input type="text" class="text-input" id="search" value="" /></p>
