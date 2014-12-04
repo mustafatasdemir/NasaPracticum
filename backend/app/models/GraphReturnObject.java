@@ -193,7 +193,8 @@ public class GraphReturnObject {
 			
 			for(int i = 0; (i < publications.size() && limiter < limit); i++, limiter++)
 			{
-				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), "JishaSQL", String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
+				String authorNames = getAuthorNamesForPublication(connection, publications.get(i).getPublicationId());
+				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), authorNames, String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
 				nodes.add(publicationNode);
 				if(links == null)
 				{
@@ -208,6 +209,21 @@ public class GraphReturnObject {
 			preparedStatement.close();
 			connection.close();
 		}
+	}
+
+	private String getAuthorNamesForPublication(Connection connection, int publicationId) throws Exception {
+		String authorNames = "";
+		
+		PreparedStatement preparedStatement = util.SQLQueries.getAuthorInfo(connection, publicationId);
+		
+		ResultSet resultSet = preparedStatement.executeQuery();
+		
+		while(resultSet.next())
+		{
+			authorNames += "@@@" + resultSet.getString("authorName");
+		}
+		preparedStatement.close();
+		return authorNames.substring(3);
 	}
 
 	public void CoAuthorGraphDataByAuthor(String parameter) throws NumberFormatException, Exception
