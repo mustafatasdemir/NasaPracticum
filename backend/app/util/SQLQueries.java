@@ -352,7 +352,7 @@ public class SQLQueries {
 						+"and m1.publicationId = r1.publicationId "
 						+"and m1.publicationId = p1.publicationId "
 						+"group by p1.publicationId  " 
-						+"order by ? "
+						+"order by ? desc"
 						+"limit ? "
 						;
 
