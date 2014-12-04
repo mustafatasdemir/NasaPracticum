@@ -16,12 +16,28 @@ public class GraphReturnObject {
 	
 	public List<Node> nodes;
 	public List<Link> links;
+	
+	
+
+	public void setNodes(List<Node> nodes) {
+		this.nodes = nodes;
+	}
+
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
 
 	public List<Node> getNodes() {
+		if(nodes == null){
+			return new ArrayList<Node>();
+		}
 		return nodes;
 	}
 
 	public List<Link> getLinks() {
+		if(links == null){
+			return new ArrayList<Link>();
+		}
 		return links;
 	}
 

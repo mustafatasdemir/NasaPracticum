@@ -897,9 +897,11 @@ $(function() {
   $('input[name="trust"]').change(function () {
 	  if($('input[name="trust"]')[0].checked){
 		  $("#sortbytopic").hide();
+		  $("#authorpublication").hide();
 	  }
 	  else{
 		  $("#sortbytopic").show();
+		  $("#authorpublication").hide();
 	  }
   });
   

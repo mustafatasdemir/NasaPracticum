@@ -822,6 +822,7 @@ public class DBLPTrustProcessor {
 						coauthor.setCoauthorName(c.getName());
 						coauthor.setCoauthorshipid(i++);
 						coauthor.setCount(0);
+						coauthor.setUserid(u.getId());
 
 
 						List<Publication> coauthorPublicationList = new ArrayList<Publication>();
@@ -918,10 +919,15 @@ public class DBLPTrustProcessor {
 		
 		String edge = "";
 		String mirrorEdge = "";
+		
+		ArrayList<Node> nodes = new ArrayList<Node>();
+		ArrayList<Link> links = new ArrayList<Link>();
+		
+		System.out.println("First Entry: " + nodes.size());
 
 		for(DBLPUser k : UserMap ){
 			DBLPTrustModel model = calculateDBLPTrustFactor(k);//Calling the method to calculate Trust
-			results.getNodes().add(new Node(String.valueOf(model.getTrustValue()), topic, k.getName(), constructPublicationns(k.getPublicationList()), String.valueOf(k.getId()), "Author", getCitationCountOfAuthor(k)));
+			nodes.add(new Node(String.valueOf(model.getTrustValue()), topic, k.getName(), constructPublicationns(k.getPublicationList()), String.valueOf(k.getId()), "Author", getCitationCountOfAuthor(k)));
 			
 			for (CoAuthorShip coAuth : k.getCoauthors()) {
 				edge = coAuth.getUserid() + "," + coAuth.getCoauthorid();
@@ -937,11 +943,20 @@ public class DBLPTrustProcessor {
 				}
 			}
 		}
+
+		System.out.println("After Nodes: " + nodes.size());
 		
 		for (String key : linkMap.keySet()) {
 			String[] link = key.split(",");
-			results.getLinks().add(new Link(link[0], link[1], linkMap.get(key)));
+			links.add(new Link(link[0], link[1], linkMap.get(key)));
 		}
+
+		System.out.println("After Links: " + nodes.size());
+		
+		results.setNodes(nodes);
+		results.setLinks(links);
+
+		System.out.println("Links: " + links.size());
 		
 		
 		return results;
@@ -961,9 +976,12 @@ public class DBLPTrustProcessor {
 	public String constructPublicationns(List<Publication> publications){
 		String list = "";
 		for (Publication publication : publications) {
-			list = list += publication.getPublicationTitle() + ",";
+			list = list += publication.getPublicationTitle() + "@@@";
 		}
-		return removeLastChar(list);
+		if (list == null || list.length() == 0) {
+			return list;
+		}
+		return list.substring(0, list.length()-3);
 	}
 	
 	public long getCitationCountOfAuthor(DBLPUser user){

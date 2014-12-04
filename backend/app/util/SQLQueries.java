@@ -308,12 +308,12 @@ public class SQLQueries {
 				+" and map.authorId = a.authorId "
 				+" and p.publicationTitle like ? "
 				+"group by a.authorId,a.authorName "
-				+" limit ?"
+				+" limit 100"
 				;
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic+"%")));
-		returnStatement.setInt(2, limit);
+		//returnStatement.setInt(2, limit);
 		return returnStatement;
 
 	}
