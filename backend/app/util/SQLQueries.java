@@ -105,7 +105,7 @@ public class SQLQueries {
 				+ "and p.publicationId = m.publicationId "
 				+ "and m.authorId = a.authorId "
 				+ "group by p.publicationId "
-				+ "order by ?  "
+				+ "order by ? desc "
 				+ "limit ? ";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
