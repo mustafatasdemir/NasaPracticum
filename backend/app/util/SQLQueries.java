@@ -27,11 +27,12 @@ public class SQLQueries {
 				+ "from dblp.AuthorPublicationMap as rel "
 				+ "where rel.publicationId in ("
 				+ "select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? "
-				+ ") group by rel.authorId order by rel.authorId;";
+				+ ") group by rel.authorId limit ?;";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
+		returnStatement.setInt(2, limit);
 
 		return returnStatement;
 	}
@@ -70,11 +71,12 @@ public class SQLQueries {
 		String statement = "select rel.publicationId, GROUP_CONCAT(rel.authorId) as Authors "
 				+ "from dblp.AuthorPublicationMap as rel where rel.publicationId in ("
 				+ "select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? "
-				+ ") group by rel.publicationId";
+				+ ") group by rel.publicationId limit ?";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
+		returnStatement.setInt(2, limit);
 
 		return returnStatement;
 	}
