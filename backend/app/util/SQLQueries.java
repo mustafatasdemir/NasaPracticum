@@ -9,6 +9,9 @@ import java.sql.SQLException;
 // to construct and return a prepared statement
 public class SQLQueries {
 
+	/*
+	 * SQL to set Node Info for author-author graph and author-publication map on search by topic
+	 */
 	public static PreparedStatement getCoAuthorshipNodeInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
 		/*String statement = "select rel.authorId,"
@@ -20,19 +23,30 @@ public class SQLQueries {
 				+ "select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? "
 				+ ") group by rel.authorId order by rel.authorId;";*/
 		//Commented above and added below to send publication ids instead of publication titles
-		String statement = "select rel.authorId,"
-				+ "(select au.authorName from dblp.Author as au where au.authorId = rel.authorId) as AuthorName,"
-				+ "GROUP_CONCAT((select CONCAT(p.publicationTitle, ' (', p.Year, ')') from dblp.Publication as p where p.publicationId = rel.publicationId) SEPARATOR '@@@') as PublicationList,"
-				+ "COUNT(rel.publicationId) as PublicationCount "
-				+ "from dblp.AuthorPublicationMap as rel "
-				+ "where rel.publicationId in ("
-				+ "select pub.publicationId from dblp.Publication as pub where pub.publicationTitle like ? "
-				+ ") group by rel.authorId limit ?;";
+
+		String statement = "select "
+				+ " a.authorId, a.authorName, "
+				+ " GROUP_CONCAT(p.publicationId) PublicationList , "
+				+ " COUNT(p.publicationId) publicationCount, "
+				+ " SUM(p.citationCount) citationCount "
+				+ " from  "
+				+ " dblp.AuthorPublicationMap m, "
+                + " dblp.Publication p, "
+                + " dblp.Author a  "
+                + " where p.publicationTitle like ? "
+                + " and p.publicationId = m.publicationId  "
+                + " and m.authorId = a.authorId "
+                + " group by a.authorId "
+                + " order by ? desc "
+                + " limit ? "
+                ;
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
-		returnStatement.setInt(2, limit);
+
+		returnStatement.setString(2, (sort.isEmpty() ? "1" : ("p1."+sort)));
+		returnStatement.setInt(3, limit);
 
 		return returnStatement;
 	}
@@ -66,6 +80,11 @@ public class SQLQueries {
 		return returnStatement;
 	}
 
+	/*
+	 * SQL to set Link Info for author-author graph and author-publication map on search by topic
+	 */
+	
+	
 	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
 		String statement = "select rel.publicationId, GROUP_CONCAT(rel.authorId) as Authors "
@@ -116,7 +135,7 @@ public class SQLQueries {
 	/*
 	 * SQL to get all the publications of the  author in a particular topic.
 	 */
-	public static PreparedStatement getPublicationInfo(Connection connection, int authorId, String topic) throws Exception{
+	/*public static PreparedStatement getPublicationInfo(Connection connection, int authorId, String topic) throws Exception{
 		String statement = "";
 
 		if(topic.isEmpty() || topic == null){//Calls this query if topic is null
@@ -152,7 +171,7 @@ public class SQLQueries {
 			return returnStatement;
 		}
 
-	}
+	}*/
 
 	/*
 	 * SQL to get all user parameters
