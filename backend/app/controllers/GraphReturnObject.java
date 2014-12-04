@@ -18,7 +18,7 @@ public class GraphReturnObject extends Controller{
 	// Controller to receive request for data required to render Co-Author graph by topic. Receives the topic as a 
 	// String parameter encoded as a URL in UTF-8. Calls on the model by the same name to contact the database 
 	// for data and returns the model as a Json object
-	public static Result getCoAuthorGraphDataByTopic(String parameter) throws SQLException, UnsupportedEncodingException
+	public static Result getCoAuthorGraphDataByTopic(String parameter) throws NumberFormatException, Exception
 	{
 		parameter = URLDecoder.decode(parameter, "UTF-8");
 		models.GraphReturnObject graphReturnObject = new models.GraphReturnObject();
@@ -48,7 +48,7 @@ public class GraphReturnObject extends Controller{
 	// Controller to receive request for data required to render Author Publication graph by topic. Receives the topic as a 
 	// String parameter encoded as a URL in UTF-8. Calls on the model by the same name to contact the database 
 	// for data and returns the model as a Json object
-	public static Result getAuthorPublicationGraphDataByTopic(String parameter) throws SQLException, UnsupportedEncodingException
+	public static Result getAuthorPublicationGraphDataByTopic(String parameter) throws NumberFormatException, Exception
 	{
 		parameter = URLDecoder.decode(parameter, "UTF-8");
 		models.GraphReturnObject graphReturnObject = new models.GraphReturnObject();
@@ -82,7 +82,7 @@ public class GraphReturnObject extends Controller{
 	// Controller to receive request for data required to render Co-Author graph by author. Receives the author name as a 
 	// String parameter encoded as a URL in UTF-8. Calls on the model by the same name to contact the database 
 	// for data and returns the model as a Json object
-	public static Result getCoAuthorGraphDataByAuthor(String parameter) throws SQLException, UnsupportedEncodingException
+	public static Result getCoAuthorGraphDataByAuthor(String parameter) throws NumberFormatException, Exception
 	{
 		parameter = URLDecoder.decode(parameter, "UTF-8");
 		models.GraphReturnObject graphReturnObject = new models.GraphReturnObject();
