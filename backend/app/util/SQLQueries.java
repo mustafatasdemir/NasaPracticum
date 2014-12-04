@@ -71,7 +71,7 @@ public class SQLQueries {
 				+ "order by ? desc limit ? )   "
 				+" ) as po   "
 				+" group by po.authorId  "
-				+" order by citationCount  ";
+				+" order by ?  ";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
