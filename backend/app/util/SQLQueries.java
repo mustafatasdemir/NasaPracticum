@@ -181,12 +181,11 @@ public class SQLQueries {
 
 	}*/
 
+	
+	
 	/*
 	 * SQL to get all user parameters
 	 */
-
-
-
 	public static PreparedStatement getUserInfo(Connection connection, String authorName) throws Exception{
 		String statement ="select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications from "
 				+"dblp.author a,"
@@ -355,6 +354,29 @@ public class SQLQueries {
 		return returnStatement;
 
 
+
+	}
+	
+	
+	
+	/*
+	 * SQL to get all authors of a pubication
+	 */
+	public static PreparedStatement getAuthorInfo(Connection connection, int publicationId) throws Exception{
+		String statement ="select a.authorId,a.authorName "
+				+ "from "
+				+"dblp.author a,"
+				+"dblp.AuthorPublicationMap m,"
+				+"dblp.Publication p "
+				+"where p.publicationId =  ? "
+				+"and p.publicationId = m.publicationId "
+				+"and m.authorId = a.authorId "
+				;
+
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+
+		returnStatement.setInt(1, publicationId);
+		return returnStatement;
 
 	}
 
