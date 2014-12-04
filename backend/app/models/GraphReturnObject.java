@@ -309,7 +309,7 @@ public class GraphReturnObject {
 			nodes.add(node);
 		}
 		
-		preparedStatement = util.SQLQueries.getCoAuthorLinkByAuthor(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
+		preparedStatement = util.SQLQueries.getCoAuthorLinkByAuthor(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1] == "Publication" ? "publicationCount" : "citationCount", Integer.parseInt(parameters[2]));
 		
 		resultSet = preparedStatement.executeQuery();
 		
