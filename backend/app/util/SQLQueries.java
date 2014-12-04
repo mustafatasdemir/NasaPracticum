@@ -104,9 +104,9 @@ public class SQLQueries {
 				+ "where p.publicationTitle like ? "
 				+ "and p.publicationId = m.publicationId "
 				+ "and m.authorId = a.authorId "
-				+ "group by p.publicationId "
-				+ "order by ? desc "
-				+ "limit ? ";
+				+ "group by p.publicationId ";
+		//		+ "order by ? desc "
+		//		+ "limit ? ";
 		/*String questionMark;
 		String[] topics = topic.split(",");
 		
@@ -137,8 +137,8 @@ public class SQLQueries {
 			returnStatement.setInt(i+1, Integer.parseInt(topics[i]));
 		}*/
 
-		returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
-		returnStatement.setInt(3, limit);
+		//returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
+		//returnStatement.setInt(3, limit);
 
 		return returnStatement;
 	}

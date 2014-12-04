@@ -42,7 +42,7 @@ public class GraphReturnObject {
 		PreparedStatement preparedStatement = null;
 		String[] topics = null;
 		String separator = "@@@";
-		String allPublicationIds="";
+		//String allPublicationIds="";
 		HashMap<String, Integer> nodeList = new HashMap<String, Integer>();
 		
 		String[] parameters = parameter.split("&");
@@ -67,7 +67,7 @@ public class GraphReturnObject {
 				nodes = new ArrayList<Node>();
 			}
 			
-			allPublicationIds += allPublicationIds.equals("") ? resultSet.getString("PublicationList") : "," + resultSet.getString("PublicationList");
+			//allPublicationIds += allPublicationIds.equals("") ? resultSet.getString("PublicationList") : "," + resultSet.getString("PublicationList");
 			String[] publicationIds = resultSet.getString("PublicationList").split(",");
 			StringBuilder publicationTitles = new StringBuilder();
 			
@@ -92,7 +92,7 @@ public class GraphReturnObject {
 		}
 		else
 		{
-			preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo(connection, allPublicationIds, parameters[1], Integer.parseInt(parameters[2]));
+			preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
 		}
 		
 		resultSet = preparedStatement.executeQuery();
