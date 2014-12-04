@@ -637,6 +637,9 @@ Network = function() {
     content += '<p class="main"><b>' + d.name + '</b></span></p>';
     content += '<hr class="tooltip-hr">';
     content += '<p class="main"><b>' + d.topic + '</b></span></p>';
+    if((d.trustScore).length!=0){
+    content += '<hr class="tooltip-hr">';
+    content += '<p class="main"><b>TrustScore:' + d.trustScore + '</b></span></p>';}
     /*tablecontent += '<p>' + d.group + '</p>';
 	
 	tablecontent += '<p><b>' + d.artist + '</b></p>';
