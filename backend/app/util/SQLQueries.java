@@ -95,7 +95,7 @@ public class SQLQueries {
 
 	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
-		/*String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
+		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
 				+ "count(p.publicationId) publicationCount "
 				+ "from "
 				+ "dblp.Publication p, "
@@ -106,8 +106,8 @@ public class SQLQueries {
 				+ "and m.authorId = a.authorId "
 				+ "group by p.publicationId "
 				+ "order by ? desc "
-				+ "limit ? ";*/
-		String questionMark;
+				+ "limit ? ";
+		/*String questionMark;
 		String[] topics = topic.split(",");
 		
 		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
@@ -126,19 +126,19 @@ public class SQLQueries {
 				+ "group by p.publicationId "
 				;
 		
-		
+		*/
 		
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
-		//returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
+		returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
 		
-		for(int i = 0; i < topics.length; i++)
+		/*for(int i = 0; i < topics.length; i++)
 		{
 			returnStatement.setInt(i+1, Integer.parseInt(topics[i]));
-		}
+		}*/
 
-		//returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
-		//returnStatement.setInt(3, limit);
+		returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
+		returnStatement.setInt(3, limit);
 
 		return returnStatement;
 	}
