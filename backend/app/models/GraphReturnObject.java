@@ -42,6 +42,7 @@ public class GraphReturnObject {
 		PreparedStatement preparedStatement = null;
 		String[] topics = null;
 		String separator = "@@@";
+		String allPublicationIds="";
 		
 		String[] parameters = parameter.split("&");
 		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
@@ -65,6 +66,7 @@ public class GraphReturnObject {
 				nodes = new ArrayList<Node>();
 			}
 			
+			allPublicationIds += allPublicationIds.equals("") ? resultSet.getString("PublicationList") : "," + resultSet.getString("PublicationList");
 			String[] publicationIds = resultSet.getString("PublicationList").split(",");
 			StringBuilder publicationTitles = new StringBuilder();
 			
@@ -88,7 +90,7 @@ public class GraphReturnObject {
 		}
 		else
 		{
-			preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
+			preparedStatement = util.SQLQueries.getCoAuthorshipLinkInfo(connection, allPublicationIds, parameters[1], Integer.parseInt(parameters[2]));
 		}
 		
 		resultSet = preparedStatement.executeQuery();
@@ -181,7 +183,7 @@ public class GraphReturnObject {
 			nodes.add(node);
 			limiter++;
 			
-			for(int i = 0; (i <= publications.size() && limiter < limit); i++, limiter++)
+			for(int i = 0; (i < publications.size() && limiter < limit); i++, limiter++)
 			{
 				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), "JishaSQL", String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
 				nodes.add(publicationNode);
