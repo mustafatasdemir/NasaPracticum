@@ -71,7 +71,7 @@ public class SQLQueries {
 				+ "order by ? desc limit ? )   "
 				+" ) as po   "
 				+" group by po.authorId  "
-				+" order by citationCount  ";
+				+" order by ?  ";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
@@ -95,7 +95,7 @@ public class SQLQueries {
 
 	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
-		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors "
+		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
 				+ "count(p.publicationId) publicationCount "
 				+ "from "
 				+ "dblp.Publication p, "
@@ -105,7 +105,7 @@ public class SQLQueries {
 				+ "and p.publicationId = m.publicationId "
 				+ "and m.authorId = a.authorId "
 				+ "group by p.publicationId "
-				+ "order by ?  "
+				+ "order by ? desc "
 				+ "limit ? ";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
@@ -352,7 +352,7 @@ public class SQLQueries {
 						+"and m1.publicationId = r1.publicationId "
 						+"and m1.publicationId = p1.publicationId "
 						+"group by p1.publicationId  " 
-						+"order by ? "
+						+"order by ? desc"
 						+"limit ? "
 						;
 
