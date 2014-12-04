@@ -56,21 +56,28 @@ public class SQLQueries {
 
 	public static PreparedStatement getCoAuthorshipMultipleTopicsNodeInfo(Connection connection, String[] topic, String sort, int limit) throws SQLException
 	{
-		String statement = "select po.authorId, po.authorName, po.citationCount, po.topic, GROUP_CONCAT(po.publicationTitle, '@@@') as PublicationList from ("
-				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount, 0 as topic from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
-				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by ? limit ?) "
-				+ "union all "
-				+ "(select p.publicationTitle, a.authorId, a.authorName, p.citationCount, 1 as topic from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m where p.publicationTitle like ? "
-				+ "and m.publicationId = p.publicationId and a.authorId = m.authorId order by ? limit ?) "
-				+ ") as po "
-				+ "group by po.authorId "
-				+ "order by ?;";
+		String statement = "select po.authorId, po.authorName, SUM(po.citationCount) citationCount,  "
+		+" po.topic, GROUP_CONCAT(po.publicationId) as PublicationList from (  "
+		+" (select p.publicationId, a.authorId, a.authorName, p.citationCount, 0 as topic   "
+		+" from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m   "
+		+" where p.publicationTitle like ?  "
+		+" and m.publicationId = p.publicationId and a.authorId = m.authorId "
+		+ "order by ? desc  limit ? )  "
+		+" union all  "
+		+" (select p.publicationId, a.authorId, a.authorName, p.citationCount, 1 as topic   "
+		+" from dblp.Publication p, dblp.Author a, dblp.AuthorPublicationMap m   "
+		+" where p.publicationTitle like ?  "
+		+" and m.publicationId = p.publicationId and a.authorId = m.authorId "
+		+ "order by ? desc limit ? )   "
+		+" ) as po   "
+		+" group by po.authorId  "
+		+" order by citationCount  ";
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		if(topic != null && topic.length >=2){
 			returnStatement.setString(1, (topic[0].isEmpty() ? "%%" : ("%"+topic[0].trim()+"%")));
-			returnStatement.setString(2, (sort.equals("Citation") ? "p.citationCount desc" : "p.citationCount desc"));
+			returnStatement.setString(2, (sort.equals("Citation") ? "p.citationCount " : "p.citationCount desc"));
 			returnStatement.setInt(3, limit);
 			returnStatement.setString(4, (topic[1].isEmpty() ? "%%" : ("%"+topic[1].trim()+"%")));
 			returnStatement.setString(5, (sort.equals("Citation") ? "p.citationCount desc" : "p.citationCount desc"));
@@ -174,12 +181,11 @@ public class SQLQueries {
 
 	}*/
 
+	
+	
 	/*
 	 * SQL to get all user parameters
 	 */
-
-
-
 	public static PreparedStatement getUserInfo(Connection connection, String authorName) throws Exception{
 		String statement ="select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications from "
 				+"dblp.author a,"
@@ -348,6 +354,29 @@ public class SQLQueries {
 		return returnStatement;
 
 
+
+	}
+	
+	
+	
+	/*
+	 * SQL to get all authors of a pubication
+	 */
+	public static PreparedStatement getAuthorInfo(Connection connection, int publicationId) throws Exception{
+		String statement ="select a.authorId,a.authorName "
+				+ "from "
+				+"dblp.author a,"
+				+"dblp.AuthorPublicationMap m,"
+				+"dblp.Publication p "
+				+"where p.publicationId =  ? "
+				+"and p.publicationId = m.publicationId "
+				+"and m.authorId = a.authorId "
+				;
+
+		PreparedStatement returnStatement = connection.prepareStatement(statement);
+
+		returnStatement.setInt(1, publicationId);
+		return returnStatement;
 
 	}
 
