@@ -95,7 +95,7 @@ public class SQLQueries {
 
 	public static PreparedStatement getCoAuthorshipLinkInfo(Connection connection, String topic, String sort, int limit) throws SQLException
 	{
-		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors "
+		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
 				+ "count(p.publicationId) publicationCount "
 				+ "from "
 				+ "dblp.Publication p, "
