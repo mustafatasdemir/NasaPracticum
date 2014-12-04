@@ -818,7 +818,7 @@ $(function() {
 	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 	    		success : function(data) {
 	    			
-	    			$("#loadingimagediv").hide();
+	    			//$("#loadingimagediv").hide();
 	    			coAuthorData = data;
 	    			myNetwork.updateData(coAuthorData);
 	    			//return myNetwork("#vis", coAuthorData);
@@ -827,7 +827,7 @@ $(function() {
 	    			if(parameter.indexOf(",") == -1){
 	    				jsRoutes.controllers.GraphDisplay.getAuthorPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 		    	    		success : function(data) {
-		    	    			$("#loadingimagediv").hide();
+		    	    			//$("#loadingimagediv").hide();
 		    	    			authorPublicationData = data;
 		    	    			return;
 		    	    		}
@@ -850,13 +850,13 @@ $(function() {
 	    	if(parameter !== ""){
 	    		jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByAuthor(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 		    		success : function(data) {
-		    			$("#loadingimagediv").hide();
+		    			//$("#loadingimagediv").hide();
 		    			coAuthorData = data;
 		    			myNetwork.updateData(coAuthorData);
 		    			
 		    			jsRoutes.controllers.GraphDisplay.getAuthorPublicationGraphDataByAuthor(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 		    	    		success : function(data) {
-		    	    			$("#loadingimagediv").hide();
+		    	    			//$("#loadingimagediv").hide();
 		    	    			authorPublicationData = data;
 		    	    			return;
 		    	    		}
