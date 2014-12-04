@@ -185,6 +185,10 @@ public class GraphReturnObject {
 			{
 				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), "JishaSQL", String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
 				nodes.add(publicationNode);
+				if(links == null)
+				{
+					links = new ArrayList<Link>();
+				}
 				links.add(new Link(String.valueOf(node.getId()), String.valueOf(publicationNode.getId()), 1));
 			}
 		}				
