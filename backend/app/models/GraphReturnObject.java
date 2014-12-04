@@ -203,7 +203,7 @@ public class GraphReturnObject {
 				publications.add(publication);
 			}
 			
-			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1] == "Publication" ? "publicationCount" : "citationCount"));
+			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 			limiter++;
 			
@@ -376,13 +376,14 @@ public class GraphReturnObject {
 				publications.add(publication);
 			}
 			
-			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1] == "Publication" ? "publicationCount" : "citationCount"));
+			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 			limiter++;
 			
 			for(int i = 0; (i < publications.size() && limiter < limit); i++, limiter++)
 			{
-				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), "JishaSQL", String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
+				String authorNames = getAuthorNamesForPublication(connection, publications.get(i).getPublicationId());
+				Node publicationNode = new Node("", parameters[0], publications.get(i).getPublicationTitle(), authorNames, String.valueOf(publications.get(i).getPublicationId()), "Publication", publications.get(i).getCitationCount());
 				nodes.add(publicationNode);
 				if(links == null)
 				{
