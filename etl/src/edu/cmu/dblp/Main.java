@@ -100,9 +100,9 @@ public class Main {
 			while (eventReader.hasNext()) {
 
 				// For Debugging, check which entity has problem via console output
-				if(flag == 0 && counter == 11127){
+				if(flag == 0 && counter == 10000){
 					flag = 1;
-					System.out.println("Hey! Problem Over Here!");
+					break;
 				}
 
 				XMLEvent event = eventReader.nextEvent();
