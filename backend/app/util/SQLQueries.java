@@ -317,7 +317,7 @@ public class SQLQueries {
 
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
-		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		returnStatement.setString(1, author);
 		returnStatement.setString(2, (sort.isEmpty() ? "1" : ("p1."+sort)));
 		returnStatement.setInt(3, limit);
 
@@ -347,7 +347,7 @@ public class SQLQueries {
 						;
 
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
-		returnStatement.setString(1, (author.isEmpty() ? "%%" : ("%"+author+"%")));
+		returnStatement.setString(1, author);
 		returnStatement.setString(2, (sort.isEmpty() ? "1" : ("p1."+sort)));
 		returnStatement.setInt(3, limit);
 
