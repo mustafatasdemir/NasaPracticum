@@ -118,15 +118,14 @@ public class SQLQueries {
 				+ "and p.publicationId = m.publicationId "
 				+ "and m.authorId = a.authorId "
 				+ "group by p.publicationId "
-				+ "order by ? desc "
-				+ "limit ? ";
+				;
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		//returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
 		returnStatement.setString(1, topic);
 
-		returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
-		returnStatement.setInt(3, limit);
+		//returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
+		//returnStatement.setInt(3, limit);
 
 		return returnStatement;
 	}
