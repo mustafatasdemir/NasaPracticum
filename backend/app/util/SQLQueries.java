@@ -223,7 +223,7 @@ public class SQLQueries {
 	 */
 	public static PreparedStatement getUserInfo(Connection connection, String authorName) throws Exception{
 		String statement ="select a.authorId,a.authorName, GROUP_CONCAT( p.PublicationId) publications from "
-				+"dblp.author a,"
+				+"dblp.Author a,"
 				+"dblp.AuthorPublicationMap m,"
 				+"dblp.Publication p "
 				+"where a.authorName like ? "
@@ -400,7 +400,7 @@ public class SQLQueries {
 	public static PreparedStatement getAuthorInfo(Connection connection, int publicationId) throws Exception{
 		String statement ="select a.authorId,a.authorName "
 				+ "from "
-				+"dblp.author a,"
+				+"dblp.Author a,"
 				+"dblp.AuthorPublicationMap m,"
 				+"dblp.Publication p "
 				+"where p.publicationId =  ? "
