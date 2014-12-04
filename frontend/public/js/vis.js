@@ -787,10 +787,10 @@ $(function() {
 	    $('.accordion .accordion-section-title').removeClass('active');
         $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
 	    if($('#sort_select_topic').is(":visible")){
-	    	sort = $('#sort_select_topic').val();
+	    	sort = "Citation";
 	    }
 	    else{
-	    	sort = $('#sort_select_author').val();
+	    	sort = "Citation";
 	    }
 	    
 	    if($('#limit_select_topic').is(":visible")){
@@ -865,7 +865,19 @@ $(function() {
 	    	
 	    }
   });
-  
+  $("#topictextbox").keyup(function() {
+	    var searchTerm;
+	    searchTerm = $(this).val();
+	    if (searchTerm.indexOf(',') != -1) {
+	    	$("#trust_p").hide();
+	    	$("#authorpublication").hide();
+	    }
+	    
+	    else{
+	    	$("#trust_p").show();
+	    	$("#authorpublication").show();
+	    }
+	  });
 
   
   $("#search").keyup(function() {
