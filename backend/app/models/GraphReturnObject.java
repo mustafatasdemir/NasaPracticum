@@ -44,6 +44,7 @@ public class GraphReturnObject {
 		String separator = "@@@";
 		
 		String[] parameters = parameter.split("&");
+		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
 		
 		if(parameters[0].contains(","))
 		{
@@ -77,7 +78,7 @@ public class GraphReturnObject {
 			}
 			
 			
-			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1] == "Publication" ? "publicationCount" : "citationCount"));
+			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 		}
 		
@@ -146,6 +147,7 @@ public class GraphReturnObject {
 		List<Publication> publications;
 		
 		String[] parameters = parameter.split("&");
+		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
 		
 		int limit = Integer.parseInt(parameters[2]);
 		
@@ -195,6 +197,7 @@ public class GraphReturnObject {
 		String[] topics = null;
 		
 		String[] parameters = parameter.split("&");
+		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
 		
 		if(parameters[0].contains(","))
 		{
@@ -214,7 +217,7 @@ public class GraphReturnObject {
 			{
 				nodes = new ArrayList<Node>();
 			}
-			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(topics == null ? "PublicationCount" : "citationCount"));
+			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 		}
 		
@@ -281,8 +284,9 @@ public class GraphReturnObject {
 		String separator = "@@@";
 		
 		String[] parameters = parameter.split("&");
+		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
 		
-		preparedStatement = util.SQLQueries.getCoAuthorshipNodeInfo(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
+		preparedStatement = util.SQLQueries.getCoAuthorByAuthor(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		
@@ -305,11 +309,11 @@ public class GraphReturnObject {
 				publicationTitles.append(new Publication(Integer.parseInt(publicationIds[i]), connection).getPublicationTitle());
 			}
 			
-			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1] == "Publication" ? "publicationCount" : "citationCount"));
+			Node node = new Node("", parameters[0], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 		}
 		
-		preparedStatement = util.SQLQueries.getCoAuthorLinkByAuthor(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1] == "Publication" ? "publicationCount" : "citationCount", Integer.parseInt(parameters[2]));
+		preparedStatement = util.SQLQueries.getCoAuthorLinkByAuthor(connection, (parameters[0].matches("All") ? "" : parameters[0]), parameters[1], Integer.parseInt(parameters[2]));
 		
 		resultSet = preparedStatement.executeQuery();
 		
@@ -365,6 +369,7 @@ public class GraphReturnObject {
 		String[] topics = null;
 		
 		String[] parameters = parameter.split("&");
+		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
 		
 		if(parameters[0].contains(","))
 		{
@@ -384,7 +389,7 @@ public class GraphReturnObject {
 			{
 				nodes = new ArrayList<Node>();
 			}
-			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(topics == null ? "PublicationCount" : "citationCount"));
+			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), resultSet.getString("PublicationList"), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
 		}
 		
