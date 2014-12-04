@@ -107,6 +107,8 @@ public class SQLQueries {
 				+ "group by p.publicationId "
 				+ "order by ? desc "
 				+ "limit ? ";*/
+		String questionMark;
+		String[] topics = topic.split(",");
 		
 		String statement = "select p.publicationId,GROUP_CONCAT(a.authorId) as Authors, "
 				+ "count(p.publicationId) publicationCount "
@@ -114,15 +116,26 @@ public class SQLQueries {
 				+ "dblp.Publication p, "
 				+ "dblp.AuthorPublicationMap m, "
 				+ "dblp.Author a "
-				+ "where p.publicationId in ( ? ) "
-				+ "and p.publicationId = m.publicationId "
+				+ "where p.publicationId in (";
+		for(int i = 0; i < topics.length; i++)
+		{
+			statement += i==0 ? "?" : "," + "?";
+		}
+		statement += ") and p.publicationId = m.publicationId "
 				+ "and m.authorId = a.authorId "
 				+ "group by p.publicationId "
 				;
+		
+		
+		
 		PreparedStatement returnStatement = connection.prepareStatement(statement);
 
 		//returnStatement.setString(1, (topic.isEmpty() ? "%%" : ("%"+topic.trim()+"%")));
-		returnStatement.setString(1, topic);
+		
+		for(int i = 0; i < topics.length; i++)
+		{
+			returnStatement.setInt(i+1, Integer.parseInt(topics[i]));
+		}
 
 		//returnStatement.setString(2, (sort.isEmpty() ? "1" : sort));
 		//returnStatement.setInt(3, limit);

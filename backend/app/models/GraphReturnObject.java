@@ -43,6 +43,7 @@ public class GraphReturnObject {
 		String[] topics = null;
 		String separator = "@@@";
 		String allPublicationIds="";
+		HashMap<String, Integer> nodeList = new HashMap<String, Integer>();
 		
 		String[] parameters = parameter.split("&");
 		parameters[1] = parameters[1].equals("Publication") ? "publicationCount" : "citationCount";
@@ -82,6 +83,7 @@ public class GraphReturnObject {
 			
 			Node node = new Node("", topics == null ? parameters[0] : topics[resultSet.getInt("Topic")], resultSet.getString("AuthorName"), publicationTitles.toString(), resultSet.getString("authorId"), "Author", resultSet.getLong(parameters[1]));
 			nodes.add(node);
+			nodeList.put(node.getId(), 1);
 		}
 		
 		if(topics != null)
@@ -135,7 +137,10 @@ public class GraphReturnObject {
 		for(String key: coAuthorLinks.keySet())
 		{
 			String[] link = key.split(",");
-			links.add(new Link(link[0], link[1], coAuthorLinks.get(key)));
+			if(nodeList.containsKey(link[0]) && nodeList.containsKey(link[1]))
+			{
+				links.add(new Link(link[0], link[1], coAuthorLinks.get(key)));
+			}
 		}
 	}
 
