@@ -11,17 +11,17 @@ var width = 900,
 height = 900;
 var WIDTH = 900,
 HEIGHT = 900;
-var currentZoom=1;
+var currentZoom=0.5;
 var currentOffset = { x : 0, y : 0 };
 root = typeof exports !== "undefined" && exports !== null ? exports : this;
 /*** Configure zoom behaviour ***/
 //The D3.js scales
 var xScale = d3.scale.linear()
-  .domain([0, w])
-  .range([0, w]);
+  .domain([-w, w])
+  .range([-w, w]);
 var yScale = d3.scale.linear()
-  .domain([0, h])
-  .range([0, h]);
+  .domain([-h, h])
+  .range([-h, h]);
 var zoomScale = d3.scale.linear()
   .domain([1,6])
   .range([1,6])
@@ -150,18 +150,18 @@ function doZoom( increment ) {
 RadialPlacement = function() {
   var center, current, increment, place, placement, radialLocation, radius, setKeys, start, values;
   values = d3.map();
-  increment = 2;
-  radius = 1;
+  increment = 0.02;
+  radius = 0;
   center = {
     "x": 0,
     "y": 0
   };
-  start = 2;
+  start = 0;
   current = start;
   radialLocation = function(center, angle, radius) {
     var x, y;
-    x = center.x + radius * Math.cos(angle * Math.PI / 180);
-    y = center.y + radius * Math.sin(angle * Math.PI / 180);
+    x = center.x + radius * Math.cos(angle * Math.PI / 360);
+    y = center.y + radius * Math.sin(angle * Math.PI / 360);
     return {
       "x": x,
       "y": y
@@ -243,6 +243,8 @@ Network = function() {
   var allData, coAuthorData, authorPublicationData, coPublicationData, charge, curLinksData, curNodesData, filter, filterLinks, filterNodes, force, forceTick, groupCenters, height, hideDetails, layout, linkedByIndex, mapNodes, moveToRadialLayout, neighboring, network, nodeColors, nodeCounts, radialTick, setFilter, setLayout, setSort, setupData, showDetails, showlinkDetails, sort, sortedArtists, strokeFor, tooltip, update, updateCenters, updateLinks, updateNodes, width;
   width = 550;
   height = 600;
+  //width = 1550;
+  //height = 1900;
   allData = [];
   curLinksData = [];
   curNodesData = [];
@@ -270,7 +272,7 @@ Network = function() {
 //define the event handler function
     allData = setupData(data);
     vis1 = d3.select(selection).append("svg").attr("width", width).attr("height", height).append("g")
-    .attr("class", "grpParent");
+    .attr("class", "grpParent").attr("transform","translate(90,100)scale(.7,.7)");
    // .call(zoomer); //Attach zoom behaviour.
     linksG = vis1.append("g").attr("id", "links");
     nodesG = vis1.append("g").attr("id", "nodes");
@@ -296,7 +298,11 @@ Network = function() {
   	      .x(xScale)
   	      .y(yScale)
   	      .scaleExtent([1, 4])
-  	      .on("zoom", zoom) );
+  	      //.scale(.5,.5)
+  	      .on("zoom", zoom)
+  	     // .transform(100,50)
+  	      );
+  	    //  .scale(0.5));
     vis1.call( d3.behavior.drag()
     	      .on("drag",dragmove) );
  /*var rect = vis1.append("rect")
@@ -338,6 +344,7 @@ Network = function() {
         link = null;
       }
     }
+    vis1.attr("transform","translate(90,100)scale(.7,.7)");
     return force.start();
   };
   network.toggleLayout = function(newLayout) {
@@ -487,9 +494,9 @@ Network = function() {
   updateCenters = function(artists) {
     if (layout === "radial") {
       return groupCenters = RadialPlacement().center({
-        "x": width / 2,
-        "y": height / 2 - 100
-      }).radius(300).increment(18).keys(artists);
+        "x": 0,
+        "y": 0
+      }).radius(0.0300).increment(1).keys(artists);
     }
   };
   filterLinks = function(allLinks, curNodes) {
@@ -635,7 +642,7 @@ Network = function() {
 	tablecontent += '<p><b>' + d.artist + '</b></p>';
 	
 	tablecontent += '<p><b>' + d.name + '</b></p>';*/
-    tablecontent += '<table id=myTable border=1 ><tr>NAME</tr>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;<tr>PUBLICATION LIST</tr>';
+    tablecontent += '<table id=myTable border=1 ><tr>NAME</tr>&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp;<tr> LIST</tr>';
     node.style("stroke", function(n) {
     	
         if (n.searched || neighboring(d, n)) {
@@ -646,9 +653,9 @@ Network = function() {
         	var pubSplit=pubList.split('@@@');
         	tablecontent += '<td width=80%>' ;
         	for (i = 0; i < pubSplit.length; i++) { 
-        		//if(pubSplit[i].replace(/\s/g,"") == ""){
+        		if(pubSplit[i].length!=0){
         	tablecontent += '<div style="border:1px solid grey">' + (i+1) +") "+pubSplit[i] + '</div>';}
-        		//}
+        		}
         	//tablecontent += '<td width=80%>' + n.list + '</td></tr>';
         	tablecontent += '</td></tr>';
         	//tablecontent += '<td width=80%>' + n.list + '</td></tr>';
@@ -775,7 +782,10 @@ $(function() {
 	    var sort;
 	    var limit;
 	    var trust;
-	    
+	   // $("#bytopic").hide();
+	    $('#rightTopSidebar').html("");
+	    $('.accordion .accordion-section-title').removeClass('active');
+        $('.accordion .accordion-section-content').slideUp(300).removeClass('open');
 	    if($('#sort_select_topic').is(":visible")){
 	    	sort = $('#sort_select_topic').val();
 	    }
@@ -804,9 +814,12 @@ $(function() {
 	    	}
 	    	jsRoutes.controllers.GraphDisplay.getCoAuthorGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 	    		success : function(data) {
+	    			
 	    			$("#loadingimagediv").hide();
 	    			coAuthorData = data;
 	    			myNetwork.updateData(coAuthorData);
+	    			//return myNetwork("#vis", coAuthorData);
+	    			
 	    			
 	    			if(parameter.indexOf(",") == -1){
 	    				jsRoutes.controllers.GraphDisplay.getAuthorPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
@@ -817,13 +830,13 @@ $(function() {
 		    	    		}
 		    		    });
 		    			
-		    			jsRoutes.controllers.GraphDisplay.getCoPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
+		    		/*	jsRoutes.controllers.GraphDisplay.getCoPublicationGraphDataByTopic(encodeURIComponent(parameter).concat("&", encodeURIComponent(sort), "&", encodeURIComponent(limit), "&", encodeURIComponent(trust))).ajax({
 		    	    		success : function(data) {
 		    	    			$("#loadingimagediv").hide();
 		    	    			coPublicationData = data;
 		    	    			return;
 		    	    		}
-		    		    });
+		    		    });*/
 	    			}
 	    			return;
 	    		}
@@ -853,11 +866,18 @@ $(function() {
 	    }
   });
   
+
+  
   $("#search").keyup(function() {
     var searchTerm;
     searchTerm = $(this).val();
     return myNetwork.updateSearch(searchTerm);
   });
+  $('#search').keypress(function(event) {
+	    if (event.keyCode == 13) {
+	        event.preventDefault();
+	    }
+	});
   
   $('input[name="trust"]').change(function () {
 	  if($('input[name="trust"]')[0].checked){
